@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1240" viewBox="0 0 1400 1240" role="img" aria-labelledby="title desc">
+<title id="title">測試段配置</title>
+<desc id="desc">測試段側視與俯視：地面板、車模、皮托管、靜壓孔、量測點、靜壓箱位置。</desc>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" fill="#6b7280"/></marker>
+<marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#187c91"/></marker>
+<marker id="o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+<pattern id="hc" width="5" height="8" patternUnits="userSpaceOnUse"><path d="M0 0V8 M0 4H5" stroke="#8aa4b2" stroke-width="0.8"/></pattern>
+<pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V6" stroke="#94a3b8" stroke-width="1"/></pattern>
+<style>
+text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#183344}
+.t{font-size:24px;font-weight:700} .st{font-size:14px;fill:#526b7b}
+.l{font-size:14px;font-weight:600} .n{font-size:12px;fill:#526b7b} .d{font-size:12px;fill:#374151}
+.w{font-size:12px;fill:#c2410c;font-weight:600}
+.halo{paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round}
+.shell{stroke:#32566b;stroke-width:2;fill:#edf3f6}
+.shell0{stroke:#32566b;stroke-width:2;fill:none}
+.thin{stroke:#32566b;stroke-width:1;fill:none}
+.pc{stroke:#32566b;stroke-width:2;fill:#e3f1f7}
+.solid{stroke:#32566b;stroke-width:1.2;fill:#cbd5df}
+.dark{stroke:#1f2937;stroke-width:1;fill:#4b5563}
+.car{stroke:#475569;stroke-width:1.2;fill:#e2e8f0}
+.air{stroke:#187c91;stroke-width:2;fill:none}
+.airf{fill:#187c91}
+.scr{stroke:#187c91;stroke-width:2;stroke-dasharray:6 4;fill:none}
+.dim{stroke:#6b7280;stroke-width:1;fill:none}
+.ext{stroke:#9ca3af;stroke-width:0.8;fill:none}
+.guide{stroke:#cbd5e1;stroke-width:0.8;stroke-dasharray:3 4;fill:none}
+.tbd{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 3;fill:none}
+.tbdf{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 3;fill:#fff7ed}
+.cl{stroke:#94a3b8;stroke-width:1;stroke-dasharray:14 4 2 4;fill:none}
+.grid{stroke:#e5e7eb;stroke-width:1;fill:none}
+.axis{stroke:#374151;stroke-width:1.2;fill:none}
+.c1{stroke:#187c91;stroke-width:2.5;fill:none} .c2{stroke:#7c3aed;stroke-width:2.5;fill:none}
+.c3{stroke:#187c91;stroke-width:2;stroke-dasharray:6 4;fill:none}
+.bar{fill:#187c91} .bar2{fill:#94a3b8}
+.hc{fill:url(#hc);stroke:#32566b;stroke-width:1}
+</style></defs>
+<rect width="1400" height="1240" rx="14" fill="#fafcfd"/>
+<text x="32.0" y="42.0" class="t" text-anchor="start" >圖 A4　測試段配置（依比例）</text>
+<text x="32.0" y="66.0" class="st" text-anchor="start" >上：側視（從 −y 側看）　下：俯視（+y 在上）　x 自收縮段出口起算；z 自測試段地板起算；單位 mm</text>
+<line x1="156.0" y1="120.0" x2="1036.0" y2="120.0" class="axis" />
+<line x1="156.0" y1="115.0" x2="156.0" y2="125.0" class="axis" />
+<text x="156.0" y="111.0" class="d" text-anchor="middle" >0</text>
+<line x1="156.0" y1="126.0" x2="156.0" y2="1169.5" class="guide" />
+<line x1="189.0" y1="115.0" x2="189.0" y2="125.0" class="axis" />
+<text x="189.0" y="99.0" class="d" text-anchor="middle" >30</text>
+<line x1="189.0" y1="126.0" x2="189.0" y2="1169.5" class="guide" />
+<line x1="266.0" y1="115.0" x2="266.0" y2="125.0" class="axis" />
+<text x="266.0" y="111.0" class="d" text-anchor="middle" >100</text>
+<line x1="266.0" y1="126.0" x2="266.0" y2="1169.5" class="guide" />
+<line x1="299.0" y1="115.0" x2="299.0" y2="125.0" class="axis" />
+<text x="299.0" y="99.0" class="d" text-anchor="middle" >130</text>
+<line x1="299.0" y1="126.0" x2="299.0" y2="1169.5" class="guide" />
+<line x1="398.0" y1="115.0" x2="398.0" y2="125.0" class="axis" />
+<text x="398.0" y="111.0" class="d" text-anchor="middle" >220</text>
+<line x1="398.0" y1="126.0" x2="398.0" y2="1169.5" class="guide" />
+<line x1="486.0" y1="115.0" x2="486.0" y2="125.0" class="axis" />
+<text x="486.0" y="99.0" class="d" text-anchor="middle" >300</text>
+<line x1="486.0" y1="126.0" x2="486.0" y2="1169.5" class="guide" />
+<line x1="761.0" y1="115.0" x2="761.0" y2="125.0" class="axis" />
+<text x="761.0" y="111.0" class="d" text-anchor="middle" >550</text>
+<line x1="761.0" y1="126.0" x2="761.0" y2="1169.5" class="guide" />
+<line x1="926.0" y1="115.0" x2="926.0" y2="125.0" class="axis" />
+<text x="926.0" y="99.0" class="d" text-anchor="middle" >700</text>
+<line x1="926.0" y1="126.0" x2="926.0" y2="1169.5" class="guide" />
+<line x1="1036.0" y1="115.0" x2="1036.0" y2="125.0" class="axis" />
+<text x="1036.0" y="111.0" class="d" text-anchor="middle" >800</text>
+<line x1="1036.0" y1="126.0" x2="1036.0" y2="1169.5" class="guide" />
+<text x="90.0" y="124.0" class="l" text-anchor="start" >x</text>
+<rect x="156.0" y="513.0" width="880.0" height="6.6" class="solid" />
+<line x1="156.0" y1="183.0" x2="1036.0" y2="183.0" class="shell0" style="stroke-width:3"/>
+<line x1="156.0" y1="183.0" x2="1036.0" y2="172.0" class="tbd" />
+<circle cx="156.0" cy="183.0" r="5.0" class="shell" />
+<text x="160.4" y="173.0" class="n halo" text-anchor="start" >頂板鉸鏈</text>
+<text x="1036.0" y="164.0" class="w halo" text-anchor="end" >出口墊高 0–10</text>
+<line x1="90.0" y1="183.0" x2="156.0" y2="183.0" class="shell0" />
+<line x1="90.0" y1="513.0" x2="156.0" y2="513.0" class="shell0" />
+<line x1="1036.0" y1="183.0" x2="1102.0" y2="175.2" class="shell0" />
+<line x1="1036.0" y1="513.0" x2="1102.0" y2="520.8" class="shell0" />
+<text x="95.5" y="348.0" class="n" text-anchor="start" >收縮段</text>
+<text x="1041.5" y="348.0" class="n" text-anchor="start" >擴散段</text>
+<circle cx="189.0" cy="513.0" r="4.0" class="shell" style="fill:#187c91"/>
+<circle cx="189.0" cy="183.0" r="4.0" class="shell" style="fill:#187c91"/>
+<text x="195.0" y="199.0" class="n halo" text-anchor="start" >入口靜壓環 ×4</text>
+<rect x="266.0" y="451.4" width="250.3" height="6.6" class="solid" />
+<rect x="565.8" y="451.4" width="115.5" height="6.6" class="solid" />
+<rect x="730.8" y="451.4" width="195.3" height="6.6" class="solid" />
+<path d="M266.0,451.4 Q252.8,454.7 266.0,458.0" class="solid" />
+<line x1="926.0" y1="454.7" x2="970.0" y2="462.4" class="shell0" style="stroke-width:3"/>
+<text x="972.2" y="468.6" class="n halo" text-anchor="start" >可調襟翼</text>
+<text x="262.0" y="443.4" class="n halo" text-anchor="end" >4:1 橢圓前緣</text>
+<rect x="508.0" y="458.0" width="66.0" height="33.0" class="shell" />
+<rect x="534.4" y="491.0" width="13.2" height="22.0" class="shell" />
+<line x1="541.0" y1="491.0" x2="541.0" y2="573.5" class="dark" style="stroke-width:3;stroke:#4b5563"/>
+<rect x="673.0" y="458.0" width="66.0" height="33.0" class="shell" />
+<rect x="699.4" y="491.0" width="13.2" height="22.0" class="shell" />
+<line x1="706.0" y1="491.0" x2="706.0" y2="573.5" class="dark" style="stroke-width:3;stroke:#4b5563"/>
+<rect x="398.0" y="521.8" width="451.0" height="55.0" class="tbdf" />
+<text x="623.5" y="551.8" class="w" text-anchor="middle" >密封靜壓箱（尺寸待定，見圖 A5）</text>
+<rect x="486.0" y="360.6" width="275.0" height="82.5" class="car" rx="10"/>
+<circle cx="541.0" cy="431.6" r="22.0" class="dark" />
+<circle cx="706.0" cy="431.6" r="22.0" class="dark" />
+<text x="623.5" y="401.9" class="l halo" text-anchor="middle" >1:18 車模 250（示意）</text>
+<text x="623.5" y="419.9" class="w halo" text-anchor="middle" >軸位、車高 7–8 待第 1 週量測</text>
+<line x1="299.0" y1="286.4" x2="343.0" y2="286.4" class="dark" style="stroke-width:3;stroke:#1f2937"/>
+<line x1="343.0" y1="286.4" x2="343.0" y2="183.0" class="dark" style="stroke-width:3;stroke:#1f2937"/>
+<text x="293.0" y="290.4" class="l halo" text-anchor="end" >皮托管</text>
+<circle cx="266.0" cy="304.0" r="4.0" class="tbd" />
+<circle cx="486.0" cy="304.0" r="4.0" class="tbd" />
+<circle cx="706.0" cy="304.0" r="4.0" class="tbd" />
+<circle cx="926.0" cy="304.0" r="4.0" class="tbd" />
+<text x="934.0" y="308.0" class="w halo" text-anchor="start" >側壁靜壓孔 Ø1（高度待定）</text>
+<path d="M772.0,521.8 L772.0,546.0 L871.0,546.0" class="scr" />
+<text x="876.5" y="550.0" class="n halo" text-anchor="start" >Ø6 平衡管 → 車身中段附近的側壁靜壓孔</text>
+<line x1="1111.0" y1="513.0" x2="1111.0" y2="458.0" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="1117.0" y="489.5" class="d halo" text-anchor="start" >板下 50</text>
+<line x1="1111.0" y1="451.4" x2="1111.0" y2="286.4" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="1117.0" y="372.9" class="d halo" text-anchor="start" >150（皮托管高於地面板）</text>
+<line x1="1301.0" y1="513.0" x2="1301.0" y2="183.0" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="1307.0" y="352.0" class="d halo" text-anchor="start" >300</text>
+<text x="1115.0" y="453.4" class="d halo" text-anchor="start" >板厚 6</text>
+<line x1="761.0" y1="227.0" x2="1036.0" y2="227.0" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="898.5" y="222.0" class="d halo" text-anchor="middle" >近尾流 250</text>
+<text x="95.5" y="557.0" class="n" text-anchor="start" >井深 ≤ 30；護套管 Ø12</text>
+<line x1="90.0" y1="713.0" x2="1036.0" y2="713.0" class="shell0" style="stroke-width:3"/>
+<line x1="1036.0" y1="713.0" x2="1102.0" y2="707.6" class="shell0" />
+<circle cx="189.0" cy="713.0" r="4.0" class="shell" style="fill:#187c91"/>
+<line x1="90.0" y1="1153.0" x2="1036.0" y2="1153.0" class="shell0" style="stroke-width:3"/>
+<line x1="1036.0" y1="1153.0" x2="1102.0" y2="1158.4" class="shell0" />
+<circle cx="189.0" cy="1153.0" r="4.0" class="shell" style="fill:#187c91"/>
+<rect x="266.0" y="713.0" width="660.0" height="440.0" class="pc" style="fill:#eef2f6;stroke-width:1"/>
+<rect x="486.0" y="878.0" width="275.0" height="110.0" class="car" rx="18"/>
+<rect x="516.2" y="872.5" width="49.5" height="22.0" class="tbdf" />
+<rect x="516.2" y="971.5" width="49.5" height="22.0" class="tbdf" />
+<rect x="681.2" y="872.5" width="49.5" height="22.0" class="tbdf" />
+<rect x="681.2" y="971.5" width="49.5" height="22.0" class="tbdf" />
+<text x="623.5" y="937.0" class="l halo" text-anchor="middle" >車模（示意）</text>
+<text x="767.0" y="1008.5" class="w halo" text-anchor="start" >開口 45×20 ×4（位置依實測輪距）</text>
+<circle cx="299.0" cy="790.0" r="4.0" class="dark" />
+<line x1="299.0" y1="790.0" x2="343.0" y2="790.0" class="dark" style="stroke-width:3;stroke:#1f2937"/>
+<text x="293.0" y="794.0" class="l halo" text-anchor="end" >皮托管 y = +130</text>
+<line x1="332.0" y1="1032.0" x2="398.0" y2="1032.0" class="tbd" marker-end="url(#o)"/>
+<text x="329.8" y="1036.0" class="w halo" text-anchor="end" >霧氣出口 x≈220（橫向可調，與皮托管錯開）</text>
+<circle cx="486.0" cy="1043.0" r="3.5" class="shell" style="fill:#ffffff"/>
+<circle cx="486.0" cy="988.0" r="3.5" class="shell" style="fill:#ffffff"/>
+<circle cx="486.0" cy="933.0" r="3.5" class="shell" style="fill:#ffffff"/>
+<circle cx="486.0" cy="878.0" r="3.5" class="shell" style="fill:#ffffff"/>
+<circle cx="486.0" cy="823.0" r="3.5" class="shell" style="fill:#ffffff"/>
+<circle cx="761.0" cy="1043.0" r="3.5" class="shell" style="fill:#ffffff"/>
+<circle cx="761.0" cy="988.0" r="3.5" class="shell" style="fill:#ffffff"/>
+<circle cx="761.0" cy="933.0" r="3.5" class="shell" style="fill:#ffffff"/>
+<circle cx="761.0" cy="878.0" r="3.5" class="shell" style="fill:#ffffff"/>
+<circle cx="761.0" cy="823.0" r="3.5" class="shell" style="fill:#ffffff"/>
+<text x="769.0" y="817.0" class="n halo" text-anchor="start" >量測頂板孔 y = −100…+100（間隔 50）</text>
+<circle cx="266.0" cy="1153.0" r="4.0" class="tbd" />
+<circle cx="486.0" cy="1153.0" r="4.0" class="tbd" />
+<circle cx="706.0" cy="1153.0" r="4.0" class="tbd" />
+<circle cx="926.0" cy="1153.0" r="4.0" class="tbd" />
+<text x="266.0" y="1173.0" class="w halo" text-anchor="start" >側壁靜壓孔：側別待定</text>
+<line x1="1111.0" y1="713.0" x2="1111.0" y2="1153.0" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="1117.0" y="937.0" class="d halo" text-anchor="start" >400</text>
+<text x="95.5" y="703.0" class="n" text-anchor="start" >+y（順流向看的左側）</text>
+<text x="32.0" y="1204.0" class="n" text-anchor="start" >面板：側壁 6 mm PC、頂板 ≥ 8 mm PC（157 Pa 下中心撓度約 0.3／0.4 mm）；地板厚度待定</text>
+<text x="32.0" y="1222.0" class="n" text-anchor="start" >流場量測：移除車模，於 x = 300 與 550 兩站、地面板上方 z = 15, 40, 70, 100, 130 各點量測（共 50 點）</text>
+</svg>

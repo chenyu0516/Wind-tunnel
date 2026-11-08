@@ -1,0 +1,110 @@
+{
+  "_about": "Agent-facing single source of geometry. Units: mm unless a key says otherwise. Values copy build_plan.md. 'tbd' = the plan does not fix this value; do not invent one silently. 'assumed' entries are modelling assumptions the plan does not state. Everything under 'proposals' is NOT adopted into the plan.",
+
+  "frame": {
+    "origin": "x=0 at the contraction exit plane; y=0 on the tunnel centreline; z=0 on the test-section floor inner surface",
+    "x": "downstream",
+    "y": "left when looking downstream (right-handed frame)",
+    "z": "up",
+    "duct_axis_z": 150,
+    "duct_axis_note": "assumed: upstream and downstream modules are symmetric about the test-section axis (z=150, y=0); the plan does not state this"
+  },
+
+  "air": { "rho_kg_m3": 1.20, "nu_m2_s": 1.5e-5 },
+
+  "speeds_m_s": { "min": 5, "max": 15, "upgrade": 20, "coefficient_grade_min": 11 },
+
+  "inlet_bell":   { "x0": -1600, "length": 150, "lip_radius_min": 100 },
+  "settling":     { "x0": -1450, "length": 550, "width": 980, "height": 735 },
+  "conditioning": {
+    "honeycomb": { "cell": 6, "depth": 40, "x_upstream_face": -1410 },
+    "screens_x": [-1220, -1070],
+    "screen_open_area": [0.60, 0.70],
+    "screen_wire_d_max": 0.2,
+    "min_gap_between_elements": 150,
+    "min_gap_last_screen_to_contraction": 170,
+    "note": "x positions are one layout that satisfies the plan's spacing rules; the plan gives rules, not positions"
+  },
+  "contraction": {
+    "x0": -900, "length": 900,
+    "inlet": [980, 735], "exit": [400, 300],
+    "profile": "h(s) = hi - (hi - he) * (6 t^5 - 15 t^4 + 10 t^3), t = s / L, same law for width and height",
+    "plan_table_s":      [0, 180, 360, 450, 540, 720, 900],
+    "plan_table_height": [735, 710, 597, 517, 438, 325, 300],
+    "plan_table_width":  [980, 946, 796, 690, 584, 434, 400],
+    "wall_sheet_t": [1.5, 2.0],
+    "exit_step_max": 0.5,
+    "exit_step_rule": "any residual step must be backward-facing (downstream wall recessed outward)"
+  },
+  "test_section": {
+    "x0": 0, "length": 800, "width": 400, "height": 300,
+    "side_wall_t": 6, "roof_t_min": 8, "floor_t": "tbd",
+    "material": "polycarbonate",
+    "roof_hinge_x": 0, "roof_shim_at_exit": [0, 10]
+  },
+  "diffuser": {
+    "x0": 800, "length": 1400, "inlet": [400, 300], "outlet_d": 630,
+    "safety_mesh_aperture": [5, 10], "safety_mesh_x": 2200
+  },
+  "fan": { "x0": 2200, "length_approx": 600, "model": "tbd" },
+  "clear_air": { "intake_min": 1000, "exhaust_min": 2000, "room_straight_run_approx": 7500 },
+
+  "pressure_taps": {
+    "settling_ring": { "x": -1000, "count": 4, "rule": "one per wall, manifolded with equal-length tubing" },
+    "entrance_ring": { "x": 30, "count": 4, "rule": "one per wall, manifolded with equal-length tubing" },
+    "side_wall_taps": { "x": [100, 300, 500, 700], "d": 1, "z": "tbd", "rule": "deburred flush, manual selector" }
+  },
+  "survey": {
+    "stations_x": [300, 550],
+    "holes_y": [-100, -50, 0, 50, 100],
+    "heights_above_plate": [15, 40, 70, 100, 130]
+  },
+
+  "ground_plate": {
+    "x_le": 100, "x_te": 700, "length": 600, "thickness": 6,
+    "z_underside": 50, "flatness": 0.3,
+    "le_shape": "4:1 ellipse", "te": "adjustable flap",
+    "wheel_openings": { "count": 4, "approx_size_x_by_y": [45, 20], "clearance": [1, 2], "positions": "tbd (follow measured axles and track)" }
+  },
+  "wheel_wells": { "count": 4, "depth_max": 30, "floor": "closed", "hangs_from": "plate underside" },
+  "post": { "bare_size_w_by_len": [8, 50], "shroud_tube_d": 12, "shroud_span": "well floor to tunnel floor (fixed, not on balance)" },
+
+  "car": {
+    "scale": "1:18", "length": 250, "x_nose": 300, "x_tail": 550,
+    "wheelbase": 150, "frontal_area_m2": 0.0065, "ride_height": [7, 8],
+    "track": "tbd", "axle_x": "tbd", "tyre_d_planning": 40, "mass_kg": [1.0, 1.6]
+  },
+  "cradle": {
+    "rollers_per_wheel": 2, "roller_d": 16, "roller_centres": 20,
+    "bearings": "2 x 683ZZ per roller", "shaft_d": 3,
+    "rule": "roller tops below plate top; pitch set by cradle height only"
+  },
+  "balance": {
+    "moving_mass_max_kg": 2.6,
+    "drag_blades": { "count": 4, "t": 0.2, "w": 20, "free_len": 40 },
+    "drag_cell": "300 g, sensing axis horizontal, between drag stage and its base",
+    "vertical_cell": "3 kg single-point; carries everything; overload 4.5 kg",
+    "stops": { "drag_N": 2, "vertical": "below 4.5 kg" },
+    "lead_wire_awg": [30, 32]
+  },
+  "plenum": {
+    "size": "tbd", "location": "below test-section floor, encloses whole moving frame",
+    "vent_line_d": 6, "vent_to": "side-wall tap near mid-car",
+    "pedestal_added_mass_kg": 30, "skirt": "neoprene, plenum to pedestal"
+  },
+  "probes": {
+    "pitot_nose": { "x": 130, "y": 130, "z_above_plate": 150 },
+    "fog_outlet": { "x_approx": 220, "y": "adjustable, laterally separated from Pitot" }
+  },
+
+  "proposals": {
+    "_status": "NOT ADOPTED. Do not use for plan checks. See plan_brief.zh-TW.md part 2.",
+    "fan": { "model": "CHC MD-24", "d": 620, "length": 500, "flange_od": 684, "flange_pcd": 654, "bolts": "12 x M10", "rated_point": "9000 m3/h at 196 Pa", "motor": "1.5 kW 4P 3-ph 220/380 V 60 Hz", "mass_kg": 64 },
+    "diffuser_outlet_d": 620,
+    "flex_connector": { "d": 620, "length": 150 },
+    "module_flange": { "width": 30, "gasket": "3 mm EPDM foam", "bolts": "M6 at <= 150 pitch" },
+    "plenum_size": [500, 400, 250],
+    "car": { "model": "Honda Civic Type R FL5, MotorHelix 1:18", "length": 255, "width": 105, "height": 78, "wheelbase": 152, "track": 90, "tyre_d": 35.6, "tyre_w": 14.7, "frontal_area_m2": 0.0070, "overhang_front_est": 57, "overhang_rear_est": 46 },
+    "panels": { "floor_t": 8, "contraction_sheet": "2 mm solid PC" }
+  }
+}

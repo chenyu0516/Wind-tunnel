@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="690" viewBox="0 0 1280 690" role="img" aria-labelledby="title desc">
+  <title id="title">Pitot and fog placement in the test section</title>
+  <desc id="desc">Top view: air travels left to right from the contraction. A retractable Pitot probe faces upstream and is offset to one side of the car. An external fogger feeds a removable wand downstream of the Pitot, ahead of the car, pointing downstream. Final positions must be adjusted to avoid boundary layers and interference. Use separate dry measurement and fog visualization modes.</desc>
+  <defs><style>
+    text{font-family:Arial,Helvetica,sans-serif;fill:#183344}
+    .title{font-size:29px;font-weight:700}.sub{font-size:19px;fill:#526b7b}
+    .label{font-size:21px;font-weight:700}.note{font-size:18px;fill:#526b7b}
+    .leader{stroke:#718b98;stroke-width:1.5;fill:none}
+  </style></defs>
+  <rect width="1280" height="690" rx="18" fill="#fafcfd"/>
+  <text x="35" y="48" class="title">03 / Where to place the Pitot and fog outlet</text>
+  <text x="35" y="79" class="sub">Top view · adjustable positions · schematic, not to scale</text>
+
+  <rect x="215" y="230" width="1005" height="290" fill="#e5f4f8" stroke="#32566b" stroke-width="3"/>
+  <path d="M35 180L215 230V520L35 570" fill="#edf3f6" stroke="#32566b" stroke-width="3"/>
+  <text x="58" y="334" class="label">From</text>
+  <text x="58" y="362" class="label">contraction</text>
+  <path d="M60 395H179 M1020 375H1180" stroke="#187c91" stroke-width="3"/>
+  <path d="M179 395l-13 -7v14Z M1180 375l-13 -7v14Z" fill="#187c91"/>
+  <text x="1060" y="409" class="note">To diffuser</text>
+
+  <rect x="262" y="122" width="254" height="62" rx="8" fill="#e5f4f8" stroke="#187c91" stroke-width="2"/>
+  <text x="389" y="148" text-anchor="middle" class="label">Retractable Pitot mount</text>
+  <text x="389" y="174" text-anchor="middle" class="note">Pressure tubes to sensor</text>
+  <path d="M390 184V285Q390 296 379 296H303" fill="none" stroke="#187c91" stroke-width="8"/>
+  <circle cx="303" cy="296" r="4" fill="#fafcfd" stroke="#187c91" stroke-width="2"/>
+  <path d="M331 300V306 M349 300V306" stroke="#187c91" stroke-width="2"/>
+  <text x="240" y="342" class="label">1. Pitot tip · faces left</text>
+  <text x="240" y="366" class="note">Clear of wall / floor layers</text>
+  <path d="M410 296H940" stroke="#187c91" stroke-dasharray="5 6" stroke-width="1.5"/>
+  <text x="720" y="280" class="note">Probe wake offset from car</text>
+
+  <rect x="565" y="122" width="230" height="62" rx="8" fill="#f1eafa" stroke="#8154aa" stroke-width="2"/>
+  <text x="680" y="149" text-anchor="middle" class="label">Fogger outside tunnel</text>
+  <text x="680" y="174" text-anchor="middle" class="note">Reservoir + delivery hose</text>
+  <path d="M680 184V208H537V389Q537 400 548 400H598" fill="none" stroke="#8154aa" stroke-width="6"/>
+  <path d="M600 400C630 399 650 397 678 400" fill="none" stroke="#a982c7" stroke-width="5" stroke-dasharray="5 5"/>
+  <path d="M676 400l-12 -6v12Z" fill="#a982c7"/>
+  <text x="435" y="462" class="label">2. Fog outlet · faces right</text>
+  <text x="435" y="488" class="note">Ahead of car · points downstream</text>
+  <path d="M589 441L596 408" class="leader"/>
+
+  <rect x="726" y="321" width="44" height="20" rx="4" fill="#183344"/>
+  <rect x="877" y="321" width="44" height="20" rx="4" fill="#183344"/>
+  <rect x="726" y="452" width="44" height="20" rx="4" fill="#183344"/>
+  <rect x="877" y="452" width="44" height="20" rx="4" fill="#183344"/>
+  <path d="M727 337Q691 337 686 367V426Q691 456 727 456H937V337Z" fill="#f1b861" stroke="#935b1e" stroke-width="2"/>
+  <rect x="779" y="349" width="88" height="95" rx="15" fill="#f9dfb6" stroke="#935b1e" stroke-width="1.5"/>
+  <text x="821" y="403" text-anchor="middle" class="label">Car</text>
+  <text x="697" y="421" font-size="16">Nose</text>
+
+  <rect x="35" y="589" width="586" height="75" rx="9" fill="#e9f2f5"/>
+  <text x="53" y="617" class="label">Dry force measurements</text>
+  <text x="53" y="646" class="note">Pitot installed · fog wand removed · unused port capped</text>
+  <rect x="639" y="589" width="606" height="75" rx="9" fill="#f1eafa"/>
+  <text x="657" y="617" class="label">Fog demonstration</text>
+  <text x="657" y="646" class="note">Set flow while dry · retract Pitot · then introduce fog</text>
+  <text x="239" y="553" class="note">Verify the final reference-probe position by traverse and model-on/model-off checks.</text>
+  <g aria-label="Location 1: actual Pitot tip">
+    <circle cx="303" cy="296" r="14" fill="none" stroke="#187c91" stroke-width="3"/>
+    <path d="M278 271L293 286" fill="none" stroke="#187c91" stroke-width="2"/>
+    <circle cx="266" cy="259" r="19" fill="#187c91"/>
+    <text x="266" y="267" text-anchor="middle" style="fill:white;font-size:24px;font-weight:700">1</text>
+  </g>
+  <g aria-label="Location 2: actual fog outlet">
+    <circle cx="598" cy="400" r="14" fill="none" stroke="#8154aa" stroke-width="3"/>
+    <path d="M620 378L608 390" fill="none" stroke="#8154aa" stroke-width="2"/>
+    <circle cx="632" cy="366" r="19" fill="#8154aa"/>
+    <text x="632" y="374" text-anchor="middle" style="fill:white;font-size:24px;font-weight:700">2</text>
+  </g>
+</svg>

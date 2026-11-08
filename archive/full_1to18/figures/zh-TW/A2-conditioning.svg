@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="900" viewBox="0 0 1300 900" role="img" aria-labelledby="title desc">
+<title id="title">穩定段與整流元件</title>
+<desc id="desc">穩定段側視放大圖：入口喇叭口、蜂巢、兩片整流網、靜壓環與間距。</desc>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" fill="#6b7280"/></marker>
+<marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#187c91"/></marker>
+<marker id="o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+<pattern id="hc" width="5" height="8" patternUnits="userSpaceOnUse"><path d="M0 0V8 M0 4H5" stroke="#8aa4b2" stroke-width="0.8"/></pattern>
+<pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V6" stroke="#94a3b8" stroke-width="1"/></pattern>
+<style>
+text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#183344}
+.t{font-size:24px;font-weight:700} .st{font-size:14px;fill:#526b7b}
+.l{font-size:14px;font-weight:600} .n{font-size:12px;fill:#526b7b} .d{font-size:12px;fill:#374151}
+.w{font-size:12px;fill:#c2410c;font-weight:600}
+.halo{paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round}
+.shell{stroke:#32566b;stroke-width:2;fill:#edf3f6}
+.shell0{stroke:#32566b;stroke-width:2;fill:none}
+.thin{stroke:#32566b;stroke-width:1;fill:none}
+.pc{stroke:#32566b;stroke-width:2;fill:#e3f1f7}
+.solid{stroke:#32566b;stroke-width:1.2;fill:#cbd5df}
+.dark{stroke:#1f2937;stroke-width:1;fill:#4b5563}
+.car{stroke:#475569;stroke-width:1.2;fill:#e2e8f0}
+.air{stroke:#187c91;stroke-width:2;fill:none}
+.airf{fill:#187c91}
+.scr{stroke:#187c91;stroke-width:2;stroke-dasharray:6 4;fill:none}
+.dim{stroke:#6b7280;stroke-width:1;fill:none}
+.ext{stroke:#9ca3af;stroke-width:0.8;fill:none}
+.guide{stroke:#cbd5e1;stroke-width:0.8;stroke-dasharray:3 4;fill:none}
+.tbd{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 3;fill:none}
+.tbdf{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 3;fill:#fff7ed}
+.cl{stroke:#94a3b8;stroke-width:1;stroke-dasharray:14 4 2 4;fill:none}
+.grid{stroke:#e5e7eb;stroke-width:1;fill:none}
+.axis{stroke:#374151;stroke-width:1.2;fill:none}
+.c1{stroke:#187c91;stroke-width:2.5;fill:none} .c2{stroke:#7c3aed;stroke-width:2.5;fill:none}
+.c3{stroke:#187c91;stroke-width:2;stroke-dasharray:6 4;fill:none}
+.bar{fill:#187c91} .bar2{fill:#94a3b8}
+.hc{fill:url(#hc);stroke:#32566b;stroke-width:1}
+</style></defs>
+<rect width="1300" height="900" rx="14" fill="#fafcfd"/>
+<text x="32.0" y="42.0" class="t" text-anchor="start" >圖 A2　穩定段與整流元件（側視，依比例）</text>
+<text x="32.0" y="66.0" class="st" text-anchor="start" >單位 mm　x 自收縮段出口起算（負值在上游）　藍色虛線為整流網</text>
+<path d="M627.2,192.0 L166.4,192.0 A72.0,72.0 0 0 0 94.4,120.0" class="shell0" />
+<path d="M627.2,721.2 L166.4,721.2 A72.0,72.0 0 0 1 94.4,793.2" class="shell0" />
+<line x1="202.4" y1="170.4" x2="202.4" y2="742.8" class="thin" />
+<line x1="598.4" y1="170.4" x2="598.4" y2="742.8" class="thin" />
+<rect x="231.2" y="192.0" width="28.8" height="529.2" class="hc" />
+<line x1="368.0" y1="171.8" x2="368.0" y2="721.2" class="scr" />
+<rect x="362.0" y="171.8" width="12.0" height="22.2" class="solid" />
+<line x1="476.0" y1="171.8" x2="476.0" y2="721.2" class="scr" />
+<rect x="470.0" y="171.8" width="12.0" height="22.2" class="solid" />
+<rect x="228.2" y="171.8" width="34.8" height="22.2" class="solid" />
+<text x="368.0" y="161.8" class="n halo" text-anchor="middle" >可抽出框架（加墊片密封）</text>
+<circle cx="526.4" cy="192.0" r="5.0" class="shell" style="fill:#187c91"/>
+<circle cx="526.4" cy="721.2" r="5.0" class="shell" style="fill:#187c91"/>
+<text x="536.4" y="743.2" class="n halo" text-anchor="start" >穩定段靜壓環 ×4（x = -1000，每面壁一孔）</text>
+<line x1="80.0" y1="456.6" x2="627.2" y2="456.6" class="cl" />
+<line x1="22.4" y1="456.6" x2="76.4" y2="456.6" class="air" marker-end="url(#f)"/>
+<line x1="576.8" y1="456.6" x2="623.6" y2="456.6" class="air" marker-end="url(#f)"/>
+<text x="594.8" y="478.6" class="n halo" text-anchor="end" >→ 收縮段</text>
+<text x="98.4" y="112.0" class="n halo" text-anchor="start" >唇口 R ≥ 100</text>
+<line x1="641.2" y1="192.0" x2="641.2" y2="721.2" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="647.2" y="460.6" class="d halo" text-anchor="start" >高 735（寬 980）</text>
+<text x="245.6" y="741.2" class="n halo" text-anchor="middle" >蜂巢</text>
+<line x1="94.4" y1="825.2" x2="202.4" y2="825.2" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="148.4" y="820.2" class="d halo" text-anchor="middle" >喇叭口 150</text>
+<line x1="94.4" y1="821.2" x2="94.4" y2="721.2" class="ext" />
+<line x1="202.4" y1="825.2" x2="231.2" y2="825.2" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="216.8" y="820.2" class="d halo" text-anchor="middle" >40</text>
+<line x1="202.4" y1="821.2" x2="202.4" y2="721.2" class="ext" />
+<line x1="231.2" y1="825.2" x2="260.0" y2="825.2" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="245.6" y="820.2" class="d halo" text-anchor="middle" >40</text>
+<line x1="231.2" y1="821.2" x2="231.2" y2="721.2" class="ext" />
+<line x1="260.0" y1="825.2" x2="368.0" y2="825.2" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="314.0" y="820.2" class="d halo" text-anchor="middle" >≥150</text>
+<line x1="260.0" y1="821.2" x2="260.0" y2="721.2" class="ext" />
+<line x1="368.0" y1="825.2" x2="476.0" y2="825.2" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="422.0" y="820.2" class="d halo" text-anchor="middle" >≥150</text>
+<line x1="368.0" y1="821.2" x2="368.0" y2="721.2" class="ext" />
+<line x1="476.0" y1="825.2" x2="598.4" y2="825.2" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="537.2" y="820.2" class="d halo" text-anchor="middle" >≥170</text>
+<line x1="476.0" y1="821.2" x2="476.0" y2="721.2" class="ext" />
+<line x1="598.4" y1="821.2" x2="598.4" y2="721.2" class="ext" />
+<line x1="202.4" y1="859.2" x2="598.4" y2="859.2" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="400.4" y="854.2" class="d halo" text-anchor="middle" >穩定段 550</text>
+<text x="94.4" y="889.2" class="w" text-anchor="start" >蜂巢與網的 x 位置為一種符合間距規則的排法；計畫只規定間距。</text>
+<text x="760.0" y="140.0" class="l" text-anchor="start" >蜂巢整流格（放大）</text>
+<polygon points="802.0,186.9 790.0,193.9 778.0,186.9 778.0,173.1 790.0,166.1 802.0,173.1" class="thin" />
+<polygon points="843.6,186.9 831.6,193.9 819.6,186.9 819.6,173.1 831.6,166.1 843.6,173.1" class="thin" />
+<polygon points="885.1,186.9 873.1,193.9 861.1,186.9 861.1,173.1 873.1,166.1 885.1,173.1" class="thin" />
+<polygon points="926.7,186.9 914.7,193.9 902.7,186.9 902.7,173.1 914.7,166.1 926.7,173.1" class="thin" />
+<polygon points="968.3,186.9 956.3,193.9 944.3,186.9 944.3,173.1 956.3,166.1 968.3,173.1" class="thin" />
+<polygon points="822.8,222.9 810.8,229.9 798.8,222.9 798.8,209.1 810.8,202.1 822.8,209.1" class="thin" />
+<polygon points="864.4,222.9 852.4,229.9 840.4,222.9 840.4,209.1 852.4,202.1 864.4,209.1" class="thin" />
+<polygon points="905.9,222.9 893.9,229.9 881.9,222.9 881.9,209.1 893.9,202.1 905.9,209.1" class="thin" />
+<polygon points="947.5,222.9 935.5,229.9 923.5,222.9 923.5,209.1 935.5,202.1 947.5,209.1" class="thin" />
+<polygon points="989.1,222.9 977.1,229.9 965.1,222.9 965.1,209.1 977.1,202.1 989.1,209.1" class="thin" />
+<polygon points="802.0,258.9 790.0,265.9 778.0,258.9 778.0,245.1 790.0,238.1 802.0,245.1" class="thin" />
+<polygon points="843.6,258.9 831.6,265.9 819.6,258.9 819.6,245.1 831.6,238.1 843.6,245.1" class="thin" />
+<polygon points="885.1,258.9 873.1,265.9 861.1,258.9 861.1,245.1 873.1,238.1 885.1,245.1" class="thin" />
+<polygon points="926.7,258.9 914.7,265.9 902.7,258.9 902.7,245.1 914.7,238.1 926.7,245.1" class="thin" />
+<polygon points="968.3,258.9 956.3,265.9 944.3,258.9 944.3,245.1 956.3,238.1 968.3,245.1" class="thin" />
+<text x="760.0" y="290.0" class="d" text-anchor="start" >格孔 6 mm、深 40 mm</text>
+<text x="760.0" y="309.0" class="d" text-anchor="start" >深/孔徑 L/D = 6.7（建議 6–8）</text>
+<text x="760.0" y="328.0" class="d" text-anchor="start" >整面約 23,104 格 → 買成品板</text>
+<text x="760.0" y="420.0" class="l" text-anchor="start" >整流網（放大）</text>
+<line x1="780.0" y1="440.0" x2="780.0" y2="552.0" class="thin" />
+<line x1="780.0" y1="440.0" x2="892.0" y2="440.0" class="thin" />
+<line x1="794.0" y1="440.0" x2="794.0" y2="552.0" class="thin" />
+<line x1="780.0" y1="454.0" x2="892.0" y2="454.0" class="thin" />
+<line x1="808.0" y1="440.0" x2="808.0" y2="552.0" class="thin" />
+<line x1="780.0" y1="468.0" x2="892.0" y2="468.0" class="thin" />
+<line x1="822.0" y1="440.0" x2="822.0" y2="552.0" class="thin" />
+<line x1="780.0" y1="482.0" x2="892.0" y2="482.0" class="thin" />
+<line x1="836.0" y1="440.0" x2="836.0" y2="552.0" class="thin" />
+<line x1="780.0" y1="496.0" x2="892.0" y2="496.0" class="thin" />
+<line x1="850.0" y1="440.0" x2="850.0" y2="552.0" class="thin" />
+<line x1="780.0" y1="510.0" x2="892.0" y2="510.0" class="thin" />
+<line x1="864.0" y1="440.0" x2="864.0" y2="552.0" class="thin" />
+<line x1="780.0" y1="524.0" x2="892.0" y2="524.0" class="thin" />
+<line x1="878.0" y1="440.0" x2="878.0" y2="552.0" class="thin" />
+<line x1="780.0" y1="538.0" x2="892.0" y2="538.0" class="thin" />
+<line x1="892.0" y1="440.0" x2="892.0" y2="552.0" class="thin" />
+<line x1="780.0" y1="552.0" x2="892.0" y2="552.0" class="thin" />
+<text x="920.0" y="460.0" class="d" text-anchor="start" >不鏽鋼網，兩片</text>
+<text x="920.0" y="479.0" class="d" text-anchor="start" >線徑 ≤ 0.2 mm</text>
+<text x="920.0" y="498.0" class="d" text-anchor="start" >開孔率 60–70%（≥ 57%）</text>
+<text x="920.0" y="517.0" class="d" text-anchor="start" >15 m/s 時此處風速 2.5 m/s</text>
+<text x="920.0" y="536.0" class="d" text-anchor="start" >線徑雷諾數 ≈ 33（&lt; 40 不渦流脫落）</text>
+<text x="920.0" y="555.0" class="d" text-anchor="start" >紗窗網須先確認開孔率</text>
+</svg>

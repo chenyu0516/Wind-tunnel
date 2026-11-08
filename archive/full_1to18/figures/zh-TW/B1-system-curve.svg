@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="620" viewBox="0 0 1240 620" role="img" aria-labelledby="title desc">
+<title id="title">系統曲線與損失分配</title>
+<desc id="desc">風扇所需壓力對流量的系統曲線，以及各組件損失係數。</desc>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" fill="#6b7280"/></marker>
+<marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#187c91"/></marker>
+<marker id="o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+<pattern id="hc" width="5" height="8" patternUnits="userSpaceOnUse"><path d="M0 0V8 M0 4H5" stroke="#8aa4b2" stroke-width="0.8"/></pattern>
+<pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V6" stroke="#94a3b8" stroke-width="1"/></pattern>
+<style>
+text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#183344}
+.t{font-size:24px;font-weight:700} .st{font-size:14px;fill:#526b7b}
+.l{font-size:14px;font-weight:600} .n{font-size:12px;fill:#526b7b} .d{font-size:12px;fill:#374151}
+.w{font-size:12px;fill:#c2410c;font-weight:600}
+.halo{paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round}
+.shell{stroke:#32566b;stroke-width:2;fill:#edf3f6}
+.shell0{stroke:#32566b;stroke-width:2;fill:none}
+.thin{stroke:#32566b;stroke-width:1;fill:none}
+.pc{stroke:#32566b;stroke-width:2;fill:#e3f1f7}
+.solid{stroke:#32566b;stroke-width:1.2;fill:#cbd5df}
+.dark{stroke:#1f2937;stroke-width:1;fill:#4b5563}
+.car{stroke:#475569;stroke-width:1.2;fill:#e2e8f0}
+.air{stroke:#187c91;stroke-width:2;fill:none}
+.airf{fill:#187c91}
+.scr{stroke:#187c91;stroke-width:2;stroke-dasharray:6 4;fill:none}
+.dim{stroke:#6b7280;stroke-width:1;fill:none}
+.ext{stroke:#9ca3af;stroke-width:0.8;fill:none}
+.guide{stroke:#cbd5e1;stroke-width:0.8;stroke-dasharray:3 4;fill:none}
+.tbd{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 3;fill:none}
+.tbdf{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 3;fill:#fff7ed}
+.cl{stroke:#94a3b8;stroke-width:1;stroke-dasharray:14 4 2 4;fill:none}
+.grid{stroke:#e5e7eb;stroke-width:1;fill:none}
+.axis{stroke:#374151;stroke-width:1.2;fill:none}
+.c1{stroke:#187c91;stroke-width:2.5;fill:none} .c2{stroke:#7c3aed;stroke-width:2.5;fill:none}
+.c3{stroke:#187c91;stroke-width:2;stroke-dasharray:6 4;fill:none}
+.bar{fill:#187c91} .bar2{fill:#94a3b8}
+.hc{fill:url(#hc);stroke:#32566b;stroke-width:1}
+</style></defs>
+<rect width="1240" height="620" rx="14" fill="#fafcfd"/>
+<text x="32.0" y="42.0" class="t" text-anchor="start" >圖 B1　系統曲線與損失分配</text>
+<text x="32.0" y="66.0" class="st" text-anchor="start" >左：風扇需提供的壓力 Δp = q·ΣK（含 50% 餘裕的虛線）　右：各組件 K（以測試段 q 為基準）</text>
+<line x1="90.0" y1="540.0" x2="90.0" y2="120.0" class="grid" />
+<text x="90.0" y="558.0" class="d" text-anchor="middle" >0</text>
+<line x1="202.0" y1="540.0" x2="202.0" y2="120.0" class="grid" />
+<text x="202.0" y="558.0" class="d" text-anchor="middle" >2,000</text>
+<line x1="314.0" y1="540.0" x2="314.0" y2="120.0" class="grid" />
+<text x="314.0" y="558.0" class="d" text-anchor="middle" >4,000</text>
+<line x1="426.0" y1="540.0" x2="426.0" y2="120.0" class="grid" />
+<text x="426.0" y="558.0" class="d" text-anchor="middle" >6,000</text>
+<line x1="538.0" y1="540.0" x2="538.0" y2="120.0" class="grid" />
+<text x="538.0" y="558.0" class="d" text-anchor="middle" >8,000</text>
+<line x1="650.0" y1="540.0" x2="650.0" y2="120.0" class="grid" />
+<text x="650.0" y="558.0" class="d" text-anchor="middle" >10,000</text>
+<line x1="90.0" y1="540.0" x2="650.0" y2="540.0" class="grid" />
+<text x="82.0" y="544.0" class="d" text-anchor="end" >0</text>
+<line x1="90.0" y1="470.0" x2="650.0" y2="470.0" class="grid" />
+<text x="82.0" y="474.0" class="d" text-anchor="end" >50</text>
+<line x1="90.0" y1="400.0" x2="650.0" y2="400.0" class="grid" />
+<text x="82.0" y="404.0" class="d" text-anchor="end" >100</text>
+<line x1="90.0" y1="330.0" x2="650.0" y2="330.0" class="grid" />
+<text x="82.0" y="334.0" class="d" text-anchor="end" >150</text>
+<line x1="90.0" y1="260.0" x2="650.0" y2="260.0" class="grid" />
+<text x="82.0" y="264.0" class="d" text-anchor="end" >200</text>
+<line x1="90.0" y1="190.0" x2="650.0" y2="190.0" class="grid" />
+<text x="82.0" y="194.0" class="d" text-anchor="end" >250</text>
+<line x1="90.0" y1="120.0" x2="650.0" y2="120.0" class="grid" />
+<text x="82.0" y="124.0" class="d" text-anchor="end" >300</text>
+<line x1="90.0" y1="540.0" x2="650.0" y2="540.0" class="axis" />
+<line x1="90.0" y1="540.0" x2="90.0" y2="120.0" class="axis" />
+<text x="370.0" y="580.0" class="l" text-anchor="middle" >流量 Q（m³/h）</text>
+<text x="30.0" y="106.0" class="l" text-anchor="start" >Δp（Pa）</text>
+<polyline points="90.0,540.0 95.6,540.0 101.2,539.9 106.8,539.7 112.4,539.5 118.0,539.2 123.6,538.8 129.2,538.4 134.8,537.9 140.4,537.3 146.0,536.7 151.6,536.0 157.2,535.2 162.8,534.4 168.4,533.5 174.0,532.5 179.6,531.5 185.2,530.4 190.8,529.2 196.4,528.0 202.0,526.7 207.6,525.3 213.2,523.9 218.8,522.4 224.4,520.8 230.0,519.2 235.6,517.5 241.2,515.7 246.8,513.9 252.4,512.0 258.0,510.0 263.6,508.0 269.2,505.9 274.8,503.7 280.4,501.5 286.0,499.2 291.6,496.8 297.2,494.4 302.8,491.9 308.4,489.3 314.0,486.7 319.6,484.0 325.2,481.2 330.8,478.4 336.4,475.5 342.0,472.6 347.6,469.5 353.2,466.4 358.8,463.3 364.4,460.0 370.0,456.7 375.6,453.4 381.2,449.9 386.8,446.4 392.4,442.9 398.0,439.2 403.6,435.5 409.2,431.8 414.8,428.0 420.4,424.1 426.0,420.1 431.6,416.1 437.2,412.0 442.8,407.8 448.4,403.6 454.0,399.3 459.6,394.9 465.2,390.5 470.8,386.0 476.4,381.4 482.0,376.8 487.6,372.1 493.2,367.3 498.8,362.5 504.4,357.6 510.0,352.6 515.6,347.6 521.2,342.5 526.8,337.4 532.4,332.1 538.0,326.8 543.6,321.5 549.2,316.0 554.8,310.5 560.4,305.0 566.0,299.4 571.6,293.7 577.2,287.9 582.8,282.1 588.4,276.2 594.0,270.2 599.6,264.2 605.2,258.1 610.8,251.9 616.4,245.7 622.0,239.4 627.6,233.0 633.2,226.6 638.8,220.1 644.4,213.6 650.0,206.9" class="c1" />
+<polyline points="90.0,540.0 95.6,540.0 101.2,539.8 106.8,539.6 112.4,539.2 118.0,538.8 123.6,538.2 129.2,537.6 134.8,536.8 140.4,536.0 146.0,535.0 151.6,534.0 157.2,532.8 162.8,531.6 168.4,530.2 174.0,528.8 179.6,527.2 185.2,525.6 190.8,523.8 196.4,522.0 202.0,520.0 207.6,518.0 213.2,515.8 218.8,513.6 224.4,511.2 230.0,508.8 235.6,506.2 241.2,503.6 246.8,500.8 252.4,498.0 258.0,495.0 263.6,492.0 269.2,488.8 274.8,485.6 280.4,482.2 286.0,478.8 291.6,475.2 297.2,471.6 302.8,467.9 308.4,464.0 314.0,460.1 319.6,456.0 325.2,451.9 330.8,447.6 336.4,443.3 342.0,438.8 347.6,434.3 353.2,429.6 358.8,424.9 364.4,420.0 370.0,415.1 375.6,410.1 381.2,404.9 386.8,399.7 392.4,394.3 398.0,388.9 403.6,383.3 409.2,377.7 414.8,371.9 420.4,366.1 426.0,360.1 431.6,354.1 437.2,347.9 442.8,341.7 448.4,335.4 454.0,328.9 459.6,322.4 465.2,315.7 470.8,309.0 476.4,302.1 482.0,295.2 487.6,288.1 493.2,281.0 498.8,273.8 504.4,266.4 510.0,259.0 515.6,251.4 521.2,243.8 526.8,236.0 532.4,228.2 538.0,220.2 543.6,212.2 549.2,204.1 554.8,195.8 560.4,187.5 566.0,179.0 571.6,170.5 577.2,161.8 582.8,153.1 588.4,144.3 594.0,135.3 599.6,126.3" class="c3" />
+<line x1="211.0" y1="120.0" x2="211.0" y2="114.0" class="axis" />
+<text x="211.0" y="110.0" class="d" text-anchor="middle" >5 m/s</text>
+<line x1="331.9" y1="120.0" x2="331.9" y2="114.0" class="axis" />
+<text x="331.9" y="110.0" class="d" text-anchor="middle" >10 m/s</text>
+<line x1="452.9" y1="120.0" x2="452.9" y2="114.0" class="axis" />
+<text x="452.9" y="110.0" class="d" text-anchor="middle" >15 m/s</text>
+<line x1="573.8" y1="120.0" x2="573.8" y2="114.0" class="axis" />
+<text x="573.8" y="110.0" class="d" text-anchor="middle" >20 m/s</text>
+<circle cx="452.9" cy="400.1" r="5.0" class="shell" style="fill:#187c91"/>
+<circle cx="452.9" cy="330.2" r="5.0" class="shell" style="fill:#ffffff;stroke:#187c91"/>
+<text x="444.9" y="418.1" class="d halo" text-anchor="end" >100 Pa</text>
+<text x="444.9" y="324.2" class="d halo" text-anchor="end" >150 Pa</text>
+<circle cx="573.8" cy="291.4" r="5.0" class="shell" style="fill:#187c91"/>
+<circle cx="573.8" cy="167.0" r="5.0" class="shell" style="fill:#ffffff;stroke:#187c91"/>
+<text x="565.8" y="309.4" class="d halo" text-anchor="end" >178 Pa</text>
+<text x="565.8" y="161.0" class="d halo" text-anchor="end" >266 Pa</text>
+<circle cx="594.0" cy="265.6" r="6.0" class="tbd" />
+<text x="602.0" y="285.6" class="w halo" text-anchor="start" >MD-24 額定點</text>
+<text x="602.0" y="301.6" class="w halo" text-anchor="start" >（提案，未採用）</text>
+<text x="146.0" y="162.0" class="d halo" text-anchor="start" >實線：ΣK = 0.74（表列值相加）</text>
+<text x="146.0" y="190.0" class="d halo" text-anchor="start" >虛線：再加 50% 餘裕</text>
+<text x="146.0" y="218.0" class="d halo" text-anchor="start" >15 m/s：6,480 m³/h，電功率約 0.7 kW</text>
+<text x="890.0" y="146.0" class="d" text-anchor="end" >擴散段（效率 80%）</text>
+<rect x="900.0" y="130.0" width="238.0" height="22.0" class="bar" />
+<text x="1144.0" y="146.0" class="d" text-anchor="start" >0.17</text>
+<text x="890.0" y="192.0" class="d" text-anchor="end" >安全網</text>
+<rect x="900.0" y="176.0" width="210.0" height="22.0" class="bar" />
+<text x="1116.0" y="192.0" class="d" text-anchor="start" >0.15</text>
+<text x="890.0" y="238.0" class="d" text-anchor="end" >出口動壓（風扇面）</text>
+<rect x="900.0" y="222.0" width="210.0" height="22.0" class="bar" />
+<text x="1116.0" y="238.0" class="d" text-anchor="start" >0.15</text>
+<text x="890.0" y="284.0" class="d" text-anchor="end" >入口 + 蜂巢 + 2 片網</text>
+<rect x="900.0" y="268.0" width="182.0" height="22.0" class="bar" />
+<text x="1088.0" y="284.0" class="d" text-anchor="start" >0.13</text>
+<text x="890.0" y="330.0" class="d" text-anchor="end" >測試段壁面摩擦</text>
+<rect x="900.0" y="314.0" width="70.0" height="22.0" class="bar" />
+<text x="976.0" y="330.0" class="d" text-anchor="start" >0.05</text>
+<text x="890.0" y="376.0" class="d" text-anchor="end" >收縮段</text>
+<rect x="900.0" y="360.0" width="42.0" height="22.0" class="bar" />
+<text x="948.0" y="376.0" class="d" text-anchor="start" >0.03</text>
+<text x="890.0" y="422.0" class="d" text-anchor="end" >地面板</text>
+<rect x="900.0" y="406.0" width="42.0" height="22.0" class="bar" />
+<text x="948.0" y="422.0" class="d" text-anchor="start" >0.03</text>
+<text x="890.0" y="468.0" class="d" text-anchor="end" >車模與支撐</text>
+<rect x="900.0" y="452.0" width="42.0" height="22.0" class="bar" />
+<text x="948.0" y="468.0" class="d" text-anchor="start" >0.03</text>
+<text x="700.0" y="518.0" class="n" text-anchor="start" >表列值相加 = 0.74（計畫寫 0.73，為進位前的合計）</text>
+<text x="700.0" y="536.0" class="n" text-anchor="start" >擴散段、安全網、出口動壓三項合計 0.47，約佔 64%</text>
+</svg>

@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="980" viewBox="0 0 1400 980" role="img" aria-labelledby="title desc">
+<title id="title">自製風速感測器</title>
+<desc id="desc">主感測器 A：鐘罩壓力計吊在 100 g 荷重元下；備援 B：兩顆 BMP280 氣壓計；兩者用三通接同一組量測孔。</desc>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" fill="#6b7280"/></marker>
+<marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#187c91"/></marker>
+<marker id="o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+<pattern id="hc" width="5" height="8" patternUnits="userSpaceOnUse"><path d="M0 0V8 M0 4H5" stroke="#8aa4b2" stroke-width="0.8"/></pattern>
+<pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V6" stroke="#94a3b8" stroke-width="1"/></pattern>
+<style>
+text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#183344}
+.t{font-size:24px;font-weight:700} .st{font-size:14px;fill:#526b7b}
+.l{font-size:14px;font-weight:600} .n{font-size:12px;fill:#526b7b} .d{font-size:12px;fill:#374151}
+.w{font-size:12px;fill:#c2410c;font-weight:600}
+.halo{paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round}
+.shell{stroke:#32566b;stroke-width:2;fill:#edf3f6}
+.shell0{stroke:#32566b;stroke-width:2;fill:none}
+.thin{stroke:#32566b;stroke-width:1;fill:none}
+.pc{stroke:#32566b;stroke-width:2;fill:#e3f1f7}
+.solid{stroke:#32566b;stroke-width:1.2;fill:#cbd5df}
+.dark{stroke:#1f2937;stroke-width:1;fill:#4b5563}
+.car{stroke:#475569;stroke-width:1.2;fill:#e2e8f0}
+.air{stroke:#187c91;stroke-width:2;fill:none}
+.airf{fill:#187c91}
+.scr{stroke:#187c91;stroke-width:2;stroke-dasharray:6 4;fill:none}
+.dim{stroke:#6b7280;stroke-width:1;fill:none}
+.ext{stroke:#9ca3af;stroke-width:0.8;fill:none}
+.guide{stroke:#cbd5e1;stroke-width:0.8;stroke-dasharray:3 4;fill:none}
+.tbd{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 3;fill:none}
+.tbdf{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 3;fill:#fff7ed}
+.cl{stroke:#94a3b8;stroke-width:1;stroke-dasharray:14 4 2 4;fill:none}
+.grid{stroke:#e5e7eb;stroke-width:1;fill:none}
+.axis{stroke:#374151;stroke-width:1.2;fill:none}
+.c1{stroke:#187c91;stroke-width:2.5;fill:none} .c2{stroke:#7c3aed;stroke-width:2.5;fill:none}
+.c3{stroke:#187c91;stroke-width:2;stroke-dasharray:6 4;fill:none}
+.bar{fill:#187c91} .bar2{fill:#94a3b8}
+.hc{fill:url(#hc);stroke:#32566b;stroke-width:1}
+</style></defs>
+<rect width="1400" height="980" rx="14" fill="#fafcfd"/>
+<text x="32.0" y="42.0" class="t" text-anchor="start" >圖 M7　自製風速感測器：A 鐘罩壓力計（主）＋ B 兩顆氣壓計（備援）</text>
+<text x="32.0" y="66.0" class="st" text-anchor="start" >剖面依比例（mm）；低壓接鐘罩內部，高壓接盒內空氣 → 壓差把鐘罩往下拉，荷重元讀數隨 q 增加</text>
+<rect x="300.0" y="332.5" width="493.0" height="507.5" class="shell0" rx="10" style="stroke-width:3"/>
+<text x="785.0" y="352.5" class="l" text-anchor="end" >密封保鮮盒（≥ 1.5 L）</text>
+<text x="785.0" y="370.5" class="n" text-anchor="end" >電線出口用熱熔膠封死</text>
+<rect x="358.0" y="651.5" width="290.0" height="165.3" class="shell0" />
+<rect x="358.0" y="686.3" width="290.0" height="130.5" class="pc" style="fill:#fde68a;stroke:none;opacity:0.7"/>
+<rect x="340.6" y="816.8" width="324.8" height="8.7" class="solid" />
+<rect x="412.5" y="555.8" width="3.5" height="232.0" class="dark" />
+<rect x="590.0" y="555.8" width="3.5" height="232.0" class="dark" />
+<rect x="412.5" y="555.8" width="181.0" height="3.5" class="dark" />
+<line x1="416.0" y1="632.9" x2="590.0" y2="632.9" class="tbd" />
+<text x="584.0" y="626.9" class="w halo" text-anchor="end" >最大時液面</text>
+<polyline points="300.0,492.0 389.3,492.0 389.3,805.2 439.2,805.2 439.2,584.8" class="c2" />
+<circle cx="439.2" cy="584.8" r="3.0" class="c2" />
+<text x="447.2" y="580.8" class="n halo" text-anchor="start" >通氣管口</text>
+<line x1="457.2" y1="584.8" x2="457.2" y2="686.3" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="463.2" y="639.5" class="d halo" text-anchor="start" >35</text>
+<rect x="720.5" y="468.8" width="29.0" height="348.0" class="solid" />
+<rect x="474.0" y="432.0" width="275.5" height="36.8" class="pc" style="fill:#e5e7eb"/>
+<text x="611.8" y="424.0" class="l halo" text-anchor="middle" >100 g 荷重元 → HX711 #3（A0/A1）</text>
+<line x1="503.0" y1="468.8" x2="503.0" y2="555.8" class="thin" style="stroke-width:1.5"/>
+<text x="509.0" y="486.8" class="n halo" text-anchor="start" >細線吊掛</text>
+<text x="714.5" y="564.5" class="n" text-anchor="end" >硬支架</text>
+<text x="714.5" y="580.5" class="n" text-anchor="end" >黏盒底</text>
+<text x="714.5" y="596.5" class="n" text-anchor="end" >不黏盒蓋</text>
+<rect x="276.8" y="486.2" width="23.2" height="11.6" class="solid" />
+<text x="213.0" y="488.0" class="w" text-anchor="end" >低壓</text>
+<text x="213.0" y="504.0" class="w" text-anchor="end" >皮托管靜壓／入口環</text>
+<text x="213.0" y="520.0" class="w" text-anchor="end" >→ 鐘罩內</text>
+<rect x="276.8" y="376.0" width="23.2" height="11.6" class="solid" />
+<text x="213.0" y="377.8" class="w" text-anchor="end" >高壓</text>
+<text x="213.0" y="393.8" class="w" text-anchor="end" >皮托管總壓／穩定段環</text>
+<text x="213.0" y="409.8" class="w" text-anchor="end" >→ 盒內空氣</text>
+<line x1="416.0" y1="533.8" x2="590.0" y2="533.8" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="503.0" y="528.8" class="d halo" text-anchor="middle" >內徑 60</text>
+<line x1="615.5" y1="555.8" x2="615.5" y2="787.8" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="621.5" y="675.8" class="d halo" text-anchor="start" >高 80</text>
+<line x1="396.5" y1="686.3" x2="396.5" y2="787.8" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="390.5" y="741.0" class="d halo" text-anchor="end" >浸入 35</text>
+<line x1="658.0" y1="686.3" x2="658.0" y2="816.8" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="664.0" y="755.5" class="d halo" text-anchor="start" >油深 45</text>
+<line x1="578.0" y1="787.8" x2="578.0" y2="816.8" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="572.0" y="806.3" class="d halo" text-anchor="end" >10</text>
+<line x1="358.0" y1="846.8" x2="648.0" y2="846.8" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="503.0" y="860.8" class="d halo" text-anchor="middle" >碗內徑 ≥ 100</text>
+<text x="40.0" y="900.0" class="n" text-anchor="start" >鐘罩：3D 列印 PETG 直筒（不要用錐形杯），壁厚 1.2 mm，約 28 g；液體：嬰兒油（不易蒸發、不導電）；通氣管：4 mm 黃銅管彎 U 形，從鐘罩口下方繞進去</text>
+<text x="40.0" y="918.0" class="n" text-anchor="start" >有效面積約 2942 mm²（校正後以實測為準）：15 Pa ≈ 4.5 g，最大 153 Pa ≈ 46 g；荷重元最大負載約 67 g / 100 g；最大時鐘罩內液面升高約 18 mm</text>
+<text x="40.0" y="936.0" class="n" text-anchor="start" >解析度：天平 1 mN ÷ 面積 ≈ 0.34 Pa → 5 m/s 風速誤差約 ±1.1%</text>
+<text x="820.0" y="130.0" class="l" text-anchor="start" >B　備援：兩顆 BMP280（I²C 0x76、0x77）</text>
+<rect x="840.0" y="170.0" width="110.0" height="120.0" class="shell" rx="14"/>
+<rect x="870.0" y="215.0" width="50.0" height="30.0" class="solid" />
+<text x="895.0" y="235.0" class="n" text-anchor="middle" >BMP280</text>
+<text x="895.0" y="160.0" class="n" text-anchor="middle" >B 高壓（0x77）</text>
+<rect x="888.0" y="290.0" width="14.0" height="22.0" class="solid" />
+<text x="895.0" y="330.0" class="n" text-anchor="middle" >接管嘴</text>
+<rect x="990.0" y="170.0" width="110.0" height="120.0" class="shell" rx="14"/>
+<rect x="1020.0" y="215.0" width="50.0" height="30.0" class="solid" />
+<text x="1045.0" y="235.0" class="n" text-anchor="middle" >BMP280</text>
+<text x="1045.0" y="160.0" class="n" text-anchor="middle" >B 低壓（0x76）</text>
+<rect x="1038.0" y="290.0" width="14.0" height="22.0" class="solid" />
+<text x="1045.0" y="330.0" class="n" text-anchor="middle" >接管嘴</text>
+<rect x="828.0" y="180.0" width="285.0" height="100.0" class="tbd" rx="6" style="fill:none"/>
+<text x="1140.0" y="190.0" class="n" text-anchor="start" >底片盒或小密封盒</text>
+<text x="1140.0" y="208.0" class="n" text-anchor="start" >各裝一顆、只留一個管嘴</text>
+<text x="1140.0" y="226.0" class="n" text-anchor="start" >兩盒膠帶綁在一起、包泡棉</text>
+<text x="1140.0" y="244.0" class="n" text-anchor="start" >→ 溫度相同，漂移較小</text>
+<text x="1140.0" y="262.0" class="n" text-anchor="start" >電線孔用熱熔膠封</text>
+<text x="820.0" y="370.0" class="n" text-anchor="start" >歸零後誤差約 ±0.7 Pa（雜訊平均 1 s ＋ 兩顆溫差 0.3 K）</text>
+<text x="820.0" y="388.0" class="n" text-anchor="start" >→ 12 m/s 風速誤差 ±0.4%，5 m/s 約 ±2.5%</text>
+<text x="820.0" y="406.0" class="n" text-anchor="start" >兩顆出廠差約 ±12 Pa：每次開風扇前一定要歸零</text>
+<text x="820.0" y="424.0" class="n" text-anchor="start" >另外提供室內氣壓與溫度（算空氣密度）</text>
+<text x="820.0" y="520.0" class="l" text-anchor="start" >管路：A、B 用三通接在同一組量測孔</text>
+<rect x="820.0" y="550.0" width="150.0" height="60.0" class="shell" rx="6"/>
+<text x="895.0" y="575.0" class="n" text-anchor="middle" >皮托管</text>
+<text x="895.0" y="593.0" class="n" text-anchor="middle" >或壁面靜壓環</text>
+<line x1="970.0" y1="565.0" x2="1120.0" y2="565.0" class="c1" />
+<text x="978.0" y="559.0" class="n" text-anchor="start" >高壓（總壓）</text>
+<circle cx="1120.0" cy="565.0" r="6.0" class="c1" />
+<line x1="1120.0" y1="565.0" x2="1200.0" y2="535.0" class="c1" />
+<line x1="1120.0" y1="565.0" x2="1200.0" y2="610.0" class="c1" />
+<line x1="970.0" y1="600.0" x2="1120.0" y2="600.0" class="c2" />
+<text x="978.0" y="594.0" class="n" text-anchor="start" >低壓（靜壓）</text>
+<circle cx="1120.0" cy="600.0" r="6.0" class="c2" />
+<line x1="1120.0" y1="600.0" x2="1200.0" y2="555.0" class="c2" />
+<line x1="1120.0" y1="600.0" x2="1200.0" y2="630.0" class="c2" />
+<rect x="1200.0" y="520.0" width="160.0" height="50.0" class="shell" rx="6" style="fill:#fef9c3"/>
+<text x="1280.0" y="550.0" class="l" text-anchor="middle" >A 鐘罩壓力計</text>
+<rect x="1200.0" y="595.0" width="160.0" height="50.0" class="shell" rx="6" style="fill:#dcfce7"/>
+<text x="1280.0" y="625.0" class="l" text-anchor="middle" >B 氣壓計對</text>
+<text x="820.0" y="690.0" class="n" text-anchor="start" >高壓 → A 的盒內空氣、B 高壓盒；低壓 → A 的鐘罩內、B 低壓盒</text>
+<text x="820.0" y="708.0" class="n" text-anchor="start" >平時接壁面靜壓環（穩定段 − 測試段入口）控制風速；</text>
+<text x="820.0" y="726.0" class="n" text-anchor="start" >校正 k 時：A 接壁面環、B 接皮托管，同時量 → 不用換管</text>
+<text x="820.0" y="744.0" class="n" text-anchor="start" >A、B 讀數差 &gt; 1 Pa 或 2% → 先查漏氣，再決定用哪一個（見計畫書）</text>
+</svg>

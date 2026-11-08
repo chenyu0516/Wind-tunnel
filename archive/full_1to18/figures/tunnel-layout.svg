@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="610" viewBox="0 0 1280 610" role="img" aria-labelledby="title desc">
+  <title id="title">Wind tunnel apparatus layout</title>
+  <desc id="desc">Air moves left to right through a honeycomb and screen chamber, contraction, transparent test section, diffuser, and guarded suction fan. The model rests on roller cradles carried by a balance on its own base, separate from the ground plate and tunnel frame. Geometry is schematic.</desc>
+  <defs>
+    <marker id="flow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9Z" fill="#187c91"/></marker>
+    <marker id="dim" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto-start-reverse"><path d="M6 3 L0 0 L0 6Z" fill="#6b7280"/></marker>
+    <pattern id="honeycomb" width="12" height="14" patternUnits="userSpaceOnUse"><path d="M0 0H12V14H0Z M0 7H12" fill="none" stroke="#9cb2bd" stroke-width="1"/></pattern>
+    <style>
+      text{font-family:Arial,Helvetica,sans-serif;fill:#183344}
+      .title{font-size:29px;font-weight:700}.sub{font-size:19px;fill:#526b7b}
+      .label{font-size:21px;font-weight:700}.note{font-size:18px;fill:#526b7b}
+      .shell{stroke:#32566b;stroke-width:3;fill:#edf3f6}
+      .air{stroke:#187c91;stroke-width:3;fill:none}
+      .leader{stroke:#6b8290;stroke-width:1.5;fill:none}
+    </style>
+  </defs>
+  <rect width="1280" height="610" rx="18" fill="#fafcfd"/>
+  <text x="35" y="48" class="title">01 / Tunnel layout</text>
+  <text x="35" y="79" class="sub">Side view · airflow from left to right · schematic, not to scale</text>
+
+  <text x="119" y="140" class="label">Flow conditioning</text>
+  <text x="119" y="167" class="note">Honeycomb + removable screens</text>
+  <text x="347" y="210" class="label">Contraction</text>
+  <text x="637" y="140" text-anchor="middle" class="label">Test section</text>
+  <text x="833" y="168" class="label">Diffuser</text>
+  <text x="1004" y="140" class="label">Suction fan</text>
+  <text x="1004" y="167" class="note">Guard + speed control</text>
+
+  <rect x="120" y="220" width="195" height="200" class="shell"/>
+  <rect x="150" y="223" width="47" height="194" fill="url(#honeycomb)"/>
+  <path d="M233 223V417 M260 223V417 M286 223V417" stroke="#7b96a4" stroke-width="3" stroke-dasharray="3 3"/>
+  <path d="M315 220 C375 220 405 260 465 260 V380 C405 380 375 420 315 420Z" class="shell"/>
+  <rect x="465" y="260" width="345" height="120" fill="#e5f4f8" stroke="#32566b" stroke-width="3"/>
+  <path d="M810 260L970 220V420L810 380Z" class="shell"/>
+  <rect x="970" y="220" width="165" height="200" rx="4" class="shell"/>
+  <circle cx="1052" cy="320" r="63" fill="#fff" stroke="#32566b" stroke-width="3"/>
+  <g fill="#a6c4cf" stroke="#32566b" stroke-width="1.5">
+    <path d="M1052 320 Q1016 297 1037 262 Q1060 267 1052 320Z"/>
+    <path d="M1052 320 Q1096 301 1111 337 Q1096 355 1052 320Z"/>
+    <path d="M1052 320 Q1049 366 1011 360 Q1001 338 1052 320Z"/>
+  </g>
+  <circle cx="1052" cy="320" r="10" fill="#32566b"/>
+  <path d="M1130 225V415" stroke="#32566b" stroke-width="3" stroke-dasharray="4 5"/>
+
+  <path d="M35 320H103" class="air"/><text x="36" y="360" class="note">Intake</text>
+  <path d="M344 320H430" class="air"/>
+  <path d="M500 288H573" class="air"/>
+  <path d="M720 288H783" class="air"/>
+  <path d="M841 320H932" class="air"/>
+  <path d="M1150 320H1232" class="air"/><text x="1145" y="360" class="note">Exhaust</text>
+
+  <path d="M485 350H591 M625 350H655 M689 350H791" stroke="#627f8a" stroke-width="6"/>
+  <path d="M593 327L605 309H654L678 327H690V339H586V327Z" fill="#df983b" stroke="#935b1e" stroke-width="2"/>
+  <circle cx="608" cy="339" r="7" fill="#183344"/><circle cx="672" cy="339" r="7" fill="#183344"/>
+  <g fill="#fff1d8" stroke="#bf751e" stroke-width="1.5">
+    <circle cx="602" cy="348" r="4"/><circle cx="614" cy="348" r="4"/>
+    <circle cx="666" cy="348" r="4"/><circle cx="678" cy="348" r="4"/>
+  </g>
+  <path d="M602 353V362H614V353 M666 353V362H678V353 M608 362V394 M672 362V394 M608 394H672 M649 394V448" fill="none" stroke="#bf751e" stroke-width="4"/>
+  <rect x="601" y="448" width="96" height="46" rx="6" fill="#fff1d8" stroke="#bf751e" stroke-width="2"/>
+  <path d="M649 494V516" stroke="#bf751e" stroke-width="6"/>
+  <rect x="573" y="516" width="152" height="12" rx="2" fill="#bf751e"/>
+
+  <path d="M497 350V430 M779 350V430 M180 420V448 M925 409V448" class="leader"/>
+  <path d="M110 438H550 M748 438H960" stroke="#32566b" stroke-width="7"/>
+  <path d="M143 442V518 M920 442V518 M1000 421V518 M1107 421V518" stroke="#32566b" stroke-width="6"/>
+  <path d="M986 524H1121" stroke="#32566b" stroke-width="8"/>
+
+  <path d="M468 245V205 M807 245V205 M472 216H803" class="leader"/>
+  <text x="637" y="207" text-anchor="middle" class="note">600–800 mm length</text>
+  <text x="637" y="171" text-anchor="middle" class="note">400 × 300 mm internal cross-section</text>
+  <path d="M514 353L514 475H426" class="leader"/>
+  <text x="201" y="480" class="label">Raised ground plate</text>
+  <text x="201" y="507" class="note">Fixed to the tunnel frame</text>
+  <path d="M701 472H752" class="leader"/>
+  <text x="764" y="479" class="label">Force balance</text>
+  <text x="764" y="506" class="note">Independent base</text>
+
+  <rect x="35" y="550" width="1210" height="42" rx="8" fill="#e9f2f5"/>
+  <text x="54" y="577" font-size="19">Initial target: 5–15 m/s · removable panels and modules · exhaust kept clear of intake</text>
+
+  <path d="M103 320l-13 -7v14Z" fill="#187c91"/>
+  <path d="M430 320l-13 -7v14Z" fill="#187c91"/>
+  <path d="M573 288l-13 -7v14Z" fill="#187c91"/>
+  <path d="M783 288l-13 -7v14Z" fill="#187c91"/>
+  <path d="M932 320l-13 -7v14Z" fill="#187c91"/>
+  <path d="M1232 320l-13 -7v14Z" fill="#187c91"/>
+  <path d="M472 216l9 -5v10Z M803 216l-9 -5v10Z" fill="#6b7280"/>
+</svg>

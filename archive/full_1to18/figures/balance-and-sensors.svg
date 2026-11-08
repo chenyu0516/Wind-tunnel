@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="700" viewBox="0 0 1280 700" role="img" aria-labelledby="title desc">
+  <title id="title">Model mounting and measurement connections</title>
+  <desc id="desc">Left: each wheel rests on two rollers. All four roller cradles connect to a common two-axis balance and remain clear of the independently supported ground plate. Right: separate total and static pressure tubes connect to the plus and minus ports of a differential-pressure sensor. Pressure, force, environment, and fan RPM signals feed a timestamped data logger.</desc>
+  <defs>
+    <marker id="force" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#b56b19"/></marker>
+    <marker id="signal" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#466b9b"/></marker>
+    <style>
+      text{font-family:Arial,Helvetica,sans-serif;fill:#183344}
+      .title{font-size:29px;font-weight:700}.sub{font-size:19px;fill:#526b7b}
+      .head{font-size:22px;font-weight:700}.label{font-size:20px;font-weight:700}
+      .note{font-size:18px;fill:#526b7b}.leader{stroke:#778d99;stroke-width:1.5;fill:none}
+      .data{stroke:#466b9b;stroke-width:2.5;fill:none;stroke-dasharray:6 4}
+    </style>
+  </defs>
+  <rect width="1280" height="700" rx="18" fill="#fafcfd"/>
+  <text x="35" y="48" class="title">02 / Mounting and measurement</text>
+  <text x="35" y="80" class="sub">Functional schematic · detailed balance geometry is developed in week 1</text>
+  <rect x="30" y="110" width="580" height="545" rx="14" fill="#fff" stroke="#d6e1e7"/>
+  <rect x="635" y="110" width="615" height="545" rx="14" fill="#fff" stroke="#d6e1e7"/>
+  <text x="53" y="147" class="head">A. Keep the load paths separate</text>
+  <text x="658" y="147" class="head">B. Connect pressure and data</text>
+
+  <path d="M207 235L240 206H347L388 235H431V258H193V235Z" fill="#f1b861" stroke="#935b1e" stroke-width="2"/>
+  <circle cx="235" cy="257" r="23" fill="#183344"/><circle cx="400" cy="257" r="23" fill="#183344"/>
+  <g fill="#fff1d8" stroke="#bf751e" stroke-width="2">
+    <circle cx="221" cy="286" r="9"/><circle cx="249" cy="286" r="9"/>
+    <circle cx="386" cy="286" r="9"/><circle cx="414" cy="286" r="9"/>
+  </g>
+  <path d="M221 296V318H249V296 M386 296V318H414V296 M235 318V353 M400 318V353 M200 353H435 M306 353V393" fill="none" stroke="#bf751e" stroke-width="6"/>
+  <path d="M474 202V248 M455 221H521" stroke="#b56b19" stroke-width="3" fill="none"/>
+  <text x="481" y="196" class="note">Downforce</text>
+  <text x="489" y="269" class="note">Drag</text>
+  <text x="56" y="187" class="label">Two rollers per wheel</text>
+  <path d="M174 196V302H210" class="leader"/>
+  <path d="M43 285H205 M265 285H370 M430 285H585" stroke="#627f8a" stroke-width="7"/>
+  <path d="M43 289V510 M585 289V510" stroke="#627f8a" stroke-width="6"/>
+  <text x="445" y="319" class="label">Ground plate</text>
+  <text x="445" y="344" class="note">Fixed support</text>
+  <text x="57" y="333" class="note">Clear gaps</text>
+  <path d="M155 329L207 293" class="leader"/>
+  <text x="57" y="378" class="note">Common support frame</text>
+  <path d="M255 372L270 356" class="leader"/>
+
+  <rect x="212" y="393" width="188" height="77" rx="8" fill="#fff1d8" stroke="#bf751e" stroke-width="2"/>
+  <text x="306" y="424" text-anchor="middle" class="label">Two-axis balance</text>
+  <text x="306" y="451" text-anchor="middle" class="note">Vertical + drag</text>
+  <path d="M306 470V505" stroke="#bf751e" stroke-width="7"/>
+  <rect x="180" y="505" width="253" height="14" rx="3" fill="#bf751e"/>
+  <text x="306" y="550" text-anchor="middle" class="label">Independent balance base</text>
+  <path d="M35 517H55 M575 517H595" stroke="#627f8a" stroke-width="8"/>
+  <rect x="53" y="580" width="533" height="53" rx="7" fill="#fff7e9"/>
+  <text x="70" y="603" class="note">All four cradles load the same balance.</text>
+  <text x="70" y="625" class="note">Keep cables slack and moving parts clear.</text>
+
+  <rect x="659" y="190" width="169" height="108" rx="8" fill="#e5f4f8" stroke="#187c91" stroke-width="2"/>
+  <text x="743" y="221" text-anchor="middle" class="label">Pitot-static</text>
+  <text x="743" y="248" text-anchor="middle" class="note">Upstream probe</text>
+  <text x="743" y="275" text-anchor="middle" class="note">Two pressure ports</text>
+  <rect x="1015" y="190" width="210" height="108" rx="8" fill="#e5f4f8" stroke="#187c91" stroke-width="2"/>
+  <text x="1120" y="222" text-anchor="middle" class="label">Differential</text>
+  <text x="1120" y="248" text-anchor="middle" class="label">pressure sensor</text>
+  <text x="1120" y="277" text-anchor="middle" class="note">q = pₜ − pₛ</text>
+  <path d="M828 229H1015" stroke="#187c91" stroke-width="3"/>
+  <path d="M828 274H1015" stroke="#768694" stroke-width="3"/>
+  <text x="845" y="215" font-size="18" fill="#187c91">Total pₜ → +</text>
+  <text x="845" y="261" font-size="18">Static pₛ → −</text>
+  <path d="M1120 299V351H1060V377" class="data"/>
+  <text x="660" y="336" class="note">Solid lines: separate pressure tubes</text>
+
+  <rect x="800" y="380" width="370" height="72" rx="8" fill="#eaf0fa" stroke="#466b9b" stroke-width="2"/>
+  <text x="985" y="410" text-anchor="middle" class="label">Data acquisition + logger</text>
+  <text x="985" y="438" text-anchor="middle" class="note">Common timestamps → CSV</text>
+
+  <rect x="658" y="502" width="250" height="65" rx="8" fill="#f2f5f8" stroke="#8ea1b0" stroke-width="2"/>
+  <text x="783" y="529" text-anchor="middle" class="label">Temperature · RH</text>
+  <text x="783" y="553" text-anchor="middle" class="note">Absolute pressure</text>
+  <path d="M783 502V472H872V455" class="data"/>
+  <rect x="970" y="502" width="255" height="65" rx="8" fill="#fff1d8" stroke="#bf751e" stroke-width="2"/>
+  <text x="1097" y="529" text-anchor="middle" class="label">Force channels</text>
+  <text x="1097" y="553" text-anchor="middle" class="note">Fan RPM</text>
+  <path d="M1097 502V455" class="data"/>
+  <text x="658" y="605" class="note">Dashed lines: electrical/data connections</text>
+  <text x="658" y="630" class="note">Density + q → calculated airspeed</text>
+
+  <path d="M474 248l-7 -13h14Z M521 221l-13 -7v14Z" fill="#b56b19"/>
+  <path d="M1060 377l-6 -11h12Z M872 455l-6 11h12Z M1097 455l-6 11h12Z" fill="#466b9b"/>
+</svg>

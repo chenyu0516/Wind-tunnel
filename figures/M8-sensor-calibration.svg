@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+<title id="title">風速感測器校正</title>
+<desc id="desc">用針筒產生壓差，以 1:10 傾斜水柱計為標準，校正鐘罩壓力計與氣壓計對。</desc>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" fill="#6b7280"/></marker>
+<marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#187c91"/></marker>
+<marker id="o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+<pattern id="hc" width="5" height="8" patternUnits="userSpaceOnUse"><path d="M0 0V8 M0 4H5" stroke="#8aa4b2" stroke-width="0.8"/></pattern>
+<pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V6" stroke="#94a3b8" stroke-width="1"/></pattern>
+<style>
+text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#183344}
+.t{font-size:24px;font-weight:700} .st{font-size:14px;fill:#526b7b}
+.l{font-size:14px;font-weight:600} .n{font-size:12px;fill:#526b7b} .d{font-size:12px;fill:#374151}
+.w{font-size:12px;fill:#c2410c;font-weight:600}
+.halo{paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round}
+.shell{stroke:#32566b;stroke-width:2;fill:#edf3f6}
+.shell0{stroke:#32566b;stroke-width:2;fill:none}
+.thin{stroke:#32566b;stroke-width:1;fill:none}
+.pc{stroke:#32566b;stroke-width:2;fill:#e3f1f7}
+.solid{stroke:#32566b;stroke-width:1.2;fill:#cbd5df}
+.dark{stroke:#1f2937;stroke-width:1;fill:#4b5563}
+.car{stroke:#475569;stroke-width:1.2;fill:#e2e8f0}
+.air{stroke:#187c91;stroke-width:2;fill:none}
+.airf{fill:#187c91}
+.scr{stroke:#187c91;stroke-width:2;stroke-dasharray:6 4;fill:none}
+.dim{stroke:#6b7280;stroke-width:1;fill:none}
+.ext{stroke:#9ca3af;stroke-width:0.8;fill:none}
+.guide{stroke:#cbd5e1;stroke-width:0.8;stroke-dasharray:3 4;fill:none}
+.tbd{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 3;fill:none}
+.tbdf{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 3;fill:#fff7ed}
+.cl{stroke:#94a3b8;stroke-width:1;stroke-dasharray:14 4 2 4;fill:none}
+.grid{stroke:#e5e7eb;stroke-width:1;fill:none}
+.axis{stroke:#374151;stroke-width:1.2;fill:none}
+.c1{stroke:#187c91;stroke-width:2.5;fill:none} .c2{stroke:#7c3aed;stroke-width:2.5;fill:none}
+.c3{stroke:#187c91;stroke-width:2;stroke-dasharray:6 4;fill:none}
+.bar{fill:#187c91} .bar2{fill:#94a3b8}
+.hc{fill:url(#hc);stroke:#32566b;stroke-width:1}
+</style></defs>
+<rect width="1400" height="760" rx="14" fill="#fafcfd"/>
+<text x="32.0" y="42.0" class="t" text-anchor="start" >圖 M8　風速感測器桌上校正（不用開風扇）</text>
+<text x="32.0" y="66.0" class="st" text-anchor="start" >針筒慢慢抽氣 → 傾斜水柱計讀數 L → Δp = ρ g L / 10 ≈ 0.98 Pa/mm；同時記錄 A、B 讀數</text>
+<rect x="60.0" y="250.0" width="200.0" height="50.0" class="shell" rx="6"/>
+<rect x="260.0" y="265.0" width="40.0" height="20.0" class="solid" />
+<rect x="20.0" y="262.0" width="60.0" height="26.0" class="solid" />
+<text x="160.0" y="240.0" class="l" text-anchor="middle" >60 mL 針筒（慢慢拉）</text>
+<circle cx="380.0" cy="275.0" r="7.0" class="c2" />
+<line x1="300.0" y1="275.0" x2="373.0" y2="275.0" class="c2" />
+<text x="380.0" y="255.0" class="n" text-anchor="middle" >三通</text>
+<path d="M380,282 L380,420 L470,420" class="c2" />
+<path d="M387,275 L700,275" class="c2" />
+<circle cx="700.0" cy="275.0" r="7.0" class="c2" />
+<path d="M700,268 L700,170 L900,170" class="c2" />
+<path d="M707,275 L900,275" class="c2" />
+<rect x="900.0" y="140.0" width="220.0" height="60.0" class="shell" rx="6" style="fill:#fef9c3"/>
+<text x="1010.0" y="176.0" class="l" text-anchor="middle" >A 鐘罩內（低壓口）</text>
+<rect x="900.0" y="245.0" width="220.0" height="60.0" class="shell" rx="6" style="fill:#dcfce7"/>
+<text x="1010.0" y="281.0" class="l" text-anchor="middle" >B 低壓盒</text>
+<text x="1140.0" y="165.0" class="n" text-anchor="start" >A 的盒內空氣、B 高壓盒：</text>
+<text x="1140.0" y="183.0" class="n" text-anchor="start" >開著通室內（高壓口不接）</text>
+<line x1="470.0" y1="600.0" x2="1027.2" y2="544.3" class="shell0" style="stroke-width:10;stroke:#e5e7eb"/>
+<line x1="470.0" y1="600.0" x2="1027.2" y2="544.3" class="c1" />
+<rect x="430.0" y="570.0" width="50.0" height="60.0" class="pc" style="fill:#bfdbfe"/>
+<text x="455.0" y="650.0" class="n" text-anchor="middle" >水槽</text>
+<path d="M470,420 L455,420 L455,570" class="c2" />
+<line x1="470.0" y1="620.0" x2="1030.0" y2="620.0" class="guide" />
+<text x="1040.0" y="548.3" class="n" text-anchor="start" >斜率 1:10</text>
+<line x1="470.0" y1="592.0" x2="470.0" y2="608.0" class="thin" />
+<line x1="525.7" y1="586.4" x2="525.7" y2="602.4" class="thin" />
+<line x1="581.4" y1="580.9" x2="581.4" y2="596.9" class="thin" />
+<line x1="637.2" y1="575.3" x2="637.2" y2="591.3" class="thin" />
+<line x1="692.9" y1="569.7" x2="692.9" y2="585.7" class="thin" />
+<line x1="748.6" y1="564.1" x2="748.6" y2="580.1" class="thin" />
+<line x1="804.3" y1="558.6" x2="804.3" y2="574.6" class="thin" />
+<line x1="860.1" y1="553.0" x2="860.1" y2="569.0" class="thin" />
+<line x1="915.8" y1="547.4" x2="915.8" y2="563.4" class="thin" />
+<line x1="971.5" y1="541.9" x2="971.5" y2="557.9" class="thin" />
+<line x1="1027.2" y1="536.3" x2="1027.2" y2="552.3" class="thin" />
+<text x="750.0" y="648.0" class="l" text-anchor="middle" >1:10 傾斜水柱計（透明管＋尺，加食用色素）</text>
+<text x="750.0" y="668.0" class="n" text-anchor="middle" >讀數精度 ±0.5 mm（沿管）→ ±0.5 Pa</text>
+<text x="900.0" y="380.0" class="n" text-anchor="start" >步驟</text>
+<text x="900.0" y="399.0" class="n" text-anchor="start" >1. 全部接好，捏住針筒管 60 s：讀數變化須 &lt; 0.5 Pa（漏氣測試）</text>
+<text x="900.0" y="418.0" class="n" text-anchor="start" >2. 垂直水柱 0 → 2 → 5 → 10 → 15 → 20 mm（沿管 0–200 mm）</text>
+<text x="900.0" y="437.0" class="n" text-anchor="start" >   每點停 10 s，記錄 L、A、B；再反向回到 0</text>
+<text x="900.0" y="456.0" class="n" text-anchor="start" >3. 重複 3 次；A 的斜率 = 有效面積（寫回 spec）</text>
+<text x="900.0" y="475.0" class="n" text-anchor="start" >4. 合格：直線誤差 ≤ 0.5 Pa 或 1.0%</text>
+<text x="900.0" y="494.0" class="n" text-anchor="start" >   遲滯 ≤ 0.5 Pa；A、B 相差 ≤ 1.0 Pa 或 2.0%</text>
+</svg>

@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1120" viewBox="0 0 1400 1120" role="img" aria-labelledby="title desc">
+<title id="title">車輪支撐與天平剖面</title>
+<desc id="desc">單一車輪處的剖面：地面板開口、滾輪托架、輪井、護套管與下方密封靜壓箱和天平堆疊。</desc>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" fill="#6b7280"/></marker>
+<marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#187c91"/></marker>
+<marker id="o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+<pattern id="hc" width="5" height="8" patternUnits="userSpaceOnUse"><path d="M0 0V8 M0 4H5" stroke="#8aa4b2" stroke-width="0.8"/></pattern>
+<pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V6" stroke="#94a3b8" stroke-width="1"/></pattern>
+<style>
+text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#183344}
+.t{font-size:24px;font-weight:700} .st{font-size:14px;fill:#526b7b}
+.l{font-size:14px;font-weight:600} .n{font-size:12px;fill:#526b7b} .d{font-size:12px;fill:#374151}
+.w{font-size:12px;fill:#c2410c;font-weight:600}
+.halo{paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round}
+.shell{stroke:#32566b;stroke-width:2;fill:#edf3f6}
+.shell0{stroke:#32566b;stroke-width:2;fill:none}
+.thin{stroke:#32566b;stroke-width:1;fill:none}
+.pc{stroke:#32566b;stroke-width:2;fill:#e3f1f7}
+.solid{stroke:#32566b;stroke-width:1.2;fill:#cbd5df}
+.dark{stroke:#1f2937;stroke-width:1;fill:#4b5563}
+.car{stroke:#475569;stroke-width:1.2;fill:#e2e8f0}
+.air{stroke:#187c91;stroke-width:2;fill:none}
+.airf{fill:#187c91}
+.scr{stroke:#187c91;stroke-width:2;stroke-dasharray:6 4;fill:none}
+.dim{stroke:#6b7280;stroke-width:1;fill:none}
+.ext{stroke:#9ca3af;stroke-width:0.8;fill:none}
+.guide{stroke:#cbd5e1;stroke-width:0.8;stroke-dasharray:3 4;fill:none}
+.tbd{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 3;fill:none}
+.tbdf{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 3;fill:#fff7ed}
+.cl{stroke:#94a3b8;stroke-width:1;stroke-dasharray:14 4 2 4;fill:none}
+.grid{stroke:#e5e7eb;stroke-width:1;fill:none}
+.axis{stroke:#374151;stroke-width:1.2;fill:none}
+.c1{stroke:#187c91;stroke-width:2.5;fill:none} .c2{stroke:#7c3aed;stroke-width:2.5;fill:none}
+.c3{stroke:#187c91;stroke-width:2;stroke-dasharray:6 4;fill:none}
+.bar{fill:#187c91} .bar2{fill:#94a3b8}
+.hc{fill:url(#hc);stroke:#32566b;stroke-width:1}
+</style></defs>
+<rect width="1400" height="1120" rx="14" fill="#fafcfd"/>
+<text x="32.0" y="42.0" class="t" text-anchor="start" >圖 A5　車輪支撐與天平（剖面）</text>
+<text x="32.0" y="66.0" class="st" text-anchor="start" >上半依比例（單一車輪，側視）；下半為示意、未依比例　單位 mm</text>
+<rect x="80.0" y="110.0" width="550.0" height="182.5" class="car" />
+<text x="105.0" y="135.0" class="n" text-anchor="start" >車身</text>
+<rect x="80.0" y="330.0" width="162.5" height="30.0" class="solid" />
+<rect x="467.5" y="330.0" width="162.5" height="30.0" class="solid" />
+<circle cx="355.0" cy="240.7" r="100.0" class="dark" style="fill:#4b5563;opacity:0.85"/>
+<text x="355.0" y="244.7" class="l" text-anchor="middle" style="fill:#ffffff">輪胎 Ø40</text>
+<circle cx="305.0" cy="371.5" r="40.0" class="shell" style="fill:#cbd5df"/>
+<circle cx="305.0" cy="371.5" r="17.5" class="thin" />
+<circle cx="305.0" cy="371.5" r="7.5" class="dark" />
+<circle cx="405.0" cy="371.5" r="40.0" class="shell" style="fill:#cbd5df"/>
+<circle cx="405.0" cy="371.5" r="17.5" class="thin" />
+<circle cx="405.0" cy="371.5" r="7.5" class="dark" />
+<line x1="255.0" y1="371.5" x2="255.0" y2="426.5" class="shell0" style="stroke-width:3"/>
+<line x1="455.0" y1="371.5" x2="455.0" y2="426.5" class="shell0" style="stroke-width:3"/>
+<line x1="255.0" y1="426.5" x2="455.0" y2="426.5" class="shell0" style="stroke-width:3"/>
+<path d="M205.0,360.0 L205.0,510.0 L325.0,510.0 M385.0,510.0 L505.0,510.0 L505.0,360.0" class="shell0" style="stroke-width:2.5"/>
+<rect x="325.0" y="510.0" width="5.0" height="100.0" class="solid" />
+<rect x="380.0" y="510.0" width="5.0" height="100.0" class="solid" />
+<rect x="335.0" y="426.5" width="40.0" height="243.5" class="solid" style="fill:#94a3b8"/>
+<rect x="80.0" y="610.0" width="245.0" height="40.0" class="tbdf" />
+<rect x="385.0" y="610.0" width="245.0" height="40.0" class="tbdf" />
+<text x="105.0" y="634.0" class="w" text-anchor="start" >測試段地板（厚度待定）</text>
+<line x1="644.0" y1="610.0" x2="644.0" y2="360.0" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="650.0" y="489.0" class="d halo" text-anchor="start" >板下淨空 50</text>
+<line x1="764.0" y1="510.0" x2="764.0" y2="360.0" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="770.0" y="439.0" class="d halo" text-anchor="start" >輪井深 ≤ 30</text>
+<line x1="764.0" y1="610.0" x2="764.0" y2="510.0" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="770.0" y="564.0" class="d halo" text-anchor="start" >護套跨距 20</text>
+<text x="648.0" y="332.0" class="d halo" text-anchor="start" >地面板 6</text>
+<text x="257.0" y="375.5" class="l halo" text-anchor="end" >滾輪 Ø16</text>
+<text x="257.0" y="393.5" class="n halo" text-anchor="end" >2 × 683ZZ、軸 Ø3</text>
+<text x="199.0" y="460.0" class="l halo" text-anchor="end" >封底輪井</text>
+<text x="319.0" y="570.0" class="l halo" text-anchor="end" >固定護套管 Ø12</text>
+<text x="383.0" y="660.0" class="n halo" text-anchor="start" >支柱 8 mm（屬天平）</text>
+<text x="355.0" y="442.5" class="n halo" text-anchor="middle" >托架</text>
+<text x="960.0" y="150.0" class="l" text-anchor="start" >滾輪與輪胎的幾何</text>
+<text x="960.0" y="176.0" class="d" text-anchor="start" >輪胎 Ø40，滾輪 Ø16，中心距 20</text>
+<text x="960.0" y="195.0" class="d" text-anchor="start" >→ 滾輪頂高於輪胎最低點 1.85 mm（計畫：約 1.9）</text>
+<text x="960.0" y="214.0" class="d" text-anchor="start" >規則：滾輪頂 &lt; 地面板頂；車身俯仰只用托架高度調</text>
+<text x="960.0" y="250.0" class="w" text-anchor="start" >待確認：滾輪頂在板面以下，</text>
+<text x="960.0" y="268.0" class="w" text-anchor="start" >輪胎最低點就比地面板頂低 ≥ 1.8 mm，</text>
+<text x="960.0" y="286.0" class="w" text-anchor="start" >車身離地會比原車模少約 1.8 mm（車高 7–8 的約 25%）</text>
+<text x="960.0" y="304.0" class="w" text-anchor="start" >見 airflow_design.zh-TW.md §8</text>
+<text x="960.0" y="360.0" class="l" text-anchor="start" >滾輪正視（示意）</text>
+<rect x="1000.0" y="390.0" width="168.0" height="112.0" class="shell" />
+<rect x="1000.0" y="421.5" width="21.0" height="49.0" class="solid" />
+<rect x="1147.0" y="421.5" width="21.0" height="49.0" class="solid" />
+<line x1="980.0" y1="446.0" x2="1188.0" y2="446.0" class="dark" style="stroke-width:3;stroke:#1f2937"/>
+<rect x="994.0" y="380.0" width="4.0" height="132.0" class="solid" />
+<rect x="1170.0" y="380.0" width="4.0" height="132.0" class="solid" />
+<text x="960.0" y="530.0" class="n" text-anchor="start" >683ZZ（3 × 7 × 3 mm）兩端各一</text>
+<text x="960.0" y="547.0" class="n" text-anchor="start" >Ø3 軸固定在托架側板</text>
+<text x="960.0" y="564.0" class="n" text-anchor="start" >凸緣或側導板做橫向定位</text>
+<text x="960.0" y="581.0" class="n" text-anchor="start" >滾輪長度：計畫未定</text>
+<text x="1178.0" y="516.0" class="w" text-anchor="start" >長度待定</text>
+<line x1="40.0" y1="666.0" x2="1360.0" y2="666.0" class="guide" />
+<text x="40.0" y="686.0" class="w" text-anchor="start" >以下為示意，未依比例：測試段地板下方</text>
+<path d="M380,1010 L140,1010 L140,710 L720,710 L720,1010 L480,1010" class="shell0" style="stroke-width:4"/>
+<text x="148.0" y="732.0" class="l" text-anchor="start" >密封靜壓箱（整個活動框架都在箱內）</text>
+<rect x="716.0" y="800.0" width="8.0" height="100.0" class="solid" style="fill:#187c91"/>
+<text x="732.0" y="850.0" class="n" text-anchor="start" >檢修門（加墊片）</text>
+<circle cx="720.0" cy="940.0" r="6.0" class="shell" />
+<text x="732.0" y="944.0" class="n" text-anchor="start" >線材格蘭頭</text>
+<line x1="720.0" y1="750.0" x2="800.0" y2="750.0" class="scr" />
+<text x="806.0" y="754.0" class="n" text-anchor="start" >Ø6 平衡管 → 車身中段附近的側壁靜壓孔</text>
+<text x="806.0" y="772.0" class="n" text-anchor="start" >靜壓箱與地面板壓差 ≤ 1 Pa</text>
+<line x1="260.0" y1="680.0" x2="260.0" y2="780.0" class="dark" style="stroke-width:5;stroke:#94a3b8"/>
+<line x1="600.0" y1="680.0" x2="600.0" y2="780.0" class="dark" style="stroke-width:5;stroke:#94a3b8"/>
+<text x="608.0" y="692.0" class="n" text-anchor="start" >支柱 ×4（穿過護套管）</text>
+<rect x="230.0" y="780.0" width="400.0" height="14.0" class="solid" />
+<text x="640.0" y="792.0" class="n" text-anchor="start" >共用框架</text>
+<rect x="330.0" y="810.0" width="200.0" height="12.0" class="solid" />
+<line x1="340.0" y1="822.0" x2="340.0" y2="870.0" class="shell0" style="stroke-width:2;stroke:#7c3aed"/>
+<line x1="520.0" y1="822.0" x2="520.0" y2="870.0" class="shell0" style="stroke-width:2;stroke:#7c3aed"/>
+<text x="540.0" y="850.0" class="n" text-anchor="start" >彈簧鋼片 ×4（0.2 × 20 × 40）</text>
+<rect x="330.0" y="870.0" width="200.0" height="12.0" class="solid" />
+<rect x="390.0" y="838.0" width="60.0" height="18.0" class="shell" style="fill:#fde68a"/>
+<text x="380.0" y="851.0" class="n" text-anchor="end" >阻力荷重元 300 g（水平）</text>
+<rect x="360.0" y="900.0" width="140.0" height="22.0" class="shell" style="fill:#fde68a"/>
+<text x="350.0" y="915.0" class="n" text-anchor="end" >垂直荷重元 3 kg</text>
+<line x1="430.0" y1="882.0" x2="430.0" y2="900.0" class="shell0" style="stroke-width:4"/>
+<rect x="405.0" y="922.0" width="50.0" height="128.0" class="solid" />
+<path d="M380,1010 q4,8 12,10 q8,4 13,12 M480,1010 q-4,8 -12,10 q-8,4 -13,12" class="shell0" style="stroke:#7c3aed;stroke-width:2"/>
+<text x="490.0" y="1036.0" class="n" text-anchor="start" >氯丁橡膠裙邊（柔性密封）</text>
+<rect x="340.0" y="1050.0" width="180.0" height="30.0" class="solid" style="fill:#9ca3af"/>
+<text x="530.0" y="1070.0" class="n" text-anchor="start" >落地底座 + 配重約 30 kg</text>
+<rect x="60.0" y="1080.0" width="1280.0" height="12.0" class="solid" style="fill:url(#hatch)"/>
+<text x="70.0" y="1076.0" class="n" text-anchor="start" >剛性樓板</text>
+<text x="960.0" y="960.0" class="n" text-anchor="start" >限位：阻力約 2 N、垂直 &lt; 4.5 kg</text>
+<text x="960.0" y="978.0" class="n" text-anchor="start" >換車時鎖上運輸鎖</text>
+<text x="960.0" y="996.0" class="n" text-anchor="start" >活動質量 ≤ 2.6 kg（垂直荷重元容量 3 kg）</text>
+</svg>

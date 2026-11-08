@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+<title id="title">迷你風洞總覽</title>
+<desc id="desc">迷你版（1:43）氣流通道側視與俯視，依比例。</desc>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" fill="#6b7280"/></marker>
+<marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#187c91"/></marker>
+<marker id="o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+<pattern id="hc" width="5" height="8" patternUnits="userSpaceOnUse"><path d="M0 0V8 M0 4H5" stroke="#8aa4b2" stroke-width="0.8"/></pattern>
+<pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V6" stroke="#94a3b8" stroke-width="1"/></pattern>
+<style>
+text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sans-serif;fill:#183344}
+.t{font-size:24px;font-weight:700} .st{font-size:14px;fill:#526b7b}
+.l{font-size:14px;font-weight:600} .n{font-size:12px;fill:#526b7b} .d{font-size:12px;fill:#374151}
+.w{font-size:12px;fill:#c2410c;font-weight:600}
+.halo{paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round}
+.shell{stroke:#32566b;stroke-width:2;fill:#edf3f6}
+.shell0{stroke:#32566b;stroke-width:2;fill:none}
+.thin{stroke:#32566b;stroke-width:1;fill:none}
+.pc{stroke:#32566b;stroke-width:2;fill:#e3f1f7}
+.solid{stroke:#32566b;stroke-width:1.2;fill:#cbd5df}
+.dark{stroke:#1f2937;stroke-width:1;fill:#4b5563}
+.car{stroke:#475569;stroke-width:1.2;fill:#e2e8f0}
+.air{stroke:#187c91;stroke-width:2;fill:none}
+.airf{fill:#187c91}
+.scr{stroke:#187c91;stroke-width:2;stroke-dasharray:6 4;fill:none}
+.dim{stroke:#6b7280;stroke-width:1;fill:none}
+.ext{stroke:#9ca3af;stroke-width:0.8;fill:none}
+.guide{stroke:#cbd5e1;stroke-width:0.8;stroke-dasharray:3 4;fill:none}
+.tbd{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 3;fill:none}
+.tbdf{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 3;fill:#fff7ed}
+.cl{stroke:#94a3b8;stroke-width:1;stroke-dasharray:14 4 2 4;fill:none}
+.grid{stroke:#e5e7eb;stroke-width:1;fill:none}
+.axis{stroke:#374151;stroke-width:1.2;fill:none}
+.c1{stroke:#187c91;stroke-width:2.5;fill:none} .c2{stroke:#7c3aed;stroke-width:2.5;fill:none}
+.c3{stroke:#187c91;stroke-width:2;stroke-dasharray:6 4;fill:none}
+.bar{fill:#187c91} .bar2{fill:#94a3b8}
+.hc{fill:url(#hc);stroke:#32566b;stroke-width:1}
+</style></defs>
+<rect width="1400" height="900" rx="14" fill="#fafcfd"/>
+<text x="32.0" y="42.0" class="t" text-anchor="start" >圖 M1　迷你風洞總覽（1:43，依比例）</text>
+<text x="32.0" y="66.0" class="st" text-anchor="start" >上：側視　下：俯視　單位 mm　藍色箭頭為氣流方向　各段風速以測試段 14 m/s 計</text>
+<path d="M209.1,234.2 L196.0,234.2 A26.0,26.0 0 0 0 170.0,208.2" class="shell0" />
+<line x1="209.1" y1="234.2" x2="367.2" y2="234.2" class="shell0" />
+<polyline points="367.2,234.2 369.6,234.2 372.1,234.2 374.6,234.2 377.1,234.3 379.6,234.3 382.0,234.3 384.5,234.4 387.0,234.5 389.5,234.6 392.0,234.8 394.4,235.0 396.9,235.2 399.4,235.4 401.9,235.7 404.4,236.0 406.8,236.3 409.3,236.7 411.8,237.1 414.3,237.5 416.8,238.0 419.2,238.5 421.7,239.1 424.2,239.7 426.7,240.3 429.2,241.0 431.6,241.7 434.1,242.4 436.6,243.2 439.1,244.0 441.6,244.8 444.0,245.7 446.5,246.6 449.0,247.5 451.5,248.4 454.0,249.4 456.4,250.4 458.9,251.4 461.4,252.4 463.9,253.5 466.4,254.5 468.8,255.6 471.3,256.7 473.8,257.8 476.3,258.9 478.8,260.0 481.2,261.2 483.7,262.3 486.2,263.4 488.7,264.5 491.2,265.7 493.6,266.8 496.1,267.9 498.6,269.0 501.1,270.1 503.6,271.1 506.0,272.2 508.5,273.2 511.0,274.3 513.5,275.3 516.0,276.2 518.4,277.2 520.9,278.1 523.4,279.0 525.9,279.9 528.4,280.8 530.8,281.6 533.3,282.4 535.8,283.1 538.3,283.8 540.8,284.5 543.2,285.1 545.7,285.8 548.2,286.3 550.7,286.9 553.2,287.4 555.6,287.8 558.1,288.3 560.6,288.7 563.1,289.0 565.6,289.3 568.0,289.6 570.5,289.9 573.0,290.1 575.5,290.3 578.0,290.4 580.4,290.6 582.9,290.7 585.4,290.8 587.9,290.8 590.4,290.9 592.8,290.9 595.3,290.9 597.8,290.9 600.3,290.9" class="shell0" />
+<line x1="601.5" y1="290.9" x2="809.8" y2="290.9" class="shell0" style="stroke-width:2.5"/>
+<line x1="809.8" y1="290.9" x2="1212.8" y2="255.6" class="shell0" />
+<path d="M209.1,425.8 L196.0,425.8 A26.0,26.0 0 0 1 170.0,451.8" class="shell0" />
+<line x1="209.1" y1="425.8" x2="367.2" y2="425.8" class="shell0" />
+<polyline points="367.2,425.8 369.6,425.8 372.1,425.8 374.6,425.8 377.1,425.7 379.6,425.7 382.0,425.7 384.5,425.6 387.0,425.5 389.5,425.4 392.0,425.2 394.4,425.0 396.9,424.8 399.4,424.6 401.9,424.3 404.4,424.0 406.8,423.7 409.3,423.3 411.8,422.9 414.3,422.5 416.8,422.0 419.2,421.5 421.7,420.9 424.2,420.3 426.7,419.7 429.2,419.0 431.6,418.3 434.1,417.6 436.6,416.8 439.1,416.0 441.6,415.2 444.0,414.3 446.5,413.4 449.0,412.5 451.5,411.6 454.0,410.6 456.4,409.6 458.9,408.6 461.4,407.6 463.9,406.5 466.4,405.5 468.8,404.4 471.3,403.3 473.8,402.2 476.3,401.1 478.8,400.0 481.2,398.8 483.7,397.7 486.2,396.6 488.7,395.5 491.2,394.3 493.6,393.2 496.1,392.1 498.6,391.0 501.1,389.9 503.6,388.9 506.0,387.8 508.5,386.8 511.0,385.7 513.5,384.7 516.0,383.8 518.4,382.8 520.9,381.9 523.4,381.0 525.9,380.1 528.4,379.2 530.8,378.4 533.3,377.6 535.8,376.9 538.3,376.2 540.8,375.5 543.2,374.9 545.7,374.2 548.2,373.7 550.7,373.1 553.2,372.6 555.6,372.2 558.1,371.7 560.6,371.3 563.1,371.0 565.6,370.7 568.0,370.4 570.5,370.1 573.0,369.9 575.5,369.7 578.0,369.6 580.4,369.4 582.9,369.3 585.4,369.2 587.9,369.2 590.4,369.1 592.8,369.1 595.3,369.1 597.8,369.1 600.3,369.1" class="shell0" />
+<line x1="601.5" y1="369.1" x2="809.8" y2="369.1" class="shell0" style="stroke-width:2.5"/>
+<line x1="809.8" y1="369.1" x2="1212.8" y2="404.4" class="shell0" />
+<line x1="209.1" y1="226.8" x2="209.1" y2="234.2" class="thin" />
+<line x1="209.1" y1="433.2" x2="209.1" y2="425.8" class="thin" />
+<line x1="367.2" y1="226.8" x2="367.2" y2="234.2" class="thin" />
+<line x1="367.2" y1="433.2" x2="367.2" y2="425.8" class="thin" />
+<line x1="601.5" y1="283.5" x2="601.5" y2="290.9" class="thin" />
+<line x1="601.5" y1="376.5" x2="601.5" y2="369.1" class="thin" />
+<line x1="809.8" y1="283.5" x2="809.8" y2="290.9" class="thin" />
+<line x1="809.8" y1="376.5" x2="809.8" y2="369.1" class="thin" />
+<line x1="1212.8" y1="248.2" x2="1212.8" y2="255.6" class="thin" />
+<line x1="1212.8" y1="411.8" x2="1212.8" y2="404.4" class="thin" />
+<rect x="219.6" y="234.2" width="24.8" height="191.6" class="hc" />
+<line x1="283.5" y1="234.2" x2="283.5" y2="425.8" class="scr" />
+<line x1="322.5" y1="234.2" x2="322.5" y2="425.8" class="scr" />
+<line x1="1212.8" y1="255.6" x2="1212.8" y2="404.4" class="scr" />
+<rect x="1212.8" y="255.6" width="37.2" height="148.8" class="solid" />
+<circle cx="1224.6" cy="367.2" r="33.5" class="thin" />
+<circle cx="1224.6" cy="292.8" r="33.5" class="thin" />
+<line x1="170.0" y1="330.0" x2="1250.0" y2="330.0" class="cl" />
+<path d="M209.1,552.3 L196.0,552.3 A26.0,26.0 0 0 0 170.0,526.2" class="shell0" />
+<line x1="209.1" y1="552.3" x2="367.2" y2="552.3" class="shell0" />
+<polyline points="367.2,552.3 369.6,552.3 372.1,552.3 374.6,552.3 377.1,552.3 379.6,552.4 382.0,552.5 384.5,552.6 387.0,552.7 389.5,552.8 392.0,553.0 394.4,553.3 396.9,553.5 399.4,553.9 401.9,554.2 404.4,554.6 406.8,555.1 409.3,555.6 411.8,556.1 414.3,556.7 416.8,557.4 419.2,558.1 421.7,558.8 424.2,559.6 426.7,560.4 429.2,561.3 431.6,562.2 434.1,563.2 436.6,564.2 439.1,565.3 441.6,566.4 444.0,567.6 446.5,568.8 449.0,570.0 451.5,571.2 454.0,572.5 456.4,573.8 458.9,575.2 461.4,576.6 463.9,578.0 466.4,579.4 468.8,580.8 471.3,582.3 473.8,583.8 476.3,585.2 478.8,586.7 481.2,588.2 483.7,589.7 486.2,591.2 488.7,592.7 491.2,594.2 493.6,595.7 496.1,597.2 498.6,598.6 501.1,600.1 503.6,601.5 506.0,602.9 508.5,604.3 511.0,605.7 513.5,607.0 516.0,608.3 518.4,609.6 520.9,610.8 523.4,612.0 525.9,613.2 528.4,614.3 530.8,615.4 533.3,616.5 535.8,617.5 538.3,618.4 540.8,619.3 543.2,620.2 545.7,621.0 548.2,621.8 550.7,622.5 553.2,623.2 555.6,623.8 558.1,624.4 560.6,624.9 563.1,625.3 565.6,625.8 568.0,626.2 570.5,626.5 573.0,626.8 575.5,627.0 578.0,627.3 580.4,627.4 582.9,627.6 585.4,627.7 587.9,627.8 590.4,627.8 592.8,627.9 595.3,627.9 597.8,627.9 600.3,627.9" class="shell0" />
+<line x1="601.5" y1="627.9" x2="809.8" y2="627.9" class="shell0" style="stroke-width:2.5"/>
+<line x1="809.8" y1="627.9" x2="1212.8" y2="605.6" class="shell0" />
+<path d="M209.1,807.7 L196.0,807.7 A26.0,26.0 0 0 1 170.0,833.8" class="shell0" />
+<line x1="209.1" y1="807.7" x2="367.2" y2="807.7" class="shell0" />
+<polyline points="367.2,807.7 369.6,807.7 372.1,807.7 374.6,807.7 377.1,807.7 379.6,807.6 382.0,807.5 384.5,807.4 387.0,807.3 389.5,807.2 392.0,807.0 394.4,806.7 396.9,806.5 399.4,806.1 401.9,805.8 404.4,805.4 406.8,804.9 409.3,804.4 411.8,803.9 414.3,803.3 416.8,802.6 419.2,801.9 421.7,801.2 424.2,800.4 426.7,799.6 429.2,798.7 431.6,797.8 434.1,796.8 436.6,795.8 439.1,794.7 441.6,793.6 444.0,792.4 446.5,791.2 449.0,790.0 451.5,788.8 454.0,787.5 456.4,786.2 458.9,784.8 461.4,783.4 463.9,782.0 466.4,780.6 468.8,779.2 471.3,777.7 473.8,776.2 476.3,774.8 478.8,773.3 481.2,771.8 483.7,770.3 486.2,768.8 488.7,767.3 491.2,765.8 493.6,764.3 496.1,762.8 498.6,761.4 501.1,759.9 503.6,758.5 506.0,757.1 508.5,755.7 511.0,754.3 513.5,753.0 516.0,751.7 518.4,750.4 520.9,749.2 523.4,748.0 525.9,746.8 528.4,745.7 530.8,744.6 533.3,743.5 535.8,742.5 538.3,741.6 540.8,740.7 543.2,739.8 545.7,739.0 548.2,738.2 550.7,737.5 553.2,736.8 555.6,736.2 558.1,735.6 560.6,735.1 563.1,734.7 565.6,734.2 568.0,733.8 570.5,733.5 573.0,733.2 575.5,733.0 578.0,732.7 580.4,732.6 582.9,732.4 585.4,732.3 587.9,732.2 590.4,732.2 592.8,732.1 595.3,732.1 597.8,732.1 600.3,732.1" class="shell0" />
+<line x1="601.5" y1="732.1" x2="809.8" y2="732.1" class="shell0" style="stroke-width:2.5"/>
+<line x1="809.8" y1="732.1" x2="1212.8" y2="754.4" class="shell0" />
+<line x1="209.1" y1="544.8" x2="209.1" y2="552.3" class="thin" />
+<line x1="209.1" y1="815.2" x2="209.1" y2="807.7" class="thin" />
+<line x1="367.2" y1="544.8" x2="367.2" y2="552.3" class="thin" />
+<line x1="367.2" y1="815.2" x2="367.2" y2="807.7" class="thin" />
+<line x1="601.5" y1="620.5" x2="601.5" y2="627.9" class="thin" />
+<line x1="601.5" y1="739.5" x2="601.5" y2="732.1" class="thin" />
+<line x1="809.8" y1="620.5" x2="809.8" y2="627.9" class="thin" />
+<line x1="809.8" y1="739.5" x2="809.8" y2="732.1" class="thin" />
+<line x1="1212.8" y1="598.2" x2="1212.8" y2="605.6" class="thin" />
+<line x1="1212.8" y1="761.8" x2="1212.8" y2="754.4" class="thin" />
+<rect x="219.6" y="552.3" width="24.8" height="255.4" class="hc" />
+<line x1="283.5" y1="552.3" x2="283.5" y2="807.7" class="scr" />
+<line x1="322.5" y1="552.3" x2="322.5" y2="807.7" class="scr" />
+<line x1="1212.8" y1="605.6" x2="1212.8" y2="754.4" class="scr" />
+<rect x="1212.8" y="605.6" width="37.2" height="148.8" class="solid" />
+<circle cx="1224.6" cy="717.2" r="33.5" class="thin" />
+<circle cx="1224.6" cy="642.8" r="33.5" class="thin" />
+<line x1="170.0" y1="680.0" x2="1250.0" y2="680.0" class="cl" />
+<line x1="105.5" y1="330.0" x2="163.8" y2="330.0" class="air" marker-end="url(#f)"/>
+<line x1="1256.2" y1="330.0" x2="1314.5" y2="330.0" class="air" marker-end="url(#f)"/>
+<line x1="105.5" y1="680.0" x2="163.8" y2="680.0" class="air" marker-end="url(#f)"/>
+<line x1="1256.2" y1="680.0" x2="1314.5" y2="680.0" class="air" marker-end="url(#f)"/>
+<rect x="627.6" y="354.2" width="156.2" height="1.9" class="solid" />
+<rect x="679.6" y="331.9" width="65.1" height="20.5" class="car" rx="2"/>
+<text x="40.0" y="300.0" class="l" text-anchor="start" >側視圖</text>
+<text x="40.0" y="660.0" class="l" text-anchor="start" >俯視圖</text>
+<line x1="170.0" y1="175.0" x2="209.1" y2="175.0" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="189.5" y="170.0" class="d halo" text-anchor="middle" >63</text>
+<text x="189.5" y="139.0" class="l" text-anchor="middle" >喇叭口</text>
+<line x1="209.1" y1="175.0" x2="367.2" y2="175.0" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="288.1" y="170.0" class="d halo" text-anchor="middle" >255</text>
+<text x="288.1" y="153.0" class="l" text-anchor="middle" >穩定段</text>
+<line x1="367.2" y1="175.0" x2="601.5" y2="175.0" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="484.3" y="170.0" class="d halo" text-anchor="middle" >378</text>
+<text x="484.3" y="153.0" class="l" text-anchor="middle" >收縮段</text>
+<line x1="601.5" y1="175.0" x2="809.8" y2="175.0" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="705.7" y="170.0" class="d halo" text-anchor="middle" >336</text>
+<text x="705.7" y="153.0" class="l" text-anchor="middle" >測試段</text>
+<line x1="809.8" y1="175.0" x2="1212.8" y2="175.0" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="1011.3" y="170.0" class="d halo" text-anchor="middle" >650</text>
+<text x="1011.3" y="153.0" class="l" text-anchor="middle" >擴散段</text>
+<line x1="1212.8" y1="175.0" x2="1250.0" y2="175.0" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="1231.4" y="170.0" class="d halo" text-anchor="middle" >60</text>
+<text x="1231.4" y="139.0" class="l" text-anchor="middle" >風扇</text>
+<line x1="170.0" y1="112.0" x2="1250.0" y2="112.0" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="710.0" y="107.0" class="d halo" text-anchor="middle" >風管全長 1,742</text>
+<text x="314.5" y="324.0" class="d halo" text-anchor="middle" >高 309</text>
+<text x="638.7" y="334.0" class="d halo" text-anchor="middle" >高 126</text>
+<text x="1097.5" y="324.0" class="d halo" text-anchor="middle" >出口 240×240</text>
+<text x="314.5" y="672.0" class="d halo" text-anchor="middle" >寬 412</text>
+<text x="706.9" y="672.0" class="d halo" text-anchor="middle" >寬 168</text>
+<text x="1097.5" y="672.0" class="d halo" text-anchor="middle" >出口 240×240</text>
+<text x="314.5" y="702.0" class="d halo" text-anchor="middle" >2.3 m/s</text>
+<text x="706.9" y="702.0" class="d halo" text-anchor="middle" >14.0 m/s</text>
+<text x="1072.7" y="702.0" class="d halo" text-anchor="middle" >5.1 m/s</text>
+<text x="254.3" y="224.2" class="n halo" text-anchor="middle" >吸管蜂巢 + 2 片網</text>
+<text x="1231.4" y="245.6" class="n halo" text-anchor="middle" >4 × 120 mm 風扇</text>
+<text x="1212.8" y="422.4" class="n halo" text-anchor="end" >安全網</text>
+<text x="705.7" y="386.0" class="n halo" text-anchor="middle" >地面板 + 1:43 車模</text>
+<text x="40.0" y="850.0" class="l" text-anchor="start" >← 進氣端淨空 ≥ 420</text>
+<text x="1360.0" y="850.0" class="l" text-anchor="end" >排氣端淨空 ≥ 840 →</text>
+<text x="700.0" y="850.0" class="l" text-anchor="middle" >風管 1,742 + 淨空 1,260 ≈ 3.0 m（約兩張課桌長）</text>
+</svg>

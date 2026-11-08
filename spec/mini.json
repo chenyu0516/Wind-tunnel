@@ -1,0 +1,206 @@
+{
+  "_about": "Agent-facing spec for the MINI class-project tunnel (1:43 car, Arduino Uno control, budget <= NT$5,000). Geometry is the 1:18 design (spec/geometry.json) scaled by 0.42, except: fan end (2x2 array of 120 mm 12 V fans, square diffuser exit), fixed V-saddles instead of rollers, 3 mm panels, and spacing rules scaled. Units mm unless the key says otherwise. 'tbd' = decide after measuring the purchased car or parts.",
+  "scale_factor": 0.42,
+
+  "frame": {
+    "origin": "x=0 at the contraction exit plane; y=0 on the tunnel centreline; z=0 on the test-section floor inner surface",
+    "x": "downstream", "y": "left when looking downstream (right-handed frame)", "z": "up",
+    "duct_axis_z": 63,
+    "duct_axis_note": "all modules coaxial with the test section"
+  },
+
+  "air": { "rho_kg_m3": 1.20, "nu_m2_s": 1.5e-5 },
+  "speeds_m_s": { "min": 5, "demo": 10, "max_target": 14, "coefficient_grade_min": 12 },
+  "force_resolution_mN": 1.0,
+
+  "inlet_bell":   { "x0": -696, "length": 63, "lip_radius_min": 42 },
+  "settling":     { "x0": -633, "length": 255, "width": 412, "height": 309 },
+  "conditioning": {
+    "honeycomb": { "cell": 6, "depth": 40, "x_upstream_face": -616, "make": "drinking straws (6 mm) or 3D-printed hex tiles" },
+    "screens_x": [-513, -450],
+    "screen_open_area": [0.60, 0.70],
+    "screen_wire_d_max": 0.2,
+    "screen_material": "polyester voile or stainless mesh, open area checked",
+    "min_gap_between_elements": 63,
+    "min_gap_last_screen_to_contraction": 71
+  },
+  "contraction": {
+    "x0": -378, "length": 378,
+    "inlet": [412, 309], "exit": [168, 126],
+    "profile": "h(s) = hi - (hi - he) * (6 t^5 - 15 t^4 + 10 t^3), t = s / L, same law for width and height",
+    "plan_table_s": [0, 76, 151, 189, 227, 302, 378],
+    "wall_sheet": "0.5-1 mm PET or PC sheet over laser-cut or hand-cut plywood/MDF ribs",
+    "exit_step_max": 0.3,
+    "exit_step_rule": "any residual step must be backward-facing (downstream wall recessed outward)"
+  },
+  "test_section": {
+    "x0": 0, "length": 336, "width": 168, "height": 126,
+    "side_wall_t": 3, "roof_t_min": 3, "floor_t": 3,
+    "material": "clear polycarbonate (solid, not twin-wall)",
+    "roof_hinge_x": 0, "roof_shim_at_exit": [0, 6]
+  },
+  "diffuser": {
+    "x0": 336, "length": 650, "inlet": [168, 126], "outlet": [240, 240],
+    "make": "four flat trapezoid panels (rectangle to square)",
+    "safety_mesh_aperture": [5, 10], "safety_mesh_x": 986
+  },
+  "fan": {
+    "x0": 986, "length": 60,
+    "model": "4 x Delta PFC1212DE (or equivalent 120x120x38 12 V 4-wire PWM high-static fan), 2x2 array",
+    "count": 4, "size": 120, "depth": 38,
+    "q_max_m3h_each": 430, "p_max_pa": 352,
+    "curve_note": "linear between published max flow and max static pressure; real curve to be checked",
+    "current_a_max_each": 4.8, "current_a_measured_each": [2.1, 3.0],
+    "voltage": 12, "pwm_hz": 25000, "noise_dba_each": 66.5
+  },
+  "clear_air": { "intake_min": 420, "exhaust_min": 840, "room_straight_run_approx": 3100 },
+
+  "losses_K": {
+    "_note": "referred to test-section q; diffuser, safety screen and exit follow AR = 2.72",
+    "inlet_conditioning": 0.13,
+    "contraction": 0.03,
+    "ts_walls": 0.05,
+    "ground_plate": 0.03,
+    "model_supports": 0.03,
+    "diffuser": 0.173,
+    "safety_screen": 0.135,
+    "fan_plane_q": 0.135
+  },
+
+  "pressure_taps": {
+    "settling_ring": { "x": -420, "count": 4 },
+    "entrance_ring": { "x": 13, "count": 4 },
+    "side_wall_taps": { "x": [42, 126, 210, 294], "d": 1, "z": 75, "side": "-y" },
+    "plenum_vent_tap": { "x": 178, "z": 75, "side": "-y" }
+  },
+  "survey": {
+    "stations_x": [126, 231],
+    "holes_y": [-42, -21, 0, 21, 42],
+    "heights_above_plate": [6, 17, 29, 42, 55]
+  },
+
+  "ground_plate": {
+    "x_le": 42, "x_te": 294, "length": 252, "thickness": 3,
+    "z_underside": 21, "flatness": 0.15,
+    "le_shape": "4:1 ellipse", "te": "adjustable flap",
+    "wheel_openings": { "count": 4, "approx_size_x_by_y": [20, 10], "clearance": [1, 2] }
+  },
+  "wheel_wells": { "count": 4, "depth_max": 12, "floor": "closed" },
+  "post": { "bare_size_w_by_len": [3, 21], "shroud_tube_d": 5 },
+
+  "car": {
+    "scale": "1:43", "length": 105, "x_nose": 126, "x_tail": 231,
+    "wheelbase": 63, "track": 38, "axle_x": [147, 210], "frontal_area_m2": 0.00114,
+    "ride_height": [3, 3.5], "tyre_d_planning": 16, "mass_kg": [0.08, 0.2],
+    "_note": "planning values for a typical 1:43 hatchback; measure the purchased model in week 1"
+  },
+  "cradle": {
+    "type": "fixed V-saddle per wheel (3D-printed PETG or aluminium)",
+    "contact_angle_deg": 20.9,
+    "rule": "saddle contact points below plate top; pitch set by saddle shims only"
+  },
+  "balance": {
+    "moving_mass_max_kg": 0.6,
+    "drag_blades": { "count": 4, "t": 0.1, "w": 10, "free_len": 20, "material": "feeler-gauge spring steel" },
+    "drag_cell": { "capacity_kg": 0.1, "rated_defl_mm_assumed": 0.2 },
+    "vertical_cell": { "capacity_kg": 1.0 },
+    "adc": "2 x HX711 (10 samples/s)",
+    "stops": { "drag_N": 0.6, "vertical_kg": 0.9 }
+  },
+  "plenum": {
+    "x": [90, 270], "y": [-80, 80], "depth": 130,
+    "vent_line_d": 4, "pedestal_added_mass_kg": 5,
+    "skirt": "thin rubber (glove latex or balloon) between plenum floor and pedestal"
+  },
+  "probes": {
+    "pitot_nose": { "x": 55, "y": 55, "z_above_plate": 63, "tube_d": 4 },
+    "fog_outlet": { "x_approx": 92, "optional": true }
+  },
+
+  "electronics": {
+    "board": "Arduino Uno R3",
+    "pins": {
+      "D9":  "fan PWM, Timer1 25 kHz, all 4 fan PWM wires",
+      "D2":  "fan 1 tach (INT0, internal pull-up)",
+      "D3":  "fan 2 tach (INT1, internal pull-up)",
+      "D4":  "HX711 drag DT",
+      "D5":  "HX711 drag SCK",
+      "D6":  "HX711 vertical DT",
+      "D7":  "HX711 vertical SCK",
+      "D8":  "hatch interlock switch (input pull-up; open = fans off)",
+      "D11": "fogger MOSFET (optional)",
+      "D12": "LED bar MOSFET (optional)",
+      "D13": "status LED",
+      "A0":  "HX711 #3 DT (bell manometer, speed sensor A)",
+      "A1":  "HX711 #3 SCK (bell manometer)",
+      "A4":  "I2C SDA (backup BMP280 0x76 and 0x77, optional LCD1602 0x27)",
+      "A5":  "I2C SCL"
+    },
+    "speed_sensor": {
+      "_note": "two home-made sensors on the same taps (tees): A is the main one, B is backup and cross-check; C only if both fail",
+      "plumbing": "high side (Pitot total, or settling ring) -> box air of A and canister B_hi; low side (Pitot static, or entrance ring) -> inside of the bell and canister B_lo",
+      "A_bell_manometer": {
+        "bell": { "inner_d": 60, "wall_t": 1.2, "height": 80, "material": "3D-printed PETG, straight cylinder (not a tapered cup), closed top with hook eye", "density_g_cm3": 1.27 },
+        "liquid": { "name": "baby oil (mineral oil)", "density_kg_m3": 850, "depth": 45 },
+        "immersion": 35,
+        "rim_above_dish_floor": 10,
+        "dish_inner_d_min": 100,
+        "snorkel": { "tube": "4 mm brass tube bent into a U, enters the bell from below the rim", "tip_above_rest_level": 35 },
+        "load_cell_kg": 0.1,
+        "adc": "HX711 #3 on A0/A1",
+        "box": "airtight food container >= 1.5 L; load cell on a rigid bracket glued to the box floor (not the lid); wires out through a hot-glued hole",
+        "sign": "lower pressure inside the bell -> bell pulled down -> load rises with q (hanger can be a thread)",
+        "effective_area": "calibrate; expect between inner and mean-wall area",
+        "auto_zero": "average 5 s with fans off before every run"
+      },
+      "B_barometer_pair": {
+        "part": "2 x BMP280 module with on-board 3.3 V regulator and level shifting (5 V safe)",
+        "i2c_addresses": ["0x76", "0x77"],
+        "noise_pa_per_sample": 1.3,
+        "tco_pa_per_k": 1.5,
+        "offset_between_sensors_pa": 12,
+        "samples_per_s": 23,
+        "average_s": 1.0,
+        "run_temp_drift_k": 0.3,
+        "mounting": "each sealed in a 35 mm film canister or small airtight box with one tube barb; both taped together and wrapped in foam so they stay at the same temperature",
+        "also_gives": "absolute pressure and temperature for air density (replaces the optional BME280)",
+        "auto_zero": "average 5 s with fans off before every run; subtract the B_hi - B_lo offset"
+      },
+      "C_last_resort": "buy Honeywell ABP2MRRN001ND2A3XX (DigiKey Taiwan NT$755, +NT$600 shipping under NT$1,400; 3.3 V only, needs a level shifter) or use the water manometer + fan-speed table",
+      "calibration": {
+        "reference": "inclined water manometer, slope 1:10, 4 mm ID clear tube on a board >= 300 mm, coloured water",
+        "read_mm_along_tube": 0.5,
+        "source": "60 mL syringe through a tee; points 0, 2, 5, 10, 15, 20 mm water vertical, up then down, 3 repeats",
+        "accept_linearity_pa_or_pct": [0.5, 1.0],
+        "accept_hysteresis_pa": 0.5,
+        "accept_leak_pa_per_60s": 0.5,
+        "accept_A_vs_B_pa_or_pct": [1.0, 2.0]
+      },
+      "fallback_rule": "use A if it passes calibration and agrees with B in the tunnel; else B (5 m/s less accurate); else C"
+    },
+    "psu": { "voltage": 12, "current_a_min": 20, "option": "old ATX PC power supply (12 V rail >= 20 A) or 12 V 25 A LED supply" },
+    "fuse_a": 25,
+    "estop": "latching switch in the 12 V line to the fans (hardware, independent of the Uno)",
+    "logging": "Serial 115200 baud CSV to laptop"
+  },
+
+  "budget_ntd": {
+    "cap": 5000,
+    "items": [
+      { "item": "4 x 12038 PWM fan (Delta PFC1212DE or equivalent)", "low": 2000, "high": 3000, "basis": "US$16-24 each in 2026 listings (Newegg, eBay, Walmart); about NT$500-750" },
+      { "item": "speed sensor A: 100 g load cell + HX711, airtight box, oil, fittings (bell printed at school)", "low": 230, "high": 350, "basis": "estimate" },
+      { "item": "speed sensor B: 2 x BMP280 5 V modules, 2 film canisters / small boxes", "low": 120, "high": 300, "basis": "estimate" },
+      { "item": "calibration: inclined manometer tube + board, 60 mL syringe, tees", "low": 80, "high": 150, "basis": "estimate" },
+      { "item": "12 V >= 20 A power supply", "low": 0, "high": 900, "basis": "free if an old ATX PSU is available; open-frame 12 V 20 A ~US$17 wholesale, retail estimate NT$500-900" },
+      { "item": "100 g + 1 kg load cells, 2 x HX711", "low": 250, "high": 400, "basis": "estimate" },
+      { "item": "Pitot tube 4 mm, brass U-tube for the bell snorkel, silicone tubing, tees", "low": 150, "high": 300, "basis": "estimate" },
+      { "item": "3 mm clear PC panels (test section + plenum, about 3.7 cai)", "low": 300, "high": 500, "basis": "NT$60-75 per cai in Yahoo listings, plus cutting fee" },
+      { "item": "plywood/MDF ribs, 0.5-1 mm PET sheet, diffuser panels", "low": 300, "high": 600, "basis": "estimate" },
+      { "item": "straws or printed honeycomb, voile screens", "low": 100, "high": 200, "basis": "estimate" },
+      { "item": "1:43 diecast car", "low": 80, "high": 450, "basis": "SHEIN Taiwan NT$77-445" },
+      { "item": "18 AWG wire, fuse holder, E-stop, connectors, screws, glue", "low": 200, "high": 400, "basis": "estimate" },
+      { "item": "feeler gauge (blades), rubber skirt, misc", "low": 100, "high": 200, "basis": "estimate" }
+    ],
+    "first_cut_if_over": "skip speed sensor B (saves NT$120-300); then the cheapest fans and a free ATX PSU"
+  }
+}

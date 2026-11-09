@@ -31,7 +31,10 @@
     "plan_table_s": [0, 76, 151, 189, 227, 302, 378],
     "wall_sheet": "0.5-1 mm PET or PC sheet over laser-cut or hand-cut plywood/MDF ribs",
     "exit_step_max": 0.3,
-    "exit_step_rule": "any residual step must be backward-facing (downstream wall recessed outward)"
+    "exit_step_rule": "any residual step must be backward-facing (downstream wall recessed outward)",
+    "rib_hole_rule": "plan_table sizes are the air passage; each rib is a 6 mm plywood frame whose hole = plan size + 2 x sheet thickness, border 25 mm",
+    "spines": { "count": 4, "t": 6, "x": [-393, 8], "slot_depth": 12.5,
+      "note": "plywood boards at top/bottom (y = 0) and left/right (z = axis); inner edge follows the sheet outer surface, outer edge straight; half-lap slots with the ribs; extend 15 mm upstream and 8 mm downstream so the end ribs sit in closed slots; the bottom spine's straight edge is the assembly datum" }
   },
   "test_section": {
     "x0": 0, "length": 336, "width": 168, "height": 126,
@@ -45,7 +48,9 @@
     "safety_mesh_aperture": [5, 10], "safety_mesh_x": 986
   },
   "fan": {
-    "x0": 986, "length": 60,
+    "x0": 986, "length": 100,
+    "layers_max": 2,
+    "layout_note": "fan box (x 988-1086) holds two stacked 2x2 layers (x 998-1036 and 1036-1074): 4 x PFC1212DE in one layer, or 8 x QFR1212GHE stacked in pairs; choose after arduino/fan_pwm_test",
     "model": "4 x Delta PFC1212DE (or equivalent 120x120x38 12 V 4-wire PWM high-static fan), 2x2 array",
     "count": 4, "size": 120, "depth": 38,
     "q_max_m3h_each": 430, "p_max_pa": 352,
@@ -53,6 +58,24 @@
     "current_a_max_each": 4.8, "current_a_measured_each": [2.1, 3.0],
     "voltage": 12, "pwm_hz": 25000, "noise_dba_each": 66.5
   },
+  "portable": {
+    "modules": [
+      { "name": "1 inlet", "x": [-696, 8], "contents": "bell, settling chamber, honeycomb, screens, contraction, ribs, spines" },
+      { "name": "2 test section", "x": [0, 336], "contents": "test section, ground plate, wells, plenum, balance (transport-locked)" },
+      { "name": "3 fan end", "x": [316, 1086], "contents": "sleeve 2, diffuser, safety mesh, fan box, fans" }
+    ],
+    "sleeves": [
+      { "x": [0, 20], "on": "contraction end rib", "over": "test-section inlet" },
+      { "x": [316, 344], "on": "diffuser inlet", "over": "test-section outlet" }
+    ],
+    "sleeve_t": 3, "sleeve_clearance": 0.3, "sleeve_seal": "tape the seam after assembly (tunnel runs below room pressure)",
+    "levelling_feet": { "per_module": 4, "thread": "M6", "pad_d": 18 },
+    "transport_lock": { "x": 200, "screws": 4, "clamps": ["common frame (z -37.5)", "balance base (z -88)"], "rule": "tighten for transport; back out fully and check clearance before measuring" },
+    "pedestal": "column unbolts from the balance base; pedestal and ballast stay in the classroom",
+    "electronics_board": { "x": [190, 390], "y": [-295, -155], "holds": "Uno, 3 x HX711, sensor B canisters, tees, connector strip, 2 pressure quick-connects" },
+    "sensor_A_transport": "pour the oil back into its bottle; carry the bell separately; refill to the 45 mm mark"
+  },
+  "smoke": { "wand_x": 100, "wand_tip": [114, 0, 47], "wand_d": 4, "port": "rubber grommet in the roof", "source": "jar with incense or ultrasonic mister, fed by tunnel suction through a hose with a pinch clamp", "speed_m_s": [3, 5], "rule": "remove the wand and plug the port for force runs" },
   "clear_air": { "intake_min": 420, "exhaust_min": 840, "room_straight_run_approx": 3100 },
 
   "losses_K": {
@@ -199,7 +222,8 @@
       { "item": "straws or printed honeycomb, voile screens", "low": 100, "high": 200, "basis": "estimate" },
       { "item": "1:43 diecast car", "low": 80, "high": 450, "basis": "SHEIN Taiwan NT$77-445" },
       { "item": "18 AWG wire, fuse holder, E-stop, connectors, screws, glue", "low": 200, "high": 400, "basis": "estimate" },
-      { "item": "feeler gauge (blades), rubber skirt, misc", "low": 100, "high": 200, "basis": "estimate" }
+      { "item": "feeler gauge (blades), rubber skirt, misc", "low": 100, "high": 200, "basis": "estimate" },
+      { "item": "portable: 12 x M6 levelling feet, 4 thumb screws (transport lock), 2 pressure quick-connects", "low": 150, "high": 300, "basis": "estimate" }
     ],
     "first_cut_if_over": "skip speed sensor B (saves NT$120-300); then the cheapest fans and a free ATX PSU"
   }

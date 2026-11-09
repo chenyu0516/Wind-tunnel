@@ -122,7 +122,7 @@ The proposed facility is an open-return wind tunnel driven by a downstream array
 | Circuit | Open-return with downstream suction fans |
 | Test-section cross-section | 168 × 126 mm |
 | Test-section length | 336 mm |
-| Overall duct length | Approximately 1.7 m |
+| Overall duct length | Approximately 1.8 m (three portable modules) |
 | Velocity range | Approximately 5–14 m/s |
 | Drive | Four 120 × 120 × 38 mm 12 V PWM fans in a 2 × 2 array |
 | Control and acquisition | Arduino Uno; closed-loop speed control on measured $q$ |

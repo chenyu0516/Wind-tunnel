@@ -10,7 +10,7 @@ A desk-sized, open-return suction wind tunnel for measuring the drag and downfor
 
 | | |
 | --- | --- |
-| Duct length | about 1.7 m (fits on two classroom desks; needs about 3 m of straight floor space including inlet and exhaust clearance) |
+| Duct length | 1.78 m in three carry-sized modules joined by slip-on sleeves (needs about 3.1 m of straight floor space including inlet and exhaust clearance) |
 | Test section | 168 × 126 × 336 mm, 3 mm clear polycarbonate |
 | Contraction | 6:1 |
 | Air speed | 5–14 m/s (class demo at 10 m/s; coefficient-grade data from 12 m/s up) |
@@ -18,7 +18,7 @@ A desk-sized, open-return suction wind tunnel for measuring the drag and downfor
 | Force balance | 100 g load cell for drag, 1 kg load cell for vertical force, about 1 mN (0.1 gf) resolution |
 | Speed sensing | Home-made: (A) a bell manometer on a load cell, primary; (B) a pair of BMP280 barometers, backup |
 | Controller | Arduino Uno + 3 × HX711 |
-| Budget | ≤ NT$5,000 (current estimate NT$3,910–7,750; see the shopping list for the low-cost route) |
+| Budget | ≤ NT$5,000 (current estimate NT$4,060–8,050; see the shopping list for the low-cost route) |
 
 The geometry is the earlier 1:18 design scaled by 0.42, with three changes: computer fans in place of an industrial fan, fixed V-shaped wheel saddles in place of rollers, and 3 mm panels.
 
@@ -34,6 +34,7 @@ Most of the documents for people are in Traditional Chinese (Taiwan).
 | [spec/mini.json](spec/mini.json) | Single source of every dimension, pin assignment, and budget line |
 | [spec/README.md](spec/README.md) | Spec conventions and design rules, written for coding and CAD agents |
 | [figures/](figures/) | Figures M1–M8 (Chinese labels), generated from the spec |
+| [cad/mini_tunnel.fs](cad/mini_tunnel.fs) | 3D model as Onshape FeatureScript (one custom feature, parts named by plan section) |
 
 ## Tools
 

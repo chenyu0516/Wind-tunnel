@@ -1,6 +1,6 @@
 # Agent spec: mini class-project tunnel
 
-Audience: coding/CAD agents (Arduino sketch, Onshape FeatureScript, calculation and drawing scripts). People should read [build_plan_mini.zh-TW.md](../build_plan_mini.zh-TW.md), [model.md](../model.md) and [shopping_list.zh-TW.md](../shopping_list.zh-TW.md) instead.
+Audience: coding/CAD agents (Arduino sketch, Onshape FeatureScript, calculation and drawing scripts). People should read [build_plan_mini.md](../build_plan_mini.md), [model.md](../model.md) and [shopping_list.md](../shopping_list.md) instead (Traditional Chinese versions are kept as `*.zh-TW.md`).
 
 Design: 1:43 car, the 1:18 reference design scaled by 0.42, Arduino Uno controls everything, budget at most NT$5,000. The 1:18 reference design is archived in [archive/full_1to18/](../archive/full_1to18/) and is not built.
 
@@ -12,7 +12,7 @@ Design: 1:43 car, the 1:18 reference design scaled by 0.42, Arduino Uno controls
 | `tools/airflow_calc.py` | Generic duct calculations (loads `WT_SPEC`, default `spec/mini.json`). |
 | `tools/mini_calc.py` | Mini report: fan operating points, forces, balance, power, budget. |
 | `tools/test_mini.py` | 23 consistency tests plus WATCH warnings. Run after any edit to `mini.json`. |
-| `tools/make_mini_figures.py` | Draws `figures/M1–M8*.svg` from the JSON (Traditional Chinese labels). |
+| `tools/make_mini_figures.py` | Draws `figures/M1–M8*.svg` (Traditional Chinese labels) and `figures/en/M1–M8*.svg` (English, via `tools/figure_labels_en.py`) from the JSON. |
 | `tools/svg_kit.py` | Shared SVG drawing helpers. No plan numbers. |
 | `arduino/fan_pwm_test/` | One-fan go/no-go sketch for 2-wire fans switched by a MOSFET (compiles for Uno). |
 
@@ -46,7 +46,7 @@ python3 tools/make_mini_figures.py  # regenerate figures after any spec change
 
 ## WATCH items (from test_mini.py)
 
-- Budget upper estimate (NT$7,750) exceeds the NT$5,000 cap; follow `budget_ntd.first_cut_if_over` and the cheap path in shopping_list.zh-TW.md.
+- Budget upper estimate (NT$8,050) exceeds the NT$5,000 cap; follow `budget_ntd.first_cut_if_over` and the low-cost route in shopping_list.md.
 - V-saddle drops the tyre about 0.53 mm, about 18% of a 3 mm ride height; record actual ride height.
 
 Do not "fix" these in the JSON; they are the user's decisions.

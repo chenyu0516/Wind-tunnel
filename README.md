@@ -2,7 +2,7 @@
 
 A desk-sized, open-return suction wind tunnel for measuring the drag and downforce of 1:43 die-cast car models. It is a general-education course final project: an Arduino Uno does all the control and data logging, and the material budget is capped at NT$5,000.
 
-![Side and top view of the mini tunnel, to scale](figures/M1-airpath.svg)
+![Side and top view of the mini tunnel, to scale](figures/en/M1-airpath.svg)
 
 **Status (November 2026): design stage.** Nothing is built yet. The fan model is still being chosen, and the car dimensions are estimates until the model car is bought and measured. Every number below is a design target, not a measured result.
 
@@ -24,16 +24,17 @@ The geometry is the earlier 1:18 design scaled by 0.42, with three changes: comp
 
 ## Documents
 
-Most of the documents for people are in Traditional Chinese (Taiwan).
+The documents are in English. The earlier Traditional Chinese (Taiwan) versions of the plan and shopping list are kept alongside them.
 
 | File | What it is |
 | --- | --- |
-| [build_plan_mini.zh-TW.md](build_plan_mini.zh-TW.md) | **Start here.** Build plan: components, balance, Arduino control, speed sensors, calibration, safety, budget, acceptance tests, build order, open questions |
-| [shopping_list.zh-TW.md](shopping_list.zh-TW.md) | Parts list with Shopee search terms, prices, and how to stay under NT$5,000 |
+| [build_plan_mini.md](build_plan_mini.md) | **Start here.** Build plan: components, balance, Arduino control, speed sensors, calibration, safety, carrying and setup, budget, acceptance tests, build order, open questions |
+| [shopping_list.md](shopping_list.md) | Parts list with Shopee search terms, prices, and how to stay under NT$5,000 |
+| [build_plan_mini.zh-TW.md](build_plan_mini.zh-TW.md), [shopping_list.zh-TW.md](shopping_list.zh-TW.md) | Earlier Traditional Chinese versions, kept for reference |
 | [model.md](model.md) | Research methodology written as a paper (English): theory, facility, calibration, test program, uncertainty, limitations, references |
 | [spec/mini.json](spec/mini.json) | Single source of every dimension, pin assignment, and budget line |
 | [spec/README.md](spec/README.md) | Spec conventions and design rules, written for coding and CAD agents |
-| [figures/](figures/) | Figures M1–M8 (Chinese labels), generated from the spec |
+| [figures/en/](figures/en/) | Figures M1–M8 in English, generated from the spec ([figures/](figures/) holds the Chinese-labelled set) |
 | [cad/mini_tunnel.fs](cad/mini_tunnel.fs) | 3D model as Onshape FeatureScript (one custom feature, parts named by plan section) |
 
 ## Tools
@@ -43,7 +44,7 @@ The Python tools use only the standard library (tested with Python 3.11). Run th
 ```sh
 python3 tools/test_mini.py          # consistency checks on spec/mini.json (23 tests plus WATCH warnings)
 python3 tools/mini_calc.py          # fan operating points, forces, sensor resolution, panel deflection, budget
-python3 tools/make_mini_figures.py  # regenerate figures/M1–M8 from the spec
+python3 tools/make_mini_figures.py  # regenerate figures/M1–M8 (Chinese) and figures/en/M1–M8 (English) from the spec
 ```
 
 After changing `spec/mini.json` (for example, after measuring the car), run the tests and regenerate the figures. The two WATCH items, the budget upper bound and the reduced ride height on the V-saddles, are known and accepted. They are not errors.
@@ -72,12 +73,14 @@ The main control sketch (speed PID, automatic zero/ramp/settle/capture/re-zero s
 
 ```
 .
-├── build_plan_mini.zh-TW.md    build plan (start here)
-├── shopping_list.zh-TW.md      parts and budget
+├── build_plan_mini.md          build plan (start here)
+├── shopping_list.md            parts and budget
+├── *.zh-TW.md                  earlier Traditional Chinese versions
+├── cad/mini_tunnel.fs          3D model (Onshape FeatureScript)
 ├── model.md                    research methodology (paper format)
 ├── spec/                       mini.json + agent-facing spec notes
 ├── tools/                      calculations, tests, figure generator
-├── figures/                    M1–M8 SVG figures
+├── figures/                    M1–M8 SVG figures (Chinese); figures/en/ English
 ├── arduino/fan_pwm_test/       fan go/no-go sketch
 └── archive/full_1to18/         earlier 1:18 design (reference only, not built)
 ```

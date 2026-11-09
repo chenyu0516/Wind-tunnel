@@ -4,9 +4,29 @@
 Set svg_kit.OUT to the output folder before calling Svg.save().
 """
 import pathlib
+import re
 from xml.sax.saxutils import escape
 
 OUT = pathlib.Path(__file__).resolve().parent.parent / "figures"
+
+# Optional label translation: set TR to a dict {template: translated template}, where a template
+# is the label with each number replaced by {0}, {1}, ... in order. None = draw labels as written.
+TR = None
+MISSING = set()
+_NUM = re.compile(r"\d[\d,]*(?:\.\d+)?")
+_CJK = re.compile(r"[　-〿一-鿿＀-￯]")
+
+
+def translate(s):
+    if TR is None or not _CJK.search(s):
+        return s
+    nums = _NUM.findall(s)
+    counter = iter(range(len(nums)))
+    key = _NUM.sub(lambda m: "{%d}" % next(counter), s)
+    if key not in TR:
+        MISSING.add(key)
+        return s
+    return TR[key].format(*nums)
 
 FONT = "'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sans-serif"
 STYLE = f"""
@@ -78,7 +98,7 @@ class Svg:
 
     def text(self, x, y, s, cls="l", anchor="start", halo=False, extra=""):
         c = cls + (" halo" if halo else "")
-        self.add(f'<text x="{x:.1f}" y="{y:.1f}" class="{c}" text-anchor="{anchor}" {extra}>{escape(s)}</text>')
+        self.add(f'<text x="{x:.1f}" y="{y:.1f}" class="{c}" text-anchor="{anchor}" {extra}>{escape(translate(s))}</text>')
 
     def lines(self, x, y, rows, cls="n", dy=17, anchor="start", halo=False):
         for i, r in enumerate(rows):
@@ -103,7 +123,7 @@ class Svg:
         OUT.mkdir(parents=True, exist_ok=True)
         body = "\n".join(self.items)
         svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.w}" height="{self.h}" viewBox="0 0 {self.w} {self.h}" role="img" aria-labelledby="title desc">\n'
-               f'<title id="title">{escape(self.title)}</title>\n<desc id="desc">{escape(self.desc)}</desc>\n'
+               f'<title id="title">{escape(translate(self.title))}</title>\n<desc id="desc">{escape(translate(self.desc))}</desc>\n'
                f'<defs>{DEFS}<style>{STYLE}</style></defs>\n'
                f'<rect width="{self.w}" height="{self.h}" rx="14" fill="#fafcfd"/>\n{body}\n</svg>\n')
         (OUT / name).write_text(svg, encoding="utf-8")

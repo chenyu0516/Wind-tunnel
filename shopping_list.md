@@ -1,0 +1,134 @@
+# Mini Wind Tunnel Shopping List (1:43, Arduino Uno, cap NT$5,000)
+
+Goes with [build_plan_mini.md](build_plan_mini.md). The earlier Traditional Chinese version is kept at [shopping_list.zh-TW.md](shopping_list.zh-TW.md). Prices marked "checked" are based on real listings (sources at the end); prices marked "estimate" have no Taiwanese listing checked yet, so confirm on Shopee before ordering. The Shopee search terms are left in Chinese because that is what you type on Shopee. The Arduino Uno is already owned and not counted.
+
+## Why the upper estimate reaches NT$7,000–8,000
+
+Adding the most expensive case of every item gives **NT$8,050**; the cheapest case of every item gives **NT$4,060**. Most of the gap comes from three things:
+
+| Item | Price | Share of the lowest total | Why it cannot be dropped |
+| --- | --- | --- | --- |
+| 4 × 12038 high-static-pressure PWM fans | 2,000–3,000 | 51% | Must push the whole tunnel's resistance at 14 m/s (about 85 Pa, 1,070 m³/h). Ordinary PC case fans reach only about 75 Pa; four of them give only about 7 m/s |
+| Home-made speed sensor A + backup B + calibration | 430–800 | 11% | The dynamic pressure is only 15–118 Pa; ready-made digital differential-pressure sensors cost NT$1,100–1,600 with shipping, so a home-made bell manometer (primary) + two BMP280s (backup) is used instead |
+| 12 V 20 A power supply | 0–900 | 0–20% | Four fans draw about 12–19 A at full power; an old PC supply is free, a new one costs about 500–900 |
+
+**The other 10 small items cost only NT$80–600 each, but together add up to about NT$1,600–3,350.** So "7,000–8,000" is not one expensive item: the fans are half, plus many small things. A real order usually lands in between (about 5,000–6,000), so **staying at 5,000 means deliberately following the low-cost route below.**
+
+## Low-cost route (target ≤ NT$5,000)
+
+1. **Power supply: an old PC ATX supply (free).** Ask the school IT office, recycling, or a retired home PC; the 12 V output must be rated ≥ 20 A (supplies of 400 W and up usually are).
+2. **Fans at NT$500 or less each:** look for server pulls; 4 fans = 2,000.
+3. **Tunnel body from scrap wherever possible:** ribs, spines, sleeves and the settling chamber from the school workshop's offcuts or cardboard; only the test section must be bought clear PC.
+4. **A cheap closed-body car** (about NT$80–200), not a collector's model.
+5. **Borrow** the 0.01 g pocket scale, soldering iron, multimeter and 3D printer.
+
+This comes to about **NT$4,150–4,350**. If fans cannot be found at 500 or less, or a new power supply is needed and the total goes over 5,000, **cut speed sensor B first** (saves NT$120–300 but loses the backup and cross-check); speed sensor A and the calibration manometer cannot be cut.
+
+## Option C: buy a ready-made ABP2 (only if home-made A and B both fail)
+
+The decision rule is in the plan, "D2. Home-made speed sensors". Normally **do not buy this**; this section just keeps the information ready.
+
+| Source | In stock? | Shipping | Notes |
+| --- | --- | --- | --- |
+| **DigiKey Taiwan** (digikey.tw) | Yes, NT$755, 64 in stock in 2026-11 | Free over NT$1,400, otherwise NT$600 | The only source confirmed in stock; about 4 days |
+| Mouser Taiwan (mouser.tw) | Not confirmed (search timed out) | Free over NT$1,400 | Search the full part number and compare |
+| RS Taiwan | Not this part (only other ranges such as 005ND) | Individuals free over NT$1,300 (before tax), otherwise NT$500 | — |
+| Shopee, Ruten, Taobao | Not found | — | Not recommended: easy to get a different suffix or an unknown source |
+
+**Ways to save the shipping (pick one):**
+
+1. **Bring the DigiKey order up to NT$1,400:** add a level-shifter module (Adafruit 757), a test MOSFET module, a 1000 µF capacitor, better HX711s (SparkFun). The extra parts cost about the same as the shipping, and they are better parts.
+2. **Share one DigiKey order** with classmates or a club.
+3. Buy one alone: NT$755 + 600 = NT$1,355.
+
+### How to connect it when it arrives
+
+1. Solder the ABP2 onto perfboard: line the two rows of pins up with two rows of pads 4 holes apart and solder pin by pin with a fine tip; add a 6-pin header.
+2. Pins (datasheet Table 21): 1 = GND, 2 = VDD, 3 = EOC (not connected), 4 = NC, 5 = SDA, 6 = SCL.
+3. **VDD to the Uno's 3V3**, never 5V (datasheet absolute maximum 3.6 V).
+4. SDA and SCL to the low-voltage side of the level shifter (LV to 3V3); the high-voltage side (HV to 5V) to Uno A4 and A5.
+5. Port 1 (high) to the Pitot total pressure or the settling-chamber static ring; port 2 to the test-section entrance static ring.
+6. Code: the datasheet has an Arduino Uno example. Before every fan start, average 5 s with fans off as the zero and subtract it. Without zeroing the error can reach ±12.5 Pa, while the dynamic pressure at 5 m/s is only 15 Pa.
+
+## List
+
+### A. Fans and power
+
+| Item | Spec and quantity | Shopee search | NT$ | Basis | Check before ordering |
+| --- | --- | --- | --- | --- | --- |
+| High-static-pressure fan | 120×120×38 mm, 12 V, **4-wire PWM**, max static pressure ≥ 300 Pa (about 1.2 inH₂O), ×4 (or 8 × QFR1212GHE for two layers, after the fan test) | `12038 PWM 風扇`, `Delta PFC1212DE`, `伺服器 風扇 12038` | 2,000–3,000 | Checked (US$16–24 each) | Must be 4-wire (has a PWM pin); read the static pressure on the datasheet, not just the flow; buy 4 of the same model |
+| 12 V power supply | 12 V ≥ 20 A, ×1 | `ATX 電源 二手`, `12V 20A 電源供應器` | 0–900 | Checked (wholesale about US$17; retail is an estimate) | An old ATX needs the green wire shorted to start; an LED-type supply needs an enclosure and a fuse |
+| Fuse + holder | 25 A automotive blade fuse + in-line holder, ×1 | `汽車 保險絲座 25A` | In wiring below | Estimate | At the supply's + output |
+| Emergency stop | Latching mushroom button, rated ≥ 20 A DC, or use it to switch a relay, ×1 | `緊急停止開關 蘑菇頭` | In wiring below | Estimate | If the switch rating is too low, have it switch a 30 A automotive relay |
+| Wire | 14 AWG red and black 1 m each (main run), 18 AWG 2 m each (to each fan) | `14AWG 矽膠線`, `18AWG 矽膠線` | In wiring below | Estimate | Silicone wire is softer and easier to route |
+| Fan guard | 12 cm metal guard ×4 | `12公分 風扇 網罩` | In wiring below | Estimate | On the outlet side |
+| **Wiring subtotal** | Fuse, emergency stop, wire, guards, jumper wires, terminals, heat-shrink | | **200–400** | Estimate | |
+
+### B. Sensors (Arduino side)
+
+| Item | Spec and quantity | Shopee search | NT$ | Basis | Check before ordering |
+| --- | --- | --- | --- | --- | --- |
+| Speed sensor A: load cell + HX711 | 100 g aluminium single-point load cell + HX711, ×1 set (the third set, on A0/A1) | `荷重元 100g HX711` | 230–350 (incl. next two rows) | Estimate | Same model as the drag cell, so they are interchangeable spares |
+| Speed sensor A: box and liquid | Airtight food container about 1.5–2 L and at least about 12–13 cm tall inside ×1; dish ≥ 100 mm inside diameter, ≥ 57 mm deep ×1; about 150 mL baby oil; 2 straight bulkhead tube fittings | `樂扣 保鮮盒 1.5L`, `嬰兒油`, `隔板接頭 4mm` | (as above) | Estimate | The box must seal completely; the dish can be a small bowl from home or 3D-printed |
+| Speed sensor A: bell | 3D-printed PETG straight cylinder: 60 mm inside diameter, 80 mm tall, 1.2 mm wall, hanging loop on top | — | 0 | School printer | **Do not use a tapered paper or plastic cup** |
+| Speed sensor B | **2 × BMP280 module, 5 V-capable** (on-board 3.3 V regulator and level shifting, usually marked 3–5 V or 5V); 2 × 35 mm film canister or small airtight box | `BMP280 5V 模組`, `GY-BMP280 5V` | 120–300 | Estimate | The small purple boards marked only "3.3V" cannot connect directly to the Uno; SDO must be selectable to GND/VCC for the address |
+| Calibration tools | Clear PVC tube 4 mm inside diameter about 1 m, board ≥ 30 cm, 60 mL syringe, 2 tees, food colouring | `PVC 透明管 4mm`, `針筒 60ml` | 80–150 | Estimate | The syringe must pull smoothly and slowly |
+| HX711 module | 24-bit load-cell amplifier board, ×2 | `HX711 模組` | 250–400 (incl. next two rows) | Estimate | Some sellers sell "load cell + HX711" together more cheaply |
+| Load cell (drag) | 100 g aluminium single-point, ×1 | `荷重元 100g` | (as above) | Estimate | Rated 100 g, with 4 wires |
+| Load cell (vertical) | 1 kg aluminium single-point, ×1 | `荷重元 1kg` | (as above) | Estimate | As above |
+| Pitot tube and tubing | Brass tube Ø4 mm about 50 cm (Pitot + bell U-tube) and one Ø3 mm; silicone tube 2–3 mm inside diameter about 3 m (red and blue if possible); 4 tees | `黃銅管 4mm`, `矽膠管 內徑2mm`, `氣管 三通` | 150–300 | Estimate | The silicone tube must grip the brass tube and fittings tightly |
+| LCD 1602 (optional) | I²C interface | `LCD1602 I2C` | Not budgeted | — | Optional; the laptop shows everything |
+
+### C. Tunnel body
+
+| Item | Spec and quantity | Shopee search | NT$ | Basis | Check before ordering |
+| --- | --- | --- | --- | --- | --- |
+| Clear PC sheet | **3 mm solid**, about 3.7 cai (4 test-section panels + plenum), CNC-cut by the seller | `PC耐力板 3mm 透明 裁切` | 300–500 | Checked (NT$60–75 per cai, plus cutting) | **Not twin-wall**; ask for the true thickness (some sold as 3 mm are 2.6 mm); do not laser-cut |
+| PET sheet | 0.5–1 mm clear rigid PET (contraction walls), about 4 sheets of A3 | `PET 硬片 0.5mm` | 300–600 (incl. next two rows) | Estimate | Must bend without creasing |
+| Plywood / MDF | 3–6 mm (contraction ribs and spines 6 mm; sleeves 3 mm; settling chamber; four diffuser panels; module cradles) | `椴木合板 3mm` | (as above) | Estimate | Ask the school for offcuts first |
+| Sealing | Hot-glue sticks, foam tape, screws and nuts | `泡棉膠條 單面` | (as above) | Estimate | |
+| Honeycomb | About 4,000 × 6 mm straws (cut to 40 mm), or 3D-printed hexagonal cells | `吸管 6mm 1000入` | 100–200 (incl. screens) | Estimate | About 6 mm diameter, must be straight |
+| Screens | Polyester voile (window screen) or fine stainless mesh, about 50 × 40 cm ×2 | `窗紗 布`, `不鏽鋼網 細` | (as above) | Estimate | Hold it up to a light: more opening than wire (60–70% open area) |
+
+### D. Balance, car and portability
+
+| Item | Spec and quantity | Shopee search | NT$ | Basis | Check before ordering |
+| --- | --- | --- | --- | --- | --- |
+| Feeler gauge | Must include a 0.10 mm blade (cut into 4 pieces 10 × 20 mm) | `厚薄規` | 100–200 (incl. next two rows) | Estimate | Spring steel, not plastic |
+| Rubber sheet | Latex glove or balloon (plenum skirt) | — | (as above) | Estimate | Already at home |
+| Aluminium strip / 3 mm sheet | Common frame, saddle base plate; M8 bolt + lock nut for the adjustable pedestal column | `鋁扁條` | (as above) | Estimate | Can also be 3D-printed |
+| 1:43 car | **Closed body**, ordinary saloon or hatchback, ×1 | `1:43 合金 模型車` | 80–450 | Checked (SHEIN Taiwan NT$77–445) | Wheels must turn freely, length about 100–110 mm; measure it after buying and update the spec |
+| V-saddles | 4, 3D-printed (PETG) | — | 0 | School printer | |
+| Portability parts | 12 × M6 levelling feet (with rubber pads) and T-nuts, 4 × M4 thumb screws with nuts or inserts (transport lock), 2 × Ø4 mm tube quick-connects; sleeves and spines from plywood offcuts | `M6 調整腳 橡膠`, `手轉螺絲 M4`, `4mm 快速接頭` | 150–300 | Estimate | The feet's thread must fit the T-nuts in the cradles or the nuts under the plenum floor |
+
+### E. Borrow (not budgeted)
+
+| Item | Use |
+| --- | --- |
+| 0.01 g pocket scale | Weigh coins as calibration weights |
+| 3D printer | Saddles, honeycomb (optional), sensor brackets, bell |
+| Soldering iron, multimeter | Wiring and checks |
+| Bricks or thick books, about 5 kg | Balance pedestal ballast (stays in the classroom) |
+| Fine wool or sewing thread | Tufts for visualization |
+
+## Totals
+
+| Group | Low | High |
+| --- | --- | --- |
+| A. Fans and power (incl. wiring) | 2,200 | 4,300 |
+| B. Sensors | 830 | 1,500 |
+| C. Tunnel body | 700 | 1,300 |
+| D. Balance, car and portability | 330 | 950 |
+| **Total** | **4,060** | **8,050** |
+
+These numbers match `budget_ntd` in [spec/mini.json](spec/mini.json); `python3 tools/mini_calc.py` adds them up automatically.
+
+## Price sources
+
+- Fans: [Newegg Delta 12038](https://www.newegg.com/p/1YF-003V-00JY6), [eBay Wathai 12038 PWM](https://www.ebay.com/itm/196887445182), [Walmart 12038 PWM](https://www.walmart.com/ip/5357691938), [FridayParts PFC1212DE](https://www.fridayparts.com/12v-4-8a-12cm-aftermarket-delta-pfc1212de-12038-volume-violent-general-cooling-fan-for-industrial-automation-system)
+- BMP280: [Bosch BMP280 datasheet](https://bluerobotics.com/wp-content/uploads/2022/05/BMP280-DATASHEET.pdf) (noise 1.3 Pa, temperature coefficient 1.5 Pa/K, relative accuracy ±12 Pa)
+- Option C ABP2: [DigiKey Taiwan ABP2MRRN001ND2A3XX](https://www.digikey.tw/en/products/detail/honeywell-sensing-and-productivity-solutions/ABP2MRRN001ND2A3XX/26264563), [Honeywell ABP2 datasheet 32350268 (RS copy)](https://docs.rs-online.com/578f/A700000015334102.pdf), [Adafruit BSS138 level shifter](https://www.adafruit.com/product/757)
+- Shipping: [DigiKey Taiwan (NT$600 under NT$1,400)](https://www.digikey.tw/en/maker/profiles/791dd58bcd43431aa002264bd14ce00c), [RS Taiwan delivery (individuals NT$500 under NT$1,300)](https://twcn.rs-online.com/web/content/support/all-articles/delivery)
+- 12 V 20 A supply: [Alibaba open-frame supply](https://www.alibaba.com/product-detail/240W-12V-open-frame-switching-power_60821400748.html), [RS Taiwan industrial](https://twcn.rs-online.com/web/p/switching-power-supplies/1618225) (industrial grade costs NT$2,500 and up; not needed here)
+- PC sheet: [Yahoo Auctions PC sheet price list](https://tw.bid.yahoo.com/item/100031739789/index.md), [Yahoo Auctions 3 mm quote](https://tw.bid.yahoo.com/item/100050060067/index.md)
+- Car: [SHEIN Taiwan Burago 1:43](https://m.shein.tw/Burago%201%2043%20F1%20AMR25%20Alloy%20Car%20Model%202025%20No%2014%20Alonso%20Regular%20Version-p-322987138.html), [SHEIN Taiwan 1:43 diecast](https://m.shein.tw/1%2043%20Scale%20Supercar%20Model%20Alloy%20Diecast%20Model%20Car%20Detailed%20Craftsmanship%20Openable%20Doors%20Toy%20Car%20Gift%20Suitable%20For%20Boys-p-93016086.html)

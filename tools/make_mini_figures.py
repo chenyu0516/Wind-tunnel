@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
-"""Figures for the mini class-project tunnel (spec/mini.json), Traditional Chinese labels.
+"""Figures for the mini class-project tunnel (spec/mini.json).
 
-Run:  python3 tools/make_mini_figures.py      -> figures/*.svg
+Labels are drawn in Traditional Chinese; the English set is produced by translating every
+label through tools/figure_labels_en.py.
+
+Run:  python3 tools/make_mini_figures.py      -> figures/*.svg (Chinese) and figures/en/*.svg (English)
 """
 import math
 import pathlib
@@ -625,7 +628,7 @@ def fig_sensor_calibration():
     svg.save("M8-sensor-calibration.svg")
 
 
-if __name__ == "__main__":
+def draw_all():
     fig_airpath()
     fig_contraction()
     fig_test_section()
@@ -634,3 +637,16 @@ if __name__ == "__main__":
     fig_fan_curve()
     fig_speed_sensors()
     fig_sensor_calibration()
+
+
+if __name__ == "__main__":
+    from figure_labels_en import EN
+
+    figures = pathlib.Path(__file__).resolve().parent.parent / "figures"
+    kit.OUT, kit.TR = figures, None
+    draw_all()
+    kit.OUT, kit.TR = figures / "en", EN
+    draw_all()
+    if kit.MISSING:
+        print("untranslated labels:", *sorted(kit.MISSING), sep="\n  ")
+        sys.exit(1)

@@ -14,7 +14,7 @@ The present work proposes a compact, low-cost facility for measuring drag and do
 
 The experimental sequence begins with a simplified reference body and proceeds to a 1:43 diecast vehicle model. This sequence is intended to distinguish limitations of the facility and measurement system from the additional complexity introduced by vehicle geometry. Quantitative validation against published results will depend on the availability of a dataset with sufficiently comparable geometry, Reynolds number, and boundary conditions; at this scale such overlap is unlikely, as discussed in Section 4.1.
 
-This paper describes a proposed apparatus and measurement protocol. Dimensions, operating conditions, acquisition durations, and acceptance criteria remain subject to verification during design and commissioning. The construction plan is given in [build_plan_mini.zh-TW.md](build_plan_mini.zh-TW.md), and all dimensions are held in [spec/mini.json](spec/mini.json).
+This paper describes a proposed apparatus and measurement protocol. Dimensions, operating conditions, acquisition durations, and acceptance criteria remain subject to verification during design and commissioning. The construction plan is given in [build_plan_mini.md](build_plan_mini.md), and all dimensions are held in [spec/mini.json](spec/mini.json).
 
 ## 2. Theoretical Framework
 

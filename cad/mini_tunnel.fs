@@ -155,11 +155,18 @@ function curveBoard(context is Context, id is Id, pl is Plane, pts is array, vOu
     opDeleteBodies(context, id + "del", { "entities" : bodies(id + "sk") });
 }
 
-// One 120 x 120 x 38 fan centred at (yc, zc).
-function fan(context is Context, id is Id, yc is number, zc is number, n is number, frameColor is Color, rotorColor is Color)
+// M6 levelling foot: rubber pad on the desk plus bolt up into the part above (top z).
+function levelFoot(context is Context, id is Id, x is number, y is number, zTop is number)
 {
-    const x0 = 998;
-    const x1 = 1036;
+    cyl(context, id + "pad", [x, y, DESK], [x, y, DESK + 4], 18);
+    cyl(context, id + "bolt", [x, y, DESK + 4], [x, y, zTop], 6);
+    fuse(context, id + "u", bodies(id));
+}
+
+// One 120 x 120 x 38 fan centred at (yc, zc).
+function fan(context is Context, id is Id, x0 is number, yc is number, zc is number, n is string, frameColor is Color, rotorColor is Color)
+{
+    const x1 = x0 + 38;
     blk(context, id + "fr", [x0, yc - 60, zc - 60], [x1, yc + 60, zc + 60]);
     cyl(context, id + "vh", [x0 - 1, yc, zc], [x1 + 1, yc, zc], 116);
     cut(context, id + "vc", bodies(id + "fr"), bodies(id + "vh"), false);
@@ -307,22 +314,43 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         curveBoard(context, id + "spB", xzPlane, vBot, ZC - 155.5 - 25, 6);
         curveBoard(context, id + "spL", xyPlane, vL, 207 + 25, 6);
         curveBoard(context, id + "spR", xyPlane, vR, -207 - 25, 6);
-        const spines = qUnion([bodies(id + "spT"), bodies(id + "spB"), bodies(id + "spL"), bodies(id + "spR")]);
+        // spine extensions past both end ribs so the end ribs sit in closed slots;
+        // inlet end steps out over the settling-chamber wall, exit end over sleeve 1
+        blk(context, id + "xspT1", [-393, -3, ZC + 157.5], [-378, 3, ZC + 180.5]);
+        blk(context, id + "xspT2", [0, -3, ZC + 69.3], [8, 3, ZC + 180.5]);
+        blk(context, id + "xspB1", [-393, -3, ZC - 180.5], [-378, 3, ZC - 157.5]);
+        blk(context, id + "xspB2", [0, -3, ZC - 180.5], [8, 3, ZC - 69.3]);
+        blk(context, id + "xspL1", [-393, 209, ZC - 3], [-378, 232, ZC + 3]);
+        blk(context, id + "xspL2", [0, 90.3, ZC - 3], [8, 232, ZC + 3]);
+        blk(context, id + "xspR1", [-393, -232, ZC - 3], [-378, -209, ZC + 3]);
+        blk(context, id + "xspR2", [0, -232, ZC - 3], [8, -90.3, ZC + 3]);
+        const spineNames = ["spT", "spB", "spL", "spR"];
+        const spineLabels = ["A2 脊條 上（6 mm 夾板，與肋板十字嵌合）", "A2 脊條 下（直邊當基準面）", "A2 脊條 左", "A2 脊條 右"];
+        var spineQ = [];
+        for (var k = 0; k < 4; k += 1)
+        {
+            const nm = spineNames[k];
+            spineQ = append(spineQ, qUnion([bodies(id + nm), bodies(id + ("x" ~ nm ~ "1")), bodies(id + ("x" ~ nm ~ "2"))]));
+            fuse(context, id + ("spfu" ~ k), spineQ[k]);
+        }
         cut(context, id + "ribcut", qUnion(ribs), qUnion(ribSlots), false);
-        cut(context, id + "spcut", spines, qUnion(spineSlots), false);
+        cut(context, id + "spcut", qUnion(spineQ), qUnion(spineSlots), false);
         for (var k = 0; k < size(ribS); k += 1)
         {
             tag(context, id + ("rib" ~ k), "A2 收縮段肋板 s=" ~ ribS[k] ~ "（中央開半槽）", WOOD);
         }
-        tag(context, id + "spT", "A2 脊條 上（6 mm 夾板，與肋板十字嵌合）", SPINE);
-        tag(context, id + "spB", "A2 脊條 下（直邊當基準面）", SPINE);
-        tag(context, id + "spL", "A2 脊條 左", SPINE);
-        tag(context, id + "spR", "A2 脊條 右", SPINE);
-        blk(context, id + "sup4", [-300, -40, DESK], [-80, 40, ZC - 180.5]);
-        tag(context, id + "sup4", "收縮段墊塊", WOOD);
-
+        for (var k = 0; k < 4; k += 1)
+        {
+            tagQ(context, spineQ[k], spineLabels[k], SPINE);
+        }
         // ---------- A3 test section 168 x 126 x 336, clear PC ----------
         rectDuct(context, id + "ts", 0, 336, 168, 126);
+
+        // ---------- slip-joint sleeves (3 mm, 0.3 mm clearance; tape the seam after assembly) ----------
+        shellBox(context, id + "sl1", [0, -90.3, ZC - 69.3], [20, 90.3, ZC + 69.3], [-1, -87.3, ZC - 66.3], [21, 87.3, ZC + 66.3]);
+        tag(context, id + "sl1", "接頭套管 1（膠在收縮段末端肋板；測試段插入 20 mm，接縫貼膠帶）", WOOD);
+        shellBox(context, id + "sl2", [316, -90.3, ZC - 69.3], [344, 90.3, ZC + 69.3], [315, -87.3, ZC - 66.3], [345, 87.3, ZC + 66.3]);
+        tag(context, id + "sl2", "接頭套管 2（膠在擴散段入口；套住測試段出口 20 mm，接縫貼膠帶）", WOOD);
 
         // ---------- B ground plate, wheel wells, saddles ----------
         sideExtrude(context, id + "gp", [[42, 22.5], [48, 21], [294, 21], [294, 24], [48, 24]], -83, 83);
@@ -397,8 +425,8 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         const taps = [
                 [[-420, 209, ZC], [-420, 215, ZC]], [[-420, -209, ZC], [-420, -215, ZC]],
                 [[-420, 0, ZC + 157.5], [-420, 0, ZC + 163.5]], [[-420, 0, ZC - 157.5], [-420, 0, ZC - 163.5]],
-                [[13, 87, ZC], [13, 93, ZC]], [[13, -87, ZC], [13, -93, ZC]],
-                [[13, 0, ZC + 66], [13, 0, ZC + 72]], [[13, 0, ZC - 66], [13, 0, ZC - 72]],
+                [[30, 87, ZC], [30, 93, ZC]], [[30, -87, ZC], [30, -93, ZC]],
+                [[30, 0, ZC + 66], [30, 0, ZC + 72]], [[30, 0, ZC - 66], [30, 0, ZC - 72]],
                 [[42, -87, 75], [42, -93, 75]], [[126, -87, 75], [126, -93, 75]],
                 [[210, -87, 75], [210, -93, 75]], [[294, -87, 75], [294, -93, 75]]
             ];
@@ -446,8 +474,8 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         blk(context, id + "bbase", [120, -40, -93], [240, 40, -83]);
         tag(context, id + "bbase", "C 天平底板", ALU);
         blk(context, id + "col", [162, -18, DESK + 10], [198, 18, -93]);
-        tag(context, id + "col", "C 底座柱（穿過靜壓箱底）", STEEL);
-        blk(context, id + "ped", [100, -165, DESK], [260, 165, DESK + 10]);
+        tag(context, id + "col", "C 底座柱（穿過靜壓箱底；與天平底板用螺絲連接，搬運時拆下留在教室）", STEEL);
+        blk(context, id + "ped", [105, -165, DESK], [255, 165, DESK + 10]);
         tag(context, id + "ped", "C 底座板（放桌面）", STEEL);
         blk(context, id + "brk1", [105, 100, DESK + 10], [255, 160, -60]);
         tag(context, id + "brk1", "C 配重 1", BRICK);
@@ -460,6 +488,44 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         const vent = qUnion([bodies(id + "vent1"), bodies(id + "vent2"), bodies(id + "vent3")]);
         fuse(context, id + "ventf", vent);
         tagQ(context, vent, "C 靜壓箱通氣管（接車身中段側壁孔）", SILICONE);
+
+        // transport lock: thumb screws through both plenum walls clamp the common frame and the balance base
+        var lockQ = [];
+        var shaftQ = [];
+        const sides = [1, -1];
+        const lockRows = [[-37.5, 26], [-88, 40]];
+        for (var i = 0; i < 2; i += 1)
+        {
+            for (var j = 0; j < 2; j += 1)
+            {
+                const s = sides[i];
+                const z = lockRows[j][0];
+                const lockId = id + ("lock" ~ i ~ j);
+                cyl(context, lockId + "k", [200, s * 83, z], [200, s * 91, z], 14);
+                cyl(context, lockId + "s", [200, s * 87, z], [200, s * lockRows[j][1], z], 4);
+                shaftQ = append(shaftQ, bodies(lockId + "s"));
+                lockQ = append(lockQ, bodies(lockId));
+            }
+        }
+        cut(context, id + "lockc", bodies(id + "pl"), qUnion(shaftQ), true);
+        for (var i = 0; i < 2; i += 1)
+        {
+            for (var j = 0; j < 2; j += 1)
+            {
+                fuse(context, id + ("locku" ~ i ~ j), bodies(id + ("lock" ~ i ~ j)));
+            }
+        }
+        tagQ(context, qUnion(lockQ), "C 運輸鎖螺絲（圖為鎖緊；搬運時鎖住框架與底板，量測前退出）", BRASS);
+
+        // module 2 feet under the plenum corners (pedestal stays separate)
+        var feet2 = [];
+        const pf = [[93, -75], [93, 75], [267, -75], [267, 75]];
+        for (var i = 0; i < 4; i += 1)
+        {
+            levelFoot(context, id + ("pft" ~ i), pf[i][0], pf[i][1], -133);
+            feet2 = append(feet2, bodies(id + ("pft" ~ i)));
+        }
+        tagQ(context, qUnion(feet2), "模組 2 調平腳 M6 ×4", DARK);
 
         // ---------- A4 diffuser, safety mesh ----------
         loftDuct(context, id + "dif", [336, 986], [168, 240], [126, 240], T);
@@ -479,21 +545,37 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         fuse(context, id + "meshf", qUnion(mesh));
         tagQ(context, qUnion(mesh), "A4 安全網（網目 7 mm）", STEEL);
 
-        // ---------- A5 fan box and 2 x 2 fans ----------
-        // fan box long enough for a second 2 x 2 layer stacked directly behind (x 1036-1074, left empty)
+        // ---------- A5 fan box: two 2 x 2 layers stacked (x 998-1036 and 1036-1074) ----------
         rectDuct(context, id + "fm", 988, 1086, 240, 240);
-        tag(context, id + "fm", "A5 風扇座 240×240（後段 1036–1074 預留第二層風扇）", WOOD);
+        tag(context, id + "fm", "A5 風扇座 240×240（兩層 2×2 風扇疊放）", WOOD);
         const fp = [[-60, ZC - 60], [60, ZC - 60], [-60, ZC + 60], [60, ZC + 60]];
         for (var i = 0; i < 4; i += 1)
         {
-            fan(context, id + ("fan" ~ i), fp[i][0], fp[i][1], i + 1, BLACK, DARK);
+            fan(context, id + ("fan" ~ i), 998, fp[i][0], fp[i][1], "第一層 " ~ (i + 1), BLACK, DARK);
+            fan(context, id + ("fanB" ~ i), 1036, fp[i][0], fp[i][1], "第二層 " ~ (i + 1), BLACK, DARK);
         }
 
         // ---------- supports and desks ----------
-        blk(context, id + "sup1", [-600, -180, DESK], [-570, 180, ZC - 157.5]);
-        blk(context, id + "sup2", [-480, -180, DESK], [-450, 180, ZC - 157.5]);
-        blk(context, id + "sup3", [992, -126, DESK], [1082, 126, ZC - 123]);
-        tagQ(context, qUnion([bodies(id + "sup1"), bodies(id + "sup2"), bodies(id + "sup3")]), "墊塊", WOOD);
+        // module 1 (inlet: bell + settling + contraction) and module 3 (diffuser + fans) cradles on M6 levelling feet
+        blk(context, id + "sup1", [-600, -180, DESK + 15], [-570, 180, ZC - 157.5]);
+        blk(context, id + "sup2", [-480, -180, DESK + 15], [-450, 180, ZC - 157.5]);
+        tagQ(context, qUnion([bodies(id + "sup1"), bodies(id + "sup2")]), "模組 1 托架", WOOD);
+        blk(context, id + "sup3", [992, -126, DESK + 15], [1082, 126, ZC - 123]);
+        sideExtrude(context, id + "sup5", [[600, DESK + 15], [630, DESK + 15], [630, -28.8], [600, -26.15]], -100, 100);
+        tagQ(context, qUnion([bodies(id + "sup3"), bodies(id + "sup5")]), "模組 3 托架", WOOD);
+        var feet1 = [];
+        var feet3 = [];
+        const feet1Pos = [[-585, -165], [-585, 165], [-465, -165], [-465, 165]];
+        const feet3Pos = [[615, -85], [615, 85], [1037, -110], [1037, 110]];
+        for (var i = 0; i < 4; i += 1)
+        {
+            levelFoot(context, id + ("f1t" ~ i), feet1Pos[i][0], feet1Pos[i][1], DESK + 25);
+            feet1 = append(feet1, bodies(id + ("f1t" ~ i)));
+            levelFoot(context, id + ("f3t" ~ i), feet3Pos[i][0], feet3Pos[i][1], DESK + 25);
+            feet3 = append(feet3, bodies(id + ("f3t" ~ i)));
+        }
+        tagQ(context, qUnion(feet1), "模組 1 調平腳 M6 ×4", DARK);
+        tagQ(context, qUnion(feet3), "模組 3 調平腳 M6 ×4", DARK);
 
         const desks = [[-715, 185], [185, 1085]];
         for (var i = 0; i < 2; i += 1)
@@ -510,8 +592,30 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         }
 
         // ---------- D electronics and speed sensors (on desk 2) ----------
-        blk(context, id + "uno", [300, 180, DESK + 6], [368.6, 233.4, DESK + 7.6]);
+        // electronics board: everything that plugs together lives on one plywood board, carried as one piece
+        const BZ = DESK + 6;
+        blk(context, id + "eboard", [190, -295, DESK], [390, -155, BZ]);
+        tag(context, id + "eboard", "D 電子板（Uno、HX711 ×3、B、三通、接頭；整塊搬）", WOOD);
+        blk(context, id + "uno", [215, -209, BZ + 6], [283.6, -155.6, BZ + 7.6]);
         tag(context, id + "uno", "D Arduino Uno", color(0.0, 0.45, 0.65));
+        var standoffs = [];
+        const sop = [[218, -206], [280.6, -206], [218, -158.6], [280.6, -158.6]];
+        for (var i = 0; i < 4; i += 1)
+        {
+            cyl(context, id + ("so" ~ i), [sop[i][0], sop[i][1], BZ], [sop[i][0], sop[i][1], BZ + 6], 4);
+            standoffs = append(standoffs, bodies(id + ("so" ~ i)));
+        }
+        tagQ(context, qUnion(standoffs), "D Uno 銅柱", BRASS);
+        for (var i = 0; i < 3; i += 1)
+        {
+            blk(context, id + ("hx" ~ i), [200 + 24 * i, -292, BZ], [221 + 24 * i, -258, BZ + 3]);
+            tag(context, id + ("hx" ~ i), "D HX711 #" ~ (i + 1), color(0.1, 0.5, 0.2));
+        }
+        blk(context, id + "conn", [350, -172, BZ], [388, -160, BZ + 10]);
+        tag(context, id + "conn", "D 接頭排（荷重元 ×3、風扇 PWM／轉速、艙蓋開關、USB）", BLACK);
+        cyl(context, id + "qcH", [192, -215, BZ + 3], [206, -215, BZ + 3], 7);
+        cyl(context, id + "qcL", [192, -245, BZ + 3], [206, -245, BZ + 3], 7);
+        tagQ(context, qUnion([bodies(id + "qcH"), bodies(id + "qcL")]), "D 壓力管快接頭（搬運時拔開）", BRASS);
         blk(context, id + "psu", [700, 170, DESK], [850, 290, DESK + 86]);
         tag(context, id + "psu", "G 12 V ≥20 A 電源（舊 ATX）", DARK);
 
@@ -548,33 +652,33 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         tag(context, id + "snork", "D2 A 低壓口＋U 形黃銅通氣管（管口高於油面 35）", BRASS);
 
         // speed sensor B: two film canisters taped together, one barb each on top
-        cyl(context, id + "bmp1", [330, -207, DESK], [330, -207, DESK + 50], 35);
-        cyl(context, id + "bmp2", [330, -243, DESK], [330, -243, DESK + 50], 35);
+        cyl(context, id + "bmp1", [330, -207, BZ], [330, -207, BZ + 50], 35);
+        cyl(context, id + "bmp2", [330, -243, BZ], [330, -243, BZ + 50], 35);
         tag(context, id + "bmp1", "D2 B 高壓盒 BMP280 0x77", BLACK);
         tag(context, id + "bmp2", "D2 B 低壓盒 BMP280 0x76", BLACK);
-        cyl(context, id + "bnub1", [330, -207, DESK + 50], [330, -207, DESK + 56], 4);
-        cyl(context, id + "bnub2", [330, -243, DESK + 50], [330, -243, DESK + 56], 4);
+        cyl(context, id + "bnub1", [330, -207, BZ + 50], [330, -207, BZ + 56], 4);
+        cyl(context, id + "bnub2", [330, -243, BZ + 50], [330, -243, BZ + 56], 4);
         tagQ(context, qUnion([bodies(id + "bnub1"), bodies(id + "bnub2")]), "D2 B 管嘴", BRASS);
 
         // ---------- D pressure lines: wall static rings -> tees -> sensors A and B ----------
         // high side: settling-chamber ring (4 taps at x = -420, joined by a loop)
         tubePath(context, id + "H" + "ring", [[-420, 215, ZC], [-420, 215, ZC + 163.5], [-420, -215, ZC + 163.5],
                     [-420, -215, ZC - 163.5], [-420, 215, ZC - 163.5], [-420, 215, ZC]], 4);
-        tubePath(context, id + "H" + "lead", [[-420, -215, ZC - 163.5], [-420, -215, DESK + 3], [300, -215, DESK + 3]], 4);
-        tubePath(context, id + "H" + "toA", [[300, -215, DESK + 3], [300, -190, DESK + 3], [300, -190, DESK + 60], [392, -190, DESK + 60]], 4);
-        tubePath(context, id + "H" + "toB", [[300, -215, DESK + 3], [300, -215, DESK + 70], [330, -207, DESK + 70], [330, -207, DESK + 56]], 4);
+        tubePath(context, id + "H" + "lead", [[-420, -215, ZC - 163.5], [-420, -215, DESK + 3], [186, -215, DESK + 3], [186, -215, BZ + 3], [300, -215, BZ + 3]], 4);
+        tubePath(context, id + "H" + "toA", [[300, -215, BZ + 3], [300, -190, BZ + 3], [300, -190, DESK + 60], [392, -190, DESK + 60]], 4);
+        tubePath(context, id + "H" + "toB", [[300, -215, BZ + 3], [300, -215, DESK + 70], [330, -207, DESK + 70], [330, -207, BZ + 56]], 4);
         fuse(context, id + "Hu", bodies(id + "H"));
         tag(context, id + "H", "D 高壓管：穩定段靜壓環 → 三通 → A 盒內、B 高壓盒", HIGHP);
-        // low side: test-section entrance ring (4 taps at x = 13)
-        tubePath(context, id + "L" + "ring", [[13, 93, ZC], [13, 93, ZC + 72], [13, -93, ZC + 72],
-                    [13, -93, ZC - 72], [13, 93, ZC - 72], [13, 93, ZC]], 4);
-        tubePath(context, id + "L" + "lead", [[13, -93, ZC - 72], [13, -245, ZC - 72], [13, -245, DESK + 3], [300, -245, DESK + 3]], 4);
-        tubePath(context, id + "L" + "toA", [[300, -245, DESK + 3], [300, -270, DESK + 3], [300, -270, DESK + 60], [392, -270, DESK + 60]], 4);
-        tubePath(context, id + "L" + "toB", [[300, -245, DESK + 3], [300, -245, DESK + 75], [330, -243, DESK + 75], [330, -243, DESK + 56]], 4);
+        // low side: test-section entrance ring (4 taps at x = 30, clear of sleeve 1)
+        tubePath(context, id + "L" + "ring", [[30, 93, ZC], [30, 93, ZC + 72], [30, -93, ZC + 72],
+                    [30, -93, ZC - 72], [30, 93, ZC - 72], [30, 93, ZC]], 4);
+        tubePath(context, id + "L" + "lead", [[30, -93, ZC - 72], [30, -245, ZC - 72], [30, -245, DESK + 3], [186, -245, DESK + 3], [186, -245, BZ + 3], [300, -245, BZ + 3]], 4);
+        tubePath(context, id + "L" + "toA", [[300, -245, BZ + 3], [300, -270, BZ + 3], [300, -270, DESK + 60], [392, -270, DESK + 60]], 4);
+        tubePath(context, id + "L" + "toB", [[300, -245, BZ + 3], [300, -245, DESK + 75], [330, -243, DESK + 75], [330, -243, BZ + 56]], 4);
         fuse(context, id + "Lu", bodies(id + "L"));
         tag(context, id + "L", "D 低壓管：測試段入口靜壓環 → 三通 → A 鐘罩內、B 低壓盒", LOWP);
-        blk(context, id + "teeH", [296, -219, DESK], [304, -211, DESK + 7]);
-        blk(context, id + "teeL", [296, -249, DESK], [304, -241, DESK + 7]);
+        blk(context, id + "teeH", [296, -219, BZ], [304, -211, BZ + 7]);
+        blk(context, id + "teeL", [296, -249, BZ], [304, -241, BZ + 7]);
         tagQ(context, qUnion([bodies(id + "teeH"), bodies(id + "teeL")]), "D 三通", BRASS);
 
         // ---------- E smoke: removable wand through a roof grommet, jar source sucked by the tunnel ----------

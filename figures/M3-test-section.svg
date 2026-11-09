@@ -43,9 +43,9 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <line x1="155.0" y1="113.0" x2="155.0" y2="123.0" class="axis" />
 <text x="155.0" y="109.0" class="d" text-anchor="middle" >0</text>
 <line x1="155.0" y1="124.0" x2="155.0" y2="1186.2" class="guide" />
-<line x1="188.8" y1="113.0" x2="188.8" y2="123.0" class="axis" />
-<text x="188.8" y="97.0" class="d" text-anchor="middle" >13</text>
-<line x1="188.8" y1="124.0" x2="188.8" y2="1186.2" class="guide" />
+<line x1="233.0" y1="113.0" x2="233.0" y2="123.0" class="axis" />
+<text x="233.0" y="97.0" class="d" text-anchor="middle" >30</text>
+<line x1="233.0" y1="124.0" x2="233.0" y2="1186.2" class="guide" />
 <line x1="264.2" y1="113.0" x2="264.2" y2="123.0" class="axis" />
 <text x="264.2" y="109.0" class="d" text-anchor="middle" >42</text>
 <line x1="264.2" y1="124.0" x2="264.2" y2="1186.2" class="guide" />
@@ -81,9 +81,9 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <line x1="90.0" y1="186.4" x2="155.0" y2="186.4" class="shell0" />
 <line x1="1028.6" y1="186.4" x2="1091.0" y2="180.9" class="shell0" />
 <line x1="1028.6" y1="514.0" x2="1091.0" y2="519.5" class="shell0" />
-<circle cx="188.8" cy="514.0" r="4.0" class="shell" style="fill:#187c91"/>
-<circle cx="188.8" cy="186.4" r="4.0" class="shell" style="fill:#187c91"/>
-<text x="194.8" y="202.4" class="n halo" text-anchor="start" >入口靜壓環 ×4</text>
+<circle cx="233.0" cy="514.0" r="4.0" class="shell" style="fill:#187c91"/>
+<circle cx="233.0" cy="186.4" r="4.0" class="shell" style="fill:#187c91"/>
+<text x="239.0" y="202.4" class="n halo" text-anchor="start" >入口靜壓環 ×4</text>
 <rect x="264.2" y="451.6" width="247.0" height="7.8" class="solid" />
 <rect x="563.2" y="451.6" width="111.8" height="7.8" class="solid" />
 <rect x="727.0" y="451.6" width="192.4" height="7.8" class="solid" />
@@ -125,10 +125,10 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <text x="92.6" y="602.4" class="n" text-anchor="start" >井深 ≤ 12；護套管 Ø5；支柱 Ø3</text>
 <line x1="90.0" y1="728.6" x2="1028.6" y2="728.6" class="shell0" style="stroke-width:3"/>
 <line x1="1028.6" y1="728.6" x2="1091.0" y2="725.1" class="shell0" />
-<circle cx="188.8" cy="728.6" r="4.0" class="shell" style="fill:#187c91"/>
+<circle cx="233.0" cy="728.6" r="4.0" class="shell" style="fill:#187c91"/>
 <line x1="90.0" y1="1165.4" x2="1028.6" y2="1165.4" class="shell0" style="stroke-width:3"/>
 <line x1="1028.6" y1="1165.4" x2="1091.0" y2="1168.9" class="shell0" />
-<circle cx="188.8" cy="1165.4" r="4.0" class="shell" style="fill:#187c91"/>
+<circle cx="233.0" cy="1165.4" r="4.0" class="shell" style="fill:#187c91"/>
 <rect x="264.2" y="728.6" width="655.2" height="436.8" class="pc" style="fill:#eef2f6;stroke-width:1"/>
 <rect x="482.6" y="889.8" width="273.0" height="114.4" class="car" rx="14"/>
 <rect x="511.2" y="884.6" width="52.0" height="26.0" class="shell" style="fill:#ffffff"/>

@@ -69,7 +69,7 @@
 
   "pressure_taps": {
     "settling_ring": { "x": -420, "count": 4 },
-    "entrance_ring": { "x": 13, "count": 4 },
+    "entrance_ring": { "x": 30, "count": 4, "_note": "moved from 13 so the slip-joint sleeve (x 0-20) does not cover it" },
     "side_wall_taps": { "x": [42, 126, 210, 294], "d": 1, "z": 75, "side": "-y" },
     "plenum_vent_tap": { "x": 178, "z": 75, "side": "-y" }
   },

@@ -60,7 +60,7 @@
   },
   "portable": {
     "modules": [
-      { "name": "1 inlet", "x": [-696, 8], "contents": "bell, settling chamber, honeycomb, screens, contraction, ribs, spines" },
+      { "name": "1 inlet", "x": [-696, 20], "contents": "bell, settling chamber, honeycomb, screens, contraction, ribs, spines" },
       { "name": "2 test section", "x": [0, 336], "contents": "test section, ground plate, wells, plenum, balance (transport-locked)" },
       { "name": "3 fan end", "x": [316, 1086], "contents": "sleeve 2, diffuser, safety mesh, fan box, fans" }
     ],

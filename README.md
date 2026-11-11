@@ -18,7 +18,7 @@ A desk-sized, open-return suction wind tunnel for measuring the drag and downfor
 | Force balance | 100 g load cell for drag, 1 kg load cell for vertical force, about 1 mN (0.1 gf) resolution |
 | Speed sensing | Home-made: (A) a bell manometer on a load cell, primary; (B) a pair of BMP280 barometers, backup |
 | Controller | Arduino Uno + 3 × HX711 |
-| Budget | ≤ NT$5,000 (current estimate NT$4,060–8,050; see the shopping list for the low-cost route) |
+| Budget | ≤ NT$5,000 (current estimate NT$4,360–9,050; see the shopping list for the low-cost route) |
 
 The geometry is the earlier 1:18 design scaled by 0.42, with three changes: computer fans in place of an industrial fan, fixed V-shaped wheel saddles in place of rollers, and 3 mm panels.
 
@@ -66,7 +66,7 @@ The main control sketch (speed PID, automatic zero/ramp/settle/capture/re-zero s
 ## Safety notes
 
 - The eight fans draw 14.4 A rated and up to 21.6 A at 12 V. Use a supply of at least 25 A, the 30 A fuse and the wire gauges given in the build plan.
-- Fan speed is set by a MOSFET switching the fans' 12 V. Use a MOSFET module with a pull-down on its signal input so the fans stay off while the Uno resets. A hardware E-stop cuts the 12 V independently of the sketch.
+- Fan speed is set by two 4-channel MOSFET boards switching the fans' 12 V, one channel per fan. Their opto-isolated inputs keep the fans off while the Uno resets. Each fan has its own 5 A fuse. A hardware E-stop cuts the 12 V independently of the sketch.
 - Fit a metal guard on the fan outlet, and do not point the exhaust at people.
 
 ## Repository layout

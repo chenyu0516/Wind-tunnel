@@ -202,6 +202,19 @@ def test_power_supply():
     assert G["electronics"]["fuse_a"] >= 1.25 * pc["max"], "fuse should not run above 80 % of its rating"
 
 
+def test_fan_driver():
+    fan, d, el = G["fan"], G["fan"]["driver"], G["electronics"]
+    assert d["boards"] * d["channels_each"] * d["fans_per_channel"] == fan["count"], "every fan needs a channel"
+    ch_max = d["fans_per_channel"] * fan["current_a_max_each"]
+    assert ch_max <= 0.5 * d["channel_a_max"], f"channel at {ch_max:.1f} A is over half its {d['channel_a_max']} A rating"
+    assert d["input_v"][0] <= 5 <= d["input_v"][1], "board input must accept the Uno's 5 V"
+    assert d["output_v"][0] <= fan["voltage"] <= d["output_v"][1]
+    assert 1.25 * fan["current_a_max_each"] <= el["fan_fuse_a"] <= el["fan_lead_fuse_max_a"], \
+        "per-fan fuse must clear the fan's max current and still protect its 22 AWG lead"
+    pin_ma = d["channels_each"] * d["input_ma_each_assumed"]
+    watch(pin_ma <= 20, f"WATCH {pin_ma} mA from one Uno pin into {d['channels_each']} opto inputs; measure, add a transistor buffer if > 20 mA")
+
+
 def test_budget():
     b = mc.budget()
     assert b["low"] <= b["cap"], f"cheapest path NT${b['low']} exceeds cap"

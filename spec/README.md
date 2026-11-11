@@ -46,7 +46,7 @@ python3 tools/make_mini_figures.py  # regenerate figures after any spec change
 
 ## WATCH items (from test_mini.py)
 
-- Budget upper estimate (NT$8,050) exceeds the NT$5,000 cap; follow `budget_ntd.first_cut_if_over` and the low-cost route in shopping_list.md.
+- Budget upper estimate (NT$9,050) exceeds the NT$5,000 cap; follow `budget_ntd.first_cut_if_over` and the low-cost route in shopping_list.md.
 - V-saddle drops the tyre about 0.53 mm, about 18% of a 3 mm ride height; record actual ride height.
 
 Do not "fix" these in the JSON; they are the user's decisions.

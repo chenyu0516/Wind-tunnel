@@ -2,17 +2,17 @@
 
 Goes with [build_plan_mini.md](build_plan_mini.md). The earlier Traditional Chinese version is kept at [shopping_list.zh-TW.md](shopping_list.zh-TW.md). Prices marked "checked" are based on real listings (sources at the end); prices marked "estimate" have no Taiwanese listing checked yet, so confirm on Shopee before ordering. The Shopee search terms are left in Chinese because that is what you type on Shopee. The Arduino Uno is already owned and not counted.
 
-## Why the upper estimate reaches NT$7,000–8,000
+## Why the upper estimate reaches NT$8,000–9,000
 
-Adding the most expensive case of every item gives **NT$8,050**; the cheapest case of every item gives **NT$4,060**. Most of the gap comes from three things:
+Adding the most expensive case of every item gives **NT$9,050**; the cheapest case of every item gives **NT$4,360**. Most of the gap comes from three things:
 
 | Item | Price | Share of the lowest total | Why it cannot be dropped |
 | --- | --- | --- | --- |
-| 8 × QFR1212GHE high-static-pressure fans (price to recheck) | 2,000–3,000 | 51% | Must push the whole tunnel's resistance at 14 m/s (about 85 Pa, 1,070 m³/h). Ordinary PC case fans reach only about 75 Pa; four of them give only about 7 m/s |
-| Home-made speed sensor A + backup B + calibration | 430–800 | 11% | The dynamic pressure is only 15–118 Pa; ready-made digital differential-pressure sensors cost NT$1,100–1,600 with shipping, so a home-made bell manometer (primary) + two BMP280s (backup) is used instead |
-| 12 V 25 A power supply | 0–900 | 0–20% | Eight QFR fans draw 14.4 A rated, 21.6 A max (datasheet); an old PC supply is free, a new one costs about 500–900 |
+| 8 × QFR1212GHE high-static-pressure fans (price to recheck) | 2,000–3,000 | 46% | Must push the whole tunnel's resistance at 14 m/s (about 85 Pa, 1,070 m³/h). Ordinary PC case fans reach only about 75 Pa; four of them give only about 7 m/s |
+| Home-made speed sensor A + backup B + calibration | 430–800 | 10% | The dynamic pressure is only 15–118 Pa; ready-made digital differential-pressure sensors cost NT$1,100–1,600 with shipping, so a home-made bell manometer (primary) + two BMP280s (backup) is used instead |
+| 12 V 25 A power supply | 0–900 | 0–21% | Eight QFR fans draw 14.4 A rated, 21.6 A max (datasheet); an old PC supply is free, a new one costs about 500–900 |
 
-**The other 10 small items cost only NT$80–600 each, but together add up to about NT$1,600–3,350.** So "7,000–8,000" is not one expensive item: the fans are half, plus many small things. A real order usually lands in between (about 5,000–6,000), so **staying at 5,000 means deliberately following the low-cost route below.**
+**The other 11 small items cost only NT$80–600 each, but together add up to about NT$1,900–4,350.** So "8,000–9,000" is not one expensive item: the fans are half, plus many small things. A real order usually lands in between (about 5,000–6,000), so **staying at 5,000 means deliberately following the low-cost route below.**
 
 ## Low-cost route (target ≤ NT$5,000)
 
@@ -20,9 +20,10 @@ Adding the most expensive case of every item gives **NT$8,050**; the cheapest ca
 2. **Fans at NT$500 or less each:** look for server pulls; 8 QFR1212GHE must still fit about 2,000–3,000 (re-price).
 3. **Tunnel body from scrap wherever possible:** ribs, spines, sleeves and the settling chamber from the school workshop's offcuts or cardboard; only the test section must be bought clear PC.
 4. **A cheap closed-body car** (about NT$80–200), not a collector's model.
-5. **Borrow** the 0.01 g pocket scale, soldering iron, multimeter and 3D printer.
+5. **Per-fan fuses in inline holders** (about NT$150 for 8) instead of two fuse boxes.
+6. **Borrow** the 0.01 g pocket scale, soldering iron, multimeter and 3D printer.
 
-This comes to about **NT$4,150–4,350**. If fans cannot be found at 500 or less, or a new power supply is needed and the total goes over 5,000, **cut speed sensor B first** (saves NT$120–300 but loses the backup and cross-check); speed sensor A and the calibration manometer cannot be cut.
+This comes to about **NT$4,450–4,650**. If fans cannot be found at 500 or less, or a new power supply is needed and the total goes over 5,000, **cut speed sensor B first** (saves NT$120–300 but loses the backup and cross-check); speed sensor A and the calibration manometer cannot be cut.
 
 ## Option C: buy a ready-made ABP2 (only if home-made A and B both fail)
 
@@ -57,10 +58,12 @@ The decision rule is in the plan, "D2. Home-made speed sensors". Normally **do n
 | Item | Spec and quantity | Shopee search | NT$ | Basis | Check before ordering |
 | --- | --- | --- | --- | --- | --- |
 | High-static-pressure fan | Delta QFR1212GHE, 120×120×38 mm, 12 V, 2-wire, ×8 (2 × 2 array, two layers) | `Delta QFR1212GHE`, `12038 風扇 2線`, `伺服器 風扇 12038` | 2,000–3,000 | Placeholder (the checked US$16–24 each was for 4 × PFC1212DE); re-price for 8 | Buy 1 first and pass fan_pwm_test, then buy 7 more of the same model; note the rated current for sizing the supply and fuse. Fallback if the test fails: 4 × PFC1212DE (4-wire PWM) |
+| Fan driver board | 4-channel opto-isolated MOSFET PWM board (YYNMOS-4 type): 3–20 V PWM input, 3.7–27 V output, ≤ 10 A per channel, screw terminals; ×2 + 1 spare (one per layer, one channel per fan) | `4路 MOS 模組 PWM`, `YYNMOS-4` | 150–450 | Estimate (no Shopee listing checked) | Buy 1 with the test fan first. Check: PWM limit (1 kHz or 200 Hz; 25 kHz is not possible), a common DC−/GND terminal sized for about 11 A, whether flyback diodes are on the board |
+| Per-fan fuses and diodes | 8 × 5 A blade fuse (+ spares) in 2 × 6-way blade fuse box with negative bus (one per layer), or 8 inline holders on the low-cost route; 8 × SS34 Schottky diode | `6路 保險絲盒 負極`, `5A 刀片 保險絲`, `保險絲座 線上型`, `SS34` | 150–550 | Estimate | Fuse box rated ≥ 20 A per way; diode stripe to the fan's red lead |
 | 12 V power supply | 12 V ≥ 25 A, ×1 | `ATX 電源 二手`, `12V 25A 電源供應器` | 0–900 | Checked (wholesale about US$17; retail is an estimate) | An old ATX needs the green wire shorted to start; an LED-type supply needs an enclosure and a fuse |
 | Fuse + holder | 30 A automotive blade fuse + in-line holder, ×1 | `汽車 保險絲座 30A` | In wiring below | Estimate | At the supply's + output |
 | Emergency stop | Latching mushroom button, rated ≥ 25 A DC, or use it to switch a relay, ×1 | `緊急停止開關 蘑菇頭` | In wiring below | Estimate | If the switch rating is too low, have it switch a 30 A automotive relay |
-| Wire | 12 AWG red and black 1 m each (main run), 16 AWG 2 m each (to each fan layer); 1000 µF / 25 V capacitor across the supply output | `12AWG 矽膠線`, `16AWG 矽膠線` | In wiring below | Estimate | Silicone wire is softer and easier to route |
+| Wire | 12 AWG red and black 1 m each (main run), 16 AWG 2 m each (to each fan layer); 1000 µF / 25 V capacitor across 12 V+ and GND on the supply side, before the boards (never across a fan) | `12AWG 矽膠線`, `16AWG 矽膠線` | In wiring below | Estimate | Silicone wire is softer and easier to route |
 | Fan guard | 12 cm metal guard ×4 | `12公分 風扇 網罩` | In wiring below | Estimate | On the outlet side |
 | **Wiring subtotal** | Fuse, emergency stop, wire, guards, jumper wires, terminals, heat-shrink | | **200–400** | Estimate | |
 
@@ -115,11 +118,11 @@ The decision rule is in the plan, "D2. Home-made speed sensors". Normally **do n
 
 | Group | Low | High |
 | --- | --- | --- |
-| A. Fans and power (incl. wiring) | 2,200 | 4,300 |
+| A. Fans and power (incl. wiring) | 2,500 | 5,300 |
 | B. Sensors | 830 | 1,500 |
 | C. Tunnel body | 700 | 1,300 |
 | D. Balance, car and portability | 330 | 950 |
-| **Total** | **4,060** | **8,050** |
+| **Total** | **4,360** | **9,050** |
 
 These numbers match `budget_ntd` in [spec/mini.json](spec/mini.json); `python3 tools/mini_calc.py` adds them up automatically.
 

@@ -63,7 +63,15 @@
     "rpm": 6000, "start_note": "built-in soft start: low speed, full speed after 10 s",
     "mass_g_each": 330,
     "voltage": 12, "noise_dba_each": 64.0,
-    "speed_control": "2 logic-level MOSFET modules (one per layer, signal pull-down) switching the fans' 12 V low side; layer 1 from Uno D9, layer 2 from D10 (both Timer1, same frequency and duty, so no pin drives more than one module's opto inputs); PWM frequency chosen with arduino/fan_pwm_test",
+    "speed_control": "2 x 4-channel opto-isolated MOSFET boards (see driver), one board per layer and one channel per fan, switching each fan's black lead (low side); layer 1 inputs from Uno D9, layer 2 from D10 (both Timer1, same frequency and duty); PWM frequency (1 kHz, 122 Hz or 30 Hz) chosen with arduino/fan_pwm_test through the same board",
+    "driver": {
+      "type": "4-channel opto-isolated MOSFET PWM board (sold as YYNMOS-4); specs from listings, not verified",
+      "boards": 2, "channels_each": 4, "fans_per_channel": 1,
+      "channel_a_max": 10, "input_v": [3, 20], "output_v": [3.7, 27],
+      "pwm_hz_max": 1000, "pwm_note": "listings say 0-1 kHz or 0-200 Hz; 25 kHz is not possible",
+      "input_ma_each_assumed": 5, "input_note": "each input lights an optocoupler LED (about 4-8 mA, depends on the board's resistor); measure one",
+      "check": "common DC-/GND terminal carries the 4 fan returns (7.2 A rated, 10.8 A max); if it is small, put 2 fans per board on 4 boards"
+    },
     "fallback": "4 x Delta PFC1212DE (4-wire PWM, 430 m3/h, 352 Pa) in one layer if the one-fan test fails"
   },
   "portable": {
@@ -151,8 +159,8 @@
   "electronics": {
     "board": "Arduino Uno R3",
     "pins": {
-      "D9":  "fan PWM, layer 1 MOSFET module (Timer1 OC1A)",
-      "D10": "fan PWM, layer 2 MOSFET module (Timer1 OC1B, same frequency and duty as D9)",
+      "D9":  "fan PWM, layer 1 MOSFET board, 4 inputs (Timer1 OC1A)",
+      "D10": "fan PWM, layer 2 MOSFET board, 4 inputs (Timer1 OC1B, same frequency and duty as D9)",
       "D2":  "optional TCRT5000 optical rpm sensor (INT0); QFR fans have no tach wire",
       "D4":  "HX711 drag DT",
       "D5":  "HX711 drag SCK",
@@ -212,7 +220,11 @@
     "psu": { "voltage": 12, "current_a_min": 25, "option": "old ATX PC power supply (12 V rail >= 25 A) or 12 V 25-30 A LED supply" },
     "fuse_a": 30,
     "wire_awg": { "main": 12, "per_layer": 16, "fan_leads": 22 },
-    "bulk_capacitor": "1000 uF / 25 V across the 12 V output (Delta asks for > 4.7 uF with fans in parallel)",
+    "bulk_capacitor": "1000 uF / 25 V across 12 V+ and GND on the supply side, after the E-stop and near the boards (Delta asks for > 4.7 uF with fans in parallel); never across a fan's leads after the switch",
+    "fan_fuse_a": 5,
+    "fan_fuse_note": "one blade fuse per fan in the red lead: above the 2.7 A datasheet max, below what the 22 AWG lead carries; 2 x 6-way blade fuse box with negative bus (or 8 inline holders on the low-cost route)",
+    "fan_lead_fuse_max_a": 7,
+    "flyback": "SS34 (or 1N5819) Schottky across each fan, stripe to the red lead",
     "estop": "latching switch in the 12 V line to the fans (hardware, independent of the Uno)",
     "logging": "Serial 115200 baud CSV to laptop"
   },
@@ -220,18 +232,20 @@
   "budget_ntd": {
     "cap": 5000,
     "items": [
-      { "item": "8 x Delta QFR1212GHE fan + 2 logic-level MOSFET modules", "low": 2000, "high": 3000, "basis": "placeholder carried over from the 4 x PFC1212DE price (US$16-24 each); re-price for 8 x QFR" },
+      { "item": "8 x Delta QFR1212GHE fan", "low": 2000, "high": 3000, "basis": "placeholder carried over from the 4 x PFC1212DE price (US$16-24 each); re-price for 8 x QFR" },
+      { "item": "2 x 4-channel MOSFET board (YYNMOS-4 type) + 1 spare", "low": 150, "high": 450, "basis": "estimate; no Shopee listing checked" },
+      { "item": "fan fusing: 8 x 5 A blade fuse + 8 inline holders (low) or 2 x 6-way fuse box with negative bus (high), 8 x SS34", "low": 150, "high": 550, "basis": "estimate" },
       { "item": "speed sensor A: 100 g load cell + HX711, airtight box, oil, fittings (bell printed at school)", "low": 230, "high": 350, "basis": "estimate" },
       { "item": "speed sensor B: 2 x BMP280 5 V modules, 2 film canisters / small boxes", "low": 120, "high": 300, "basis": "estimate" },
       { "item": "calibration: inclined manometer tube + board, 60 mL syringe, tees", "low": 80, "high": 150, "basis": "estimate" },
-      { "item": "12 V >= 20 A power supply", "low": 0, "high": 900, "basis": "free if an old ATX PSU is available; open-frame 12 V 20 A ~US$17 wholesale, retail estimate NT$500-900" },
+      { "item": "12 V >= 25 A power supply", "low": 0, "high": 900, "basis": "free if an old ATX PSU is available; open-frame 12 V 20 A ~US$17 wholesale, retail estimate NT$500-900 (buy >= 25 A)" },
       { "item": "100 g + 1 kg load cells, 2 x HX711", "low": 250, "high": 400, "basis": "estimate" },
       { "item": "Pitot tube 4 mm, brass U-tube for the bell snorkel, silicone tubing, tees", "low": 150, "high": 300, "basis": "estimate" },
       { "item": "3 mm clear PC panels (test section + plenum, about 3.7 cai)", "low": 300, "high": 500, "basis": "NT$60-75 per cai in Yahoo listings, plus cutting fee" },
       { "item": "plywood/MDF ribs, 0.5-1 mm PET sheet, diffuser panels", "low": 300, "high": 600, "basis": "estimate" },
       { "item": "straws or printed honeycomb, voile screens", "low": 100, "high": 200, "basis": "estimate" },
       { "item": "1:43 diecast car", "low": 80, "high": 450, "basis": "SHEIN Taiwan NT$77-445" },
-      { "item": "18 AWG wire, fuse holder, E-stop, connectors, screws, glue", "low": 200, "high": 400, "basis": "estimate" },
+      { "item": "12/16 AWG wire, main fuse holder, E-stop, 1000 uF capacitor, connectors, screws, glue", "low": 200, "high": 400, "basis": "estimate" },
       { "item": "feeler gauge (blades), rubber skirt, misc", "low": 100, "high": 200, "basis": "estimate" },
       { "item": "portable: 12 x M6 levelling feet, 4 thumb screws (transport lock), 2 pressure quick-connects", "low": 150, "high": 300, "basis": "estimate" }
     ],

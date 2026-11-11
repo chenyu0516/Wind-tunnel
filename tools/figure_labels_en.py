@@ -186,18 +186,18 @@ EN = {
     "直線只是粗估，真實曲線可能較低；": "Straight lines are rough; real curves may be lower;",
     "裝好後用 PWM 掃描實測一次": "sweep PWM once after building to measure them",
 
-    "Uno 經 {0} 個 MOSFET 控制 {1} 個 {2} 線風扇，另接 {3} 組 HX{4}（阻力、垂直、鐘罩壓力計）、兩顆 BMP{5}、安全開關與選配輸出。":
-        "Uno driving {1} {2}-wire fans through {0} MOSFETs, plus {3} × HX{4} (drag, vertical, bell manometer), two BMP{5}s, safety switches and optional outputs.",
+    "Uno 經 {0} 塊 {1} 路 MOS 板控制 {2} 個 {3} 線風扇，另接 {4} 組 HX{5}（阻力、垂直、鐘罩壓力計）、兩顆 BMP{6}、安全開關與選配輸出。":
+        "Uno driving {2} {3}-wire fans through {0} {1}-channel MOSFET boards, plus {4} × HX{5} (drag, vertical, bell manometer), two BMP{6}s, safety switches and optional outputs.",
     "第 {0} 層：{1} × QFR{2}GHE": "Layer {0}: {1} × QFR{2}GHE",
-    "{0} 線：紅 {1}V · 黑 → MOSFET": "{0}-wire: red {1}V · black → MOSFET",
-    "訊號下拉": "pull-down",
+    "紅 → {0} A 保險絲 · 黑 → MOS 板": "red → {0} A fuse · black → board",
+    "MOS 板 {0}": "MOSFET board {0}",
+    "{0} 路，每扇一路": "{0} ch, 1 per fan",
     "PWM → 第 {0} 層": "PWM → layer {0}",
     "選配：光學轉速計 → D{0}": "Optional: optical rpm → D{0}",
-    "每層並一顆蕭特基二極體": "Schottky diode across each layer",
-    "（{0}N{1} / SS{2}）": "({0}N{1} / SS{2})",
-    "{0} V 輸出並 {1} µF / {2} V": "{1} µF / {2} V across {0} V out",
-    "MOSFET 訊號下拉：": "MOSFET signal pull-down:",
-    "Uno 重開機時風扇不轉": "fans stay off during Uno reset",
+    "每個風扇並一顆 SS{0}（條紋朝紅線）": "SS{0} across each fan (stripe to red)",
+    "{0} µF / {1} V 接在 {2} V 電源側": "{0} µF / {1} V on the {2} V supply",
+    "（板子之前，不可接在風扇兩端）": "(before the boards, never across a fan)",
+    "光耦輸入：Uno 重開機時風扇不轉": "Opto inputs: off during Uno reset",
     "{0} × {1} mm 風扇（兩層）": "{0} × {1} mm fans (two layers)",
     "{0} 個 {1} mm 風扇（{2} 組兩兩串聯）在不同 PWM 下的估計曲線，與迷你風洞系統曲線的交點。":
         "Estimated curves of {0} × {1} mm fans ({2} stacks of two in series) at different PWM and where they meet the mini tunnel's system curve.",

@@ -89,9 +89,10 @@ The step from the contraction exit into the test section must be **≤ 0.3 mm an
 - **Datasheet ([Delta QFR1212GHE](https://www.delta-fan.com/Download/Spec/QFR1212GHE.pdf)), per fan:** 357 m³/h at zero pressure, 286 Pa at zero flow, 1.80 A rated (2.70 A max), 6,000 rpm, 64 dBA, 330 g. It starts slowly and reaches full speed after 10 s.
 - **Top speed:** from the datasheet P–Q curve, about **16.0 m/s** at full power (16.4 m/s if the two layers give the ideal double pressure). That is 14% above the 14 m/s the measurements need. One layer of four would give only about 14.8 m/s, which is why both layers are filled.
 - **Why not more:** at this operating point each fan runs near its free-flow end, where stacking adds little; the second layer buys about 1.2–1.6 m/s. The 1.6× stacking gain used for the design value is an assumption, so measure the real curve after building.
-- **Speed control:** the QFR has no PWM wire, so the Uno switches each layer's 12 V with a logic-level MOSFET module (see D). The duty needed is about 31% for 5 m/s, 63% for 10 m/s and 88% for 14 m/s.
+- **Speed control:** the QFR has no PWM wire, so the Uno switches the fans' 12 V on and off with two 4-channel MOSFET boards (YYNMOS-4 type), one board per layer and one channel per fan (see D). The duty needed is about 31% for 5 m/s, 63% for 10 m/s and 88% for 14 m/s.
+- **PWM frequency:** the board switches at 1 kHz at most (some listings say 200 Hz), so the choice is 1 kHz, 122 Hz or 30 Hz. The fan's control chip loses power in every off gap (0.7 ms at 1 kHz and 31% duty, 23 ms at 30 Hz). If a gap is too long, the chip resets and the fan falls back to its 10 s slow start. The datasheet says nothing about switched power, so the frequency is chosen by test.
 - **Weight:** the eight fans weigh about 2.6 kg, most of module 3's weight.
-- **Before buying all eight:** buy one and run [arduino/fan_pwm_test](arduino/fan_pwm_test/fan_pwm_test.ino). It passes if the speed rises smoothly from 30% to 100% duty; 5 m/s needs about 31% of full fan speed. If it fails, see "Why it could fail".
+- **Before buying all eight:** buy one fan and one board, and run [arduino/fan_pwm_test](arduino/fan_pwm_test/fan_pwm_test.ino) through that board. It passes if, at 1 kHz, 122 Hz or 30 Hz, the speed rises smoothly from 30% to 100% duty and never drops back to the slow start; 5 m/s needs about 31% of full fan speed. A whine or buzz at the PWM frequency is not a failure. If it fails, see "Why it could fail".
 
 ![Estimated fan curves at different PWM duty and where they meet the tunnel system curve (8 × QFR1212GHE, two layers).](figures/en/M6-fan-curve.svg)
 
@@ -134,9 +135,9 @@ The Arduino Uno holds the speed, runs each force measurement, cuts the fans when
 
 ![Arduino Uno wiring: fans, three HX711s, two BMP280s, safety switches and optional outputs.](figures/en/M5-uno-wiring.svg)
 
-- **Constant speed:** the Uno reads the pressure difference from speed sensor A, computes $q$ and $U$, and adjusts the PWM duty with a PID loop to hold the set speed. D9 drives the layer 1 MOSFET module and D10 the layer 2 module. Both pins run on Timer1, so they share one frequency and get the same duty; using two pins keeps each pin's current within the Uno's limit, since each module's signal input lights an optocoupler LED. The PWM frequency is the one that passed fan_pwm_test.
+- **Constant speed:** the Uno reads the pressure difference from speed sensor A, computes $q$ and $U$, and adjusts the PWM duty with a PID loop to hold the set speed. D9 drives the four inputs of the layer 1 board and D10 those of the layer 2 board. Both pins run on Timer1, so they share one frequency and get the same duty. Two pins are needed because each board input lights an optocoupler LED (about 4–8 mA): eight inputs on one pin would exceed the Uno's 20 mA per pin. Measure one input's current; if four exceed 20 mA, add a transistor buffer. The PWM frequency is the one that passed fan_pwm_test.
 - **Automatic force run:** one button runs "zero 30 s → ramp up → settle 60 s → record 30 s → stop → re-zero within two minutes". If the zero shifts by more than 1 mN, the run is flagged as invalid.
-- **Safety:** use MOSFET modules with a pull-down on the signal input, so the fans stay off while the Uno resets. Opening the hatch switch makes the sketch turn the MOSFET off at once. A hardware emergency stop cuts the 12 V directly, without the Uno.
+- **Safety:** the board inputs are opto-isolated, so a resetting Uno (pins floating) cannot light them and the fans stay off. If a board without optocouplers is used instead, it needs a pull-down on each input. Opening the hatch switch makes the sketch turn the boards off at once. A hardware emergency stop cuts the 12 V directly, without the Uno.
 - **Logging:** every sample goes over USB to a laptop as CSV: time, raw readings, $q$, $U$, drag, vertical force, PWM duty and zero values. Plot it in Excel or Python.
 
 **Sensors:**
@@ -238,7 +239,8 @@ Every measured quantity is calibrated against something known: weights for force
 
 The main hazards are high current, spinning fans, noise and loose parts blown into the fans.
 
-- **Electrical:** 12 V is low voltage, but the eight fans draw 14.4 A rated and up to 21.6 A (datasheet maximum). Use a supply of at least 25 A, a 30 A fuse at its output, 12 AWG for the main run, 16 AWG to each layer, and an emergency stop rated ≥ 25 A DC (or have it switch a 30 A automotive relay). Put a 1000 µF / 25 V capacitor across the supply output; Delta asks for more than 4.7 µF when fans run in parallel.
+- **Electrical:** 12 V is low voltage, but the eight fans draw 14.4 A rated and up to 21.6 A (datasheet maximum). Use a supply of at least 25 A, a 30 A fuse at its output, 12 AWG for the main run, 16 AWG to each layer, and an emergency stop rated ≥ 25 A DC (or have it switch a 30 A automotive relay). Put a 1000 µF / 25 V capacitor across 12 V+ and GND on the supply side, after the emergency stop and near the boards; Delta asks for more than 4.7 µF when fans run in parallel. It supplies the quick current pulses so the long supply wires do not have to. Never put it across a fan's own leads: there it would refill through the MOSFET on every pulse, with large current spikes. Mind its polarity (stripe = −).
+- **Per-fan fuses and diodes:** each fan's red lead goes through its own 5 A blade fuse (a 6-way fuse box with negative bus per layer, or inline holders). The 30 A main fuse protects only the thick main wire; a short in one fan's thin 22 AWG lead could carry 15–20 A without blowing it. 5 A sits above the fan's 2.7 A maximum and below what 22 AWG carries. A jammed fan does not blow it (the fan cuts its own current when the rotor locks); it is there for wiring faults. Clamp an SS34 Schottky diode across each fan in the board's output terminal, stripe to the red lead.
 - **Fans:** fit a metal guard at the outlet. Press the emergency stop before reaching into the duct.
 - **Noise:** eight fans at full power give about 73 dBA (64 dBA each). Class demos run at 10 m/s (about 60% duty) for short periods.
 - **Loose parts:** before every start, check the test section for tools or bits of the car.
@@ -374,7 +376,9 @@ The low estimate fits NT$5,000 and the high one does not, so the low-cost route 
 
 | Item | Estimate NT$ | Basis |
 | --- | --- | --- |
-| 8 × QFR1212GHE fans + 2 logic-level MOSFET modules | 2,000–3,000 | Placeholder carried over from the 4 × PFC1212DE price; re-price |
+| 8 × QFR1212GHE fans | 2,000–3,000 | Placeholder carried over from the 4 × PFC1212DE price; re-price |
+| 2 × 4-channel MOSFET boards (YYNMOS-4 type) + 1 spare | 150–450 | Estimate |
+| Fan fusing: 8 × 5 A blade fuses in inline holders (low) or 2 × 6-way fuse boxes (high), 8 × SS34 | 150–550 | Estimate |
 | Speed sensor A: 100 g load cell + HX711, food container, baby oil, fittings (bell printed at school) | 230–350 | Estimate |
 | Speed sensor B: 2 × BMP280 (5 V modules), film canisters | 120–300 | Estimate |
 | Calibration: inclined-manometer tube and board, 60 mL syringe, tees | 80–150 | Estimate |
@@ -385,10 +389,10 @@ The low estimate fits NT$5,000 and the high one does not, so the low-cost route 
 | Plywood/MDF ribs and spines, PET sheet, diffuser panels | 300–600 | Estimate |
 | Straws or printed honeycomb, screens | 100–200 | Estimate |
 | 1:43 diecast car | 80–450 | Checked: SHEIN Taiwan NT$77–445 |
-| Wire, fuse holder, emergency stop, connectors, screws, hot glue | 200–400 | Estimate |
+| 12/16 AWG wire, main fuse holder, emergency stop, 1000 µF capacitor, connectors, screws, hot glue | 200–400 | Estimate |
 | Feeler gauge, rubber skirt, misc. | 100–200 | Estimate |
 | Portability: 12 × M6 levelling feet, 4 transport-lock thumb screws, 2 pressure quick-connects (sleeves and spines from plywood offcuts) | 150–300 | Estimate |
-| **Total** | **4,060–8,050** | |
+| **Total** | **4,360–9,050** | |
 
 To stay at NT$5,000, use an old PC power supply, a cheap car, and school tools and scrap wherever possible. If the order is still over budget, **cut speed sensor B first**: it saves NT$120–300 but loses the backup and cross-check. Speed sensor A and the calibration manometer cannot be cut.
 
@@ -438,7 +442,7 @@ The build goes electronics first, because the balance and speed sensors decide w
 
 | Phase | Work | Depends on | Gate before the next phase | Duration |
 | --- | --- | --- | --- | --- |
-| 1. Measure and order | Measure the car (length, wheelbase, track, wheel diameter, ride height, mass) and update [spec/mini.json](spec/mini.json); buy one QFR1212GHE and run fan_pwm_test; order the rest | Car and one fan delivered | Fan test passes (A5) | 1–2 weeks |
+| 1. Measure and order | Measure the car (length, wheelbase, track, wheel diameter, ride height, mass) and update [spec/mini.json](spec/mini.json); buy one QFR1212GHE and one 4-channel MOSFET board and run fan_pwm_test through it; order the rest | Car and one fan delivered | Fan test passes (A5) | 1–2 weeks |
 | 2. Electronics on the bench | Wire the Uno, HX711s and load cells; overnight drift test; build speed sensors A and B; bench calibration (figure M8); fan MOSFET control | Phase 1 parts | **Balance reaches 1 mN on the bench**; A passes calibration | 2 weeks |
 | 3. Tunnel body | Settling chamber; contraction (ribs and spines first, then sheets, A2); test section; diffuser; fan box; sleeves glued with the test section in place (H1); cradles and levelling feet | Car dimensions (phase 1) | Sleeves slide on freely; no forward-facing steps | 2 weeks (can overlap phase 2) |
 | 4. Balance and plenum | Saddles, frame, drag stage, plenum with transport-lock holes and access cover, height-adjustable column; electronics board and quick-connects | Phase 2 gate | Balance unlocks and returns to zero | 1–2 weeks |
@@ -452,6 +456,7 @@ The build goes electronics first, because the balance and speed sensors decide w
 | Item | Status |
 | --- | --- |
 | Fan price | The budget line still uses the old 4 × PFC1212DE price; re-price 8 × QFR1212GHE. |
+| MOSFET board specs | YYNMOS-4 specs come from listings, not a datasheet. On the board bought, check the PWM limit (1 kHz or 200 Hz), the size of the common DC−/GND terminal (it carries 7.2 A rated, 10.8 A max; if small, use 2 fans per board on 4 boards), whether flyback diodes are fitted, and one input's current. |
 | Stacking gain | The design assumes two stacked fans give 1.6× one fan's pressure (2.0× ideal); measure the fan curve after building. |
 | CAD | The CAD shows the drag push tab only touching the load cell (it must be bolted, see C) and does not show the column height adjuster (H4). |
 | Desk size and joint | The model assumes two 900 × 600 mm desks with the joint at x = 185 mm, right under the plenum and pedestal. Taiwanese classroom desks are often only about 60 × 45 cm, so three may be needed. Measure the desks and place the pedestal and module 2 on one desk. |
@@ -464,9 +469,9 @@ The build goes electronics first, because the balance and speed sensors decide w
 
 | Item | Decision |
 | --- | --- |
-| Fan model | 8 × QFR1212GHE, 2 × 2 stacked two deep, one MOSFET per layer; about 16.0 m/s (16.4 ideal) from the datasheet curve. The 4 × PFC1212DE option (about 17.1 m/s, 4-wire PWM, 19 A) is the fallback if the fan test fails; the 25 A supply covers it too. |
+| Fan model | 8 × QFR1212GHE, 2 × 2 stacked two deep, one 4-channel MOSFET board per layer and one channel per fan (2.7 A max on a 10 A channel); about 16.0 m/s (16.4 ideal) from the datasheet curve. The 4 × PFC1212DE option (about 17.1 m/s, 4-wire PWM, 19 A) is the fallback if the fan test fails; the 25 A supply covers it too. |
 | Fan box | Holds two layers (x = 998–1074); no change needed. |
-| Stopping the fans | Safety never relies on the Uno: the MOSFETs have pull-downs so the fans stay off during a reset, and the emergency stop cuts 12 V in hardware. |
-| Power | Supply ≥ 25 A, 30 A fuse, 12 AWG main wire, sized for the 21.6 A datasheet maximum (G). |
+| Stopping the fans | Safety never relies on the Uno: the boards' opto-isolated inputs keep the fans off during a reset, and the emergency stop cuts 12 V in hardware. |
+| Power | Supply ≥ 25 A, 30 A fuse, 12 AWG main wire, sized for the 21.6 A datasheet maximum; a 5 A fuse and an SS34 diode on each fan; 1000 µF on the supply side only (G). |
 | Portability | Three modules joined by two sleeves (H), so the balance travels in its own module, away from the fan vibration. |
 | Ride height | Each V-saddle holds its tyre at two side points, so the bottom of the tyre sits about 0.53 mm below those contacts. That costs about 18% of a typical 3 mm ride height; record the actual ride height in every report. |

@@ -5,15 +5,17 @@
 // without the fan's built-in "start slow, full speed after 10 s" routine
 // restarting on every pulse?
 //
-// Wiring (fans never take power from the Uno; all GNDs common):
-//   12 V PSU +  -> fan RED
-//   fan BLACK   -> MOSFET module OUT- / drain
-//   MOSFET module GND / source -> 12 V PSU -
-//   MOSFET module SIG -> Uno D9          (logic-level module, e.g. AOD4184/D4184;
-//                                          NOT an IRF520 module: it barely turns on at 5 V)
-//   Schottky diode (1N5819/SS34) across the fan: stripe to RED, other end to BLACK
-//   1000 uF / 25 V capacitor across the 12 V PSU output (Delta asks for > 4.7 uF)
-//   Uno GND -> 12 V PSU -
+// Wiring (fans never take power from the Uno). Test through the same
+// 4-channel opto-isolated MOSFET board (YYNMOS-4 type) used in the tunnel:
+//   12 V PSU +  -> 5 A blade fuse -> fan RED
+//   fan BLACK   -> board channel 1 OUT-
+//   board power DC+ / DC- -> 12 V PSU + / -
+//   board channel 1 PWM input -> Uno D9, board signal GND -> Uno GND
+//   SS34 (or 1N5819) Schottky across the fan: stripe to RED, other end to BLACK
+//   1000 uF / 25 V capacitor across 12 V PSU + and - on the supply side,
+//     never across the fan's leads (Delta asks for > 4.7 uF)
+// The board switches at 1 kHz at most (some listings: 200 Hz), so use
+// frequencies 2-4; frequency 1 (25 kHz) is only for a fast non-isolated module.
 // Speed reading (pick one):
 //   a) TCRT5000 reflective module: VCC 5V, GND, D0 -> Uno D2. One strip of white
 //      tape on one blade, sensor 3-5 mm from the blade tips. PULSES_PER_REV = 1.
@@ -24,7 +26,7 @@
 // fingers and cables out. The fan is 6000 rpm and 64 dBA; wear ear plugs.
 //
 // Serial Monitor at 115200 baud. Commands:
-//   1..4  choose PWM frequency: 1 = 25 kHz, 2 = 1 kHz, 3 = 122 Hz, 4 = 30 Hz
+//   1..4  choose PWM frequency: 1 = 25 kHz, 2 = 1 kHz (default), 3 = 122 Hz, 4 = 30 Hz
 //   a     automatic sweep at the chosen frequency: 100,80,60,50,40,30,20 % then 100 %
 //   0..9  after 'd': set a fixed duty, e.g. "d35" = 35 %   (Enter after typing)
 //   s     stop (MOSFET off)
@@ -35,6 +37,7 @@
 //     (5 m/s needs about 31 % of full fan speed),
 //   - each step settles within 15 s and then stays within +-3 %,
 //   - the fan never drops back to its slow start speed while running.
+// A whine or buzz at the PWM frequency is not a failure.
 
 const uint8_t PIN_PWM = 9;          // Timer1 OC1A
 const uint8_t PIN_SPEED = 2;        // INT0, optional optical sensor
@@ -42,8 +45,8 @@ const uint8_t PULSES_PER_REV = 1;   // one tape strip
 const uint16_t STEP_HOLD_S = 20;    // > 10 s soft start + settle
 
 volatile uint32_t pulses = 0;
-uint8_t freqIndex = 0;              // 0 = 25 kHz
-uint16_t topValue = 639;
+uint8_t freqIndex = 1;              // 1 = 1 kHz (the board's limit)
+uint16_t topValue = 1999;
 float dutyPct = 0;
 
 struct PwmSetting { const char *name; uint8_t csBits; uint16_t top; };
@@ -117,7 +120,7 @@ void setup() {
   pinMode(PIN_SPEED, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(PIN_SPEED), onPulse, FALLING);
   Serial.begin(115200);
-  applyFrequency(0);
+  applyFrequency(1);
   setDuty(0);
   Serial.println(F("# fan_pwm_test ready. 1-4 = frequency, a = auto sweep, dNN = duty NN %, s = stop"));
 }

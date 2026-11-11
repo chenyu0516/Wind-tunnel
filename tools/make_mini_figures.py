@@ -357,7 +357,7 @@ def fig_saddle_balance():
 
 # ---------------------------------------------------------------- M5
 def fig_wiring():
-    svg = Svg(1400, 960, "Arduino Uno 接線", "Uno 經 2 個 MOSFET 控制 8 個 2 線風扇，另接 3 組 HX711（阻力、垂直、鐘罩壓力計）、兩顆 BMP280、安全開關與選配輸出。")
+    svg = Svg(1400, 960, "Arduino Uno 接線", "Uno 經 2 塊 4 路 MOS 板控制 8 個 2 線風扇，另接 3 組 HX711（阻力、垂直、鐘罩壓力計）、兩顆 BMP280、安全開關與選配輸出。")
     svg.header("圖 M5　Arduino Uno 接線圖", "紅：12 V　黑：GND　藍：訊號　綠：I²C　所有 GND 必須共地；風扇電源不可取自 Uno")
     ux, uy, uw, uh = 600, 150, 240, 600
     svg.rect(ux, uy, uw, uh, "shell", 'rx="10" style="fill:#e0f2fe"')
@@ -392,12 +392,12 @@ def fig_wiring():
         for k in range(fan["parallel"]):
             svg.circle(87 + k * 55, fy + 35, 22, "thin")
         svg.text(170, fy + 80, f"第 {i+1} 層：{fan['parallel']} × QFR1212GHE", "l", "middle")
-        svg.text(170, fy + 102, "2 線：紅 12V · 黑 → MOSFET", "n", "middle")
+        svg.text(170, fy + 102, f"紅 → {G['electronics']['fan_fuse_a']} A 保險絲 · 黑 → MOS 板", "n", "middle")
         svg.line(280, fy + 15, 460, fy + 15, "thin", red)
         svg.line(280, fy + 60, 320, fy + 60, "thin", blk)
         svg.rect(320, fy + 40, 110, 50, "shell", 'rx="6" style="fill:#ede9fe"')
-        svg.text(375, fy + 61, f"MOSFET {i+1}", "n", "middle")
-        svg.text(375, fy + 80, "訊號下拉", "n", "middle")
+        svg.text(375, fy + 61, f"MOS 板 {i+1}", "n", "middle")
+        svg.text(375, fy + 80, "4 路，每扇一路", "n", "middle")
         svg.line(320, fy + 82, 300, fy + 82, "thin", blk)
         svg.line(430, fy + 55, 440, fy + 55, "thin", blu)
     svg.line(300, 332, 300, 800, "thin", blk)
@@ -408,7 +408,7 @@ def fig_wiring():
         svg.text(592, ly[p_] - 6, f"PWM → 第 {i+1} 層", "n", "end")
     svg.line(480, ly["D2"], ux, ly["D2"], "thin", blu)
     svg.text(592, ly["D2"] - 6, "選配：光學轉速計 → D2", "n", "end")
-    svg.lines(60, 600, ["每層並一顆蕭特基二極體", "（1N5819 / SS34）", "12 V 輸出並 1000 µF / 25 V", "MOSFET 訊號下拉：", "Uno 重開機時風扇不轉"], "n", 20)
+    svg.lines(60, 600, ["每個風扇並一顆 SS34（條紋朝紅線）", "1000 µF / 25 V 接在 12 V 電源側", "（板子之前，不可接在風扇兩端）", "光耦輸入：Uno 重開機時風扇不轉"], "n", 20)
     svg.rect(470, 640, 110, 40, "shell", 'rx="6"')
     svg.text(525, 665, "艙蓋安全開關", "n", "middle")
     svg.path(f"M525,640 L525,{ly['D8']} L{ux},{ly['D8']}", "thin", blu)

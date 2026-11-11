@@ -133,7 +133,7 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <text x="706.9" y="702.0" class="d halo" text-anchor="middle" >14.0 m/s</text>
 <text x="1072.7" y="702.0" class="d halo" text-anchor="middle" >5.1 m/s</text>
 <text x="254.3" y="224.2" class="n halo" text-anchor="middle" >Straw honeycomb + 2 screens</text>
-<text x="1231.4" y="245.6" class="n halo" text-anchor="middle" >4 × 120 mm fans</text>
+<text x="1231.4" y="245.6" class="n halo" text-anchor="middle" >8 × 120 mm fans (two layers)</text>
 <text x="1212.8" y="422.4" class="n halo" text-anchor="end" >Safety mesh</text>
 <text x="705.7" y="386.0" class="n halo" text-anchor="middle" >Ground plate + 1:43 car</text>
 <text x="40.0" y="850.0" class="l" text-anchor="start" >← Inlet clearance ≥ 420</text>

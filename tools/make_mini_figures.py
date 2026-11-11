@@ -101,7 +101,7 @@ def fig_airpath():
     for x, u in ((sc["x0"] + 170, UMAX / cr), (170, UMAX), (760, UMAX / ar)):
         svg.text(top.X(x), top.V(0) + 22, f"{u:.1f} m/s", "d", "middle", True)
     svg.text(side.X(-560), side.V(ax + 154.5) - 10, "吸管蜂巢 + 2 片網", "n", "middle", True)
-    svg.text(side.X(1016), side.V(ax + 120) - 10, "4 × 120 mm 風扇", "n", "middle", True)
+    svg.text(side.X(1016), side.V(ax + 120) - 10, f"{G['fan']['count']} × {G['fan']['size']} mm 風扇（兩層）", "n", "middle", True)
     svg.text(side.X(986), side.V(ax - 120) + 18, "安全網", "n", "end", True)
     svg.text(side.X(168), side.V(gp["z_underside"]) + 30, "地面板 + 1:43 車模", "n", "middle", True)
     ca = G["clear_air"]
@@ -357,12 +357,12 @@ def fig_saddle_balance():
 
 # ---------------------------------------------------------------- M5
 def fig_wiring():
-    svg = Svg(1400, 960, "Arduino Uno 接線", "Uno 接 4 個 PWM 風扇、3 組 HX711（阻力、垂直、鐘罩壓力計）、兩顆 BMP280、安全開關與選配輸出。")
+    svg = Svg(1400, 960, "Arduino Uno 接線", "Uno 經 2 個 MOSFET 控制 8 個 2 線風扇，另接 3 組 HX711（阻力、垂直、鐘罩壓力計）、兩顆 BMP280、安全開關與選配輸出。")
     svg.header("圖 M5　Arduino Uno 接線圖", "紅：12 V　黑：GND　藍：訊號　綠：I²C　所有 GND 必須共地；風扇電源不可取自 Uno")
     ux, uy, uw, uh = 600, 150, 240, 600
     svg.rect(ux, uy, uw, uh, "shell", 'rx="10" style="fill:#e0f2fe"')
     svg.text(ux + uw / 2, uy + 30, "Arduino Uno R3", "t", "middle")
-    ly = {"D9": 225, "D2": 330, "D3": 425, "D8": 600}
+    ly = {"D9": 305, "D10": 495, "D2": 560, "D8": 600}
     right = ["D4", "D5", "D6", "D7", "A0", "A1", "D11", "D12", "A4", "A5"]
     ry = {p_: uy + 70 + i * 50 for i, p_ in enumerate(right)}
     for p_, y in ly.items():
@@ -381,29 +381,34 @@ def fig_wiring():
     svg.text(115, 166, f"≥ {G['electronics']['psu']['current_a_min']} A（可用舊 ATX）", "n", "middle")
     svg.rect(220, 130, 80, 40, "shell", 'rx="6" style="fill:#fee2e2"')
     svg.text(260, 155, f"保險絲 {G['electronics']['fuse_a']} A", "n", "middle")
-    svg.rect(330, 130, 90, 40, "shell", 'rx="6" style="fill:#fecaca"')
-    svg.text(375, 155, "緊急停止", "l", "middle")
+    svg.rect(330, 130, 120, 40, "shell", 'rx="6" style="fill:#fecaca"')
+    svg.text(390, 155, "緊急停止", "l", "middle")
     svg.line(190, 150, 220, 150, "thin", red)
     svg.line(300, 150, 330, 150, "thin", red)
-    svg.line(420, 150, 460, 150, "thin", red)
-    fy0, step = 260, 95
-    for i in range(4):
-        fy = fy0 + i * step
-        svg.rect(60, fy, 200, 70, "shell", 'rx="8"')
-        svg.circle(95, fy + 35, 26, "thin")
-        svg.text(170, fy + 30, f"風扇 {i+1}（4 線 PWM）", "l", "middle")
-        svg.text(170, fy + 50, "12V · GND · 轉速 · PWM", "n", "middle")
-        svg.line(260, fy + 8, 460, fy + 8, "thin", red)
-        svg.line(260, fy + 60, 300, fy + 60, "thin", blu)
-    svg.line(460, 150, 460, fy0 + 3 * step + 8, "thin", red)
+    svg.line(450, 150, 460, 150, "thin", red)
+    fan = G["fan"]
+    for i, fy in enumerate((250, 440)):
+        svg.rect(60, fy, 220, 120, "shell", 'rx="8"')
+        for k in range(fan["parallel"]):
+            svg.circle(87 + k * 55, fy + 35, 22, "thin")
+        svg.text(170, fy + 80, f"第 {i+1} 層：{fan['parallel']} × QFR1212GHE", "l", "middle")
+        svg.text(170, fy + 102, "2 線：紅 12V · 黑 → MOSFET", "n", "middle")
+        svg.line(280, fy + 15, 460, fy + 15, "thin", red)
+        svg.line(280, fy + 60, 320, fy + 60, "thin", blk)
+        svg.rect(320, fy + 40, 110, 50, "shell", 'rx="6" style="fill:#ede9fe"')
+        svg.text(375, fy + 61, f"MOSFET {i+1}", "n", "middle")
+        svg.text(375, fy + 80, "訊號下拉", "n", "middle")
+        svg.line(320, fy + 82, 300, fy + 82, "thin", blk)
+        svg.line(430, fy + 55, 440, fy + 55, "thin", blu)
+    svg.line(300, 332, 300, 800, "thin", blk)
+    svg.line(460, 150, 460, 455, "thin", red)
     svg.text(468, 200, "12 V", "n")
-    svg.line(300, ly["D9"], 300, fy0 + 3 * step + 60, "thin", blu)
-    svg.line(300, ly["D9"], ux, ly["D9"], "thin", blu)
-    svg.text(312, ly["D9"] - 6, "PWM 25 kHz（4 條並聯）", "n")
-    svg.path(f"M260,{fy0+36} L280,{fy0+36} L280,{ly['D2']} L{ux},{ly['D2']}", "thin", blu)
-    svg.path(f"M260,{fy0+step+36} L270,{fy0+step+36} L270,{ly['D3']} L{ux},{ly['D3']}", "thin", blu)
-    svg.text(480, ly["D2"] - 6, "轉速 1 → D2", "n")
-    svg.text(480, ly["D3"] - 6, "轉速 2 → D3", "n")
+    for i, p_ in enumerate(("D9", "D10")):
+        svg.line(440, ly[p_], ux, ly[p_], "thin", blu)
+        svg.text(592, ly[p_] - 6, f"PWM → 第 {i+1} 層", "n", "end")
+    svg.line(480, ly["D2"], ux, ly["D2"], "thin", blu)
+    svg.text(592, ly["D2"] - 6, "選配：光學轉速計 → D2", "n", "end")
+    svg.lines(60, 600, ["每層並一顆蕭特基二極體", "（1N5819 / SS34）", "12 V 輸出並 1000 µF / 25 V", "MOSFET 訊號下拉：", "Uno 重開機時風扇不轉"], "n", 20)
     svg.rect(470, 640, 110, 40, "shell", 'rx="6"')
     svg.text(525, 665, "艙蓋安全開關", "n", "middle")
     svg.path(f"M525,640 L525,{ly['D8']} L{ux},{ly['D8']}", "thin", blu)
@@ -436,15 +441,15 @@ def fig_wiring():
         svg.line(bx_scl, y + 46, dx, y + 46, "thin", grn)
     y = ry["A5"] + 50
     svg.lines(dx + 250, y + 10, ["選 5 V 可用的模組", "（板上有穩壓與電平轉換）", "管路見圖 M7", "每次開風扇前先歸零"], "n", 18)
-    svg.text(40, 880, "D10 保留不用（與 D9 共用 Timer1）；D13 板上狀態燈", "n")
+    svg.text(40, 880, "D9、D10 同屬 Timer1：頻率相同、占空比相同，每個腳位只帶一層；D13 板上狀態燈", "n")
     svg.text(40, 906, "程式：讀 q → PID 調 PWM 定速；自動跑「歸零 → 升速 → 穩定 60 s → 擷取 30 s → 停機 → 再歸零」；每筆 CSV 經 USB 傳到筆電", "n")
     svg.save("M5-uno-wiring.svg")
 
 
 # ---------------------------------------------------------------- M6
 def fig_fan_curve():
-    svg = Svg(1240, 640, "風扇曲線與系統曲線", "4 個 120 mm 風扇在不同 PWM 下的估計曲線，與迷你風洞系統曲線的交點。")
-    svg.header("圖 M6　風扇陣列 vs 風洞系統曲線（估計）", "直線：4 個風扇並聯，依官方最大風量與最大靜壓連線（實際曲線待量測）　藍色拋物線：風洞需要的壓力")
+    svg = Svg(1240, 640, "風扇曲線與系統曲線", "8 個 120 mm 風扇（4 組兩兩串聯）在不同 PWM 下的估計曲線，與迷你風洞系統曲線的交點。")
+    svg.header("圖 M6　風扇陣列 vs 風洞系統曲線（估計）", "紫線：8 個 QFR1212GHE，原廠 P-Q 曲線，兩層串聯係數 1.6（待量測）　藍線：風洞需要的壓力")
     x0, y0, w, h = 90, 560, 700, 440
     qmax, pmax = 1800, 360
     X = lambda q: x0 + q / qmax * w
@@ -469,10 +474,14 @@ def fig_fan_curve():
     svg.poly(pts, "c1")
     f = G["fan"]
     for d in (1.0, 0.8, 0.6, 0.4):
-        q0 = f["count"] * f["q_max_m3h_each"] * d
-        p0 = f["p_max_pa"] * d * d
-        svg.line(X(0), Y(min(p0, pmax)) if p0 <= pmax else Y(pmax), X(q0), Y(0), "c2") if p0 <= pmax else \
-            svg.line(X(q0 * (1 - pmax / p0)), Y(pmax), X(q0), Y(0), "c2")
+        curve = []
+        for i in range(0, 121):
+            p_ = pmax * i / 120
+            Q = mc.fan_array_flow(p_, d)
+            if Q <= 0:
+                break
+            curve.append((X(min(Q, qmax)), Y(p_)))
+        svg.poly(curve, "c2")
         op = mc.operating_point(d)
         svg.circle(X(op["Q_m3h"]), Y(op["dp"]), 5, "shell", 'style="fill:#187c91"')
         svg.text(X(op["Q_m3h"]) + 8, Y(op["dp"]) - 8, f"PWM {d*100:.0f}% → {op['U']:.1f} m/s", "d", "start", True)
@@ -481,7 +490,7 @@ def fig_fan_curve():
     svg.lines(rx, 156, ["紫線：風扇能給的壓力（轉速越低越往左下）", "藍線：風洞在各流量下需要的壓力", "交點：實際會跑到的風速",
                         "", f"5 m/s 約需 PWM {mc.duty_for(5)*100:.0f}%", f"10 m/s 約需 PWM {mc.duty_for(10)*100:.0f}%（課堂展示）",
                         f"{UMAX} m/s 約需 PWM {mc.duty_for(UMAX)*100:.0f}%", "", "PWM 只是起點：Arduino 會讀壓差、",
-                        "用 PID 自動調到目標風速", "", "直線只是粗估，真實曲線可能較低；", "裝好後用 PWM 掃描實測一次"], "d", 21)
+                        "用 PID 自動調到目標風速", "", "兩層串聯的增益是假設，真實曲線可能較低；", "裝好後用 PWM 掃描實測一次"], "d", 21)
     svg.save("M6-fan-curve.svg")
 
 

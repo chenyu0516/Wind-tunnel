@@ -125,7 +125,7 @@ def test_fans_reach_target_speed():
     op = mc.operating_point(1.0)
     assert op["U"] >= G["speeds_m_s"]["max_target"], f"top speed {op['U']:.1f} m/s"
     watch(op["U"] >= 1.1 * G["speeds_m_s"]["max_target"],
-          f"WATCH top speed {op['U']:.1f} m/s has < 10 % margin over target; fan curve is a linear estimate")
+          f"WATCH top speed {op['U']:.1f} m/s has < 10 % margin over target; series stacking factor is an assumption")
 
 
 def test_min_speed_controllable():
@@ -151,7 +151,7 @@ def test_drag_stage():
     ds = mc.drag_stage()
     assert ds["defl_um_at_max"] < 1000 * min(G["ground_plate"]["wheel_openings"]["clearance"])
     assert ds["cell_share"] >= 0.7
-    rot_min_hz = 5500 / 60 * (mc.duty_for(G["speeds_m_s"]["min"]) or 0.3)
+    rot_min_hz = G["fan"]["rpm"] / 60 * (mc.duty_for(G["speeds_m_s"]["min"]) or 0.3)
     watch(ds["f_Hz"] < 0.8 * rot_min_hz, f"WATCH balance {ds['f_Hz']:.0f} Hz close to fan rotation >= {rot_min_hz:.0f} Hz")
 
 
@@ -164,10 +164,10 @@ def test_vertical_cell_capacity():
 def test_uno_pins():
     pins = G["electronics"]["pins"]
     assert len(pins) == len(set(pins)), "duplicate pin"
-    assert "fan PWM" in pins["D9"], "fan PWM must be on a Timer1 pin (D9/D10) for 25 kHz"
-    assert "tach" in pins["D2"] and "tach" in pins["D3"], "tach inputs must use interrupt pins D2/D3"
+    assert "fan PWM" in pins["D9"] and "fan PWM" in pins["D10"], \
+        "one Timer1 pin per fan layer (D9, D10): same frequency, and each pin drives only one module"
+    assert "D3" not in pins or "tach" not in pins["D3"], "QFR fans have no tach wire"
     assert "SDA" in pins["A4"] and "SCL" in pins["A5"]
-    assert "D10" not in pins, "D10 shares Timer1 with the fan PWM; leave it free"
 
 
 def test_speed_sensor_A_bell():
@@ -198,8 +198,8 @@ def test_speed_sensor_pins():
 
 def test_power_supply():
     pc = mc.psu_current()
-    assert pc["rated"] <= G["electronics"]["psu"]["current_a_min"]
-    assert G["electronics"]["fuse_a"] >= pc["rated"]
+    assert pc["max"] <= G["electronics"]["psu"]["current_a_min"], "PSU must cover the datasheet max current"
+    assert G["electronics"]["fuse_a"] >= 1.25 * pc["max"], "fuse should not run above 80 % of its rating"
 
 
 def test_budget():

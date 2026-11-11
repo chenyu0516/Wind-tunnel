@@ -8,16 +8,16 @@ Adding the most expensive case of every item gives **NT$8,050**; the cheapest ca
 
 | Item | Price | Share of the lowest total | Why it cannot be dropped |
 | --- | --- | --- | --- |
-| 4 × 12038 high-static-pressure PWM fans | 2,000–3,000 | 51% | Must push the whole tunnel's resistance at 14 m/s (about 85 Pa, 1,070 m³/h). Ordinary PC case fans reach only about 75 Pa; four of them give only about 7 m/s |
+| 8 × QFR1212GHE high-static-pressure fans (price to recheck) | 2,000–3,000 | 51% | Must push the whole tunnel's resistance at 14 m/s (about 85 Pa, 1,070 m³/h). Ordinary PC case fans reach only about 75 Pa; four of them give only about 7 m/s |
 | Home-made speed sensor A + backup B + calibration | 430–800 | 11% | The dynamic pressure is only 15–118 Pa; ready-made digital differential-pressure sensors cost NT$1,100–1,600 with shipping, so a home-made bell manometer (primary) + two BMP280s (backup) is used instead |
-| 12 V 20 A power supply | 0–900 | 0–20% | Four fans draw about 12–19 A at full power; an old PC supply is free, a new one costs about 500–900 |
+| 12 V 25 A power supply | 0–900 | 0–20% | Eight QFR fans draw 14.4 A rated, 21.6 A max (datasheet); an old PC supply is free, a new one costs about 500–900 |
 
 **The other 10 small items cost only NT$80–600 each, but together add up to about NT$1,600–3,350.** So "7,000–8,000" is not one expensive item: the fans are half, plus many small things. A real order usually lands in between (about 5,000–6,000), so **staying at 5,000 means deliberately following the low-cost route below.**
 
 ## Low-cost route (target ≤ NT$5,000)
 
-1. **Power supply: an old PC ATX supply (free).** Ask the school IT office, recycling, or a retired home PC; the 12 V output must be rated ≥ 20 A (supplies of 400 W and up usually are).
-2. **Fans at NT$500 or less each:** look for server pulls; 4 fans = 2,000.
+1. **Power supply: an old PC ATX supply (free).** Ask the school IT office, recycling, or a retired home PC; the 12 V output must be rated ≥ 25 A (supplies of 400 W and up usually are).
+2. **Fans at NT$500 or less each:** look for server pulls; 8 QFR1212GHE must still fit about 2,000–3,000 (re-price).
 3. **Tunnel body from scrap wherever possible:** ribs, spines, sleeves and the settling chamber from the school workshop's offcuts or cardboard; only the test section must be bought clear PC.
 4. **A cheap closed-body car** (about NT$80–200), not a collector's model.
 5. **Borrow** the 0.01 g pocket scale, soldering iron, multimeter and 3D printer.
@@ -56,11 +56,11 @@ The decision rule is in the plan, "D2. Home-made speed sensors". Normally **do n
 
 | Item | Spec and quantity | Shopee search | NT$ | Basis | Check before ordering |
 | --- | --- | --- | --- | --- | --- |
-| High-static-pressure fan | 120×120×38 mm, 12 V, **4-wire PWM**, max static pressure ≥ 300 Pa (about 1.2 inH₂O), ×4 (or 8 × QFR1212GHE for two layers, after the fan test) | `12038 PWM 風扇`, `Delta PFC1212DE`, `伺服器 風扇 12038` | 2,000–3,000 | Checked (US$16–24 each) | Must be 4-wire (has a PWM pin); read the static pressure on the datasheet, not just the flow; buy 4 of the same model |
-| 12 V power supply | 12 V ≥ 20 A, ×1 | `ATX 電源 二手`, `12V 20A 電源供應器` | 0–900 | Checked (wholesale about US$17; retail is an estimate) | An old ATX needs the green wire shorted to start; an LED-type supply needs an enclosure and a fuse |
-| Fuse + holder | 25 A automotive blade fuse + in-line holder, ×1 | `汽車 保險絲座 25A` | In wiring below | Estimate | At the supply's + output |
-| Emergency stop | Latching mushroom button, rated ≥ 20 A DC, or use it to switch a relay, ×1 | `緊急停止開關 蘑菇頭` | In wiring below | Estimate | If the switch rating is too low, have it switch a 30 A automotive relay |
-| Wire | 14 AWG red and black 1 m each (main run), 18 AWG 2 m each (to each fan) | `14AWG 矽膠線`, `18AWG 矽膠線` | In wiring below | Estimate | Silicone wire is softer and easier to route |
+| High-static-pressure fan | Delta QFR1212GHE, 120×120×38 mm, 12 V, 2-wire, ×8 (2 × 2 array, two layers) | `Delta QFR1212GHE`, `12038 風扇 2線`, `伺服器 風扇 12038` | 2,000–3,000 | Placeholder (the checked US$16–24 each was for 4 × PFC1212DE); re-price for 8 | Buy 1 first and pass fan_pwm_test, then buy 7 more of the same model; note the rated current for sizing the supply and fuse. Fallback if the test fails: 4 × PFC1212DE (4-wire PWM) |
+| 12 V power supply | 12 V ≥ 25 A, ×1 | `ATX 電源 二手`, `12V 25A 電源供應器` | 0–900 | Checked (wholesale about US$17; retail is an estimate) | An old ATX needs the green wire shorted to start; an LED-type supply needs an enclosure and a fuse |
+| Fuse + holder | 30 A automotive blade fuse + in-line holder, ×1 | `汽車 保險絲座 30A` | In wiring below | Estimate | At the supply's + output |
+| Emergency stop | Latching mushroom button, rated ≥ 25 A DC, or use it to switch a relay, ×1 | `緊急停止開關 蘑菇頭` | In wiring below | Estimate | If the switch rating is too low, have it switch a 30 A automotive relay |
+| Wire | 12 AWG red and black 1 m each (main run), 16 AWG 2 m each (to each fan layer); 1000 µF / 25 V capacitor across the supply output | `12AWG 矽膠線`, `16AWG 矽膠線` | In wiring below | Estimate | Silicone wire is softer and easier to route |
 | Fan guard | 12 cm metal guard ×4 | `12公分 風扇 網罩` | In wiring below | Estimate | On the outlet side |
 | **Wiring subtotal** | Fuse, emergency stop, wire, guards, jumper wires, terminals, heat-shrink | | **200–400** | Estimate | |
 
@@ -129,6 +129,6 @@ These numbers match `budget_ntd` in [spec/mini.json](spec/mini.json); `python3 t
 - BMP280: [Bosch BMP280 datasheet](https://bluerobotics.com/wp-content/uploads/2022/05/BMP280-DATASHEET.pdf) (noise 1.3 Pa, temperature coefficient 1.5 Pa/K, relative accuracy ±12 Pa)
 - Option C ABP2: [DigiKey Taiwan ABP2MRRN001ND2A3XX](https://www.digikey.tw/en/products/detail/honeywell-sensing-and-productivity-solutions/ABP2MRRN001ND2A3XX/26264563), [Honeywell ABP2 datasheet 32350268 (RS copy)](https://docs.rs-online.com/578f/A700000015334102.pdf), [Adafruit BSS138 level shifter](https://www.adafruit.com/product/757)
 - Shipping: [DigiKey Taiwan (NT$600 under NT$1,400)](https://www.digikey.tw/en/maker/profiles/791dd58bcd43431aa002264bd14ce00c), [RS Taiwan delivery (individuals NT$500 under NT$1,300)](https://twcn.rs-online.com/web/content/support/all-articles/delivery)
-- 12 V 20 A supply: [Alibaba open-frame supply](https://www.alibaba.com/product-detail/240W-12V-open-frame-switching-power_60821400748.html), [RS Taiwan industrial](https://twcn.rs-online.com/web/p/switching-power-supplies/1618225) (industrial grade costs NT$2,500 and up; not needed here)
+- 12 V supply (these listings are 20 A / 240 W; buy ≥ 25 A / 300 W): [Alibaba open-frame supply](https://www.alibaba.com/product-detail/240W-12V-open-frame-switching-power_60821400748.html), [RS Taiwan industrial](https://twcn.rs-online.com/web/p/switching-power-supplies/1618225) (industrial grade costs NT$2,500 and up; not needed here)
 - PC sheet: [Yahoo Auctions PC sheet price list](https://tw.bid.yahoo.com/item/100031739789/index.md), [Yahoo Auctions 3 mm quote](https://tw.bid.yahoo.com/item/100050060067/index.md)
 - Car: [SHEIN Taiwan Burago 1:43](https://m.shein.tw/Burago%201%2043%20F1%20AMR25%20Alloy%20Car%20Model%202025%20No%2014%20Alonso%20Regular%20Version-p-322987138.html), [SHEIN Taiwan 1:43 diecast](https://m.shein.tw/1%2043%20Scale%20Supercar%20Model%20Alloy%20Diecast%20Model%20Car%20Detailed%20Craftsmanship%20Openable%20Doors%20Toy%20Car%20Gift%20Suitable%20For%20Boys-p-93016086.html)

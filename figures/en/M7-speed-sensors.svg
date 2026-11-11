@@ -48,8 +48,8 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <rect x="412.5" y="555.8" width="3.5" height="232.0" class="dark" />
 <rect x="590.0" y="555.8" width="3.5" height="232.0" class="dark" />
 <rect x="412.5" y="555.8" width="181.0" height="3.5" class="dark" />
-<line x1="416.0" y1="632.9" x2="590.0" y2="632.9" class="tbd" />
-<text x="584.0" y="626.9" class="w halo" text-anchor="end" >Level at max</text>
+<line x1="416.0" y1="631.5" x2="590.0" y2="631.5" class="tbd" />
+<text x="584.0" y="625.5" class="w halo" text-anchor="end" >Level at max</text>
 <polyline points="300.0,492.0 389.3,492.0 389.3,805.2 439.2,805.2 439.2,584.8" class="c2" />
 <circle cx="439.2" cy="584.8" r="3.0" class="c2" />
 <text x="447.2" y="580.8" class="n halo" text-anchor="start" >Vent tip</text>
@@ -84,7 +84,7 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <line x1="358.0" y1="846.8" x2="648.0" y2="846.8" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
 <text x="503.0" y="860.8" class="d halo" text-anchor="middle" >Dish ID ≥ 100</text>
 <text x="40.0" y="900.0" class="n" text-anchor="start" >Bell: 3D-printed PETG straight cylinder (not a tapered cup), 1.2 mm wall, about 28 g; liquid: baby oil (slow to evaporate, non-conductive); vent: 4 mm brass U-tube entering from under the rim</text>
-<text x="40.0" y="918.0" class="n" text-anchor="start" >Effective area about 2942 mm² (use the calibrated value): 15 Pa ≈ 4.5 g, max 153 Pa ≈ 46 g; load cell max about 67 g / 100 g; oil inside bell rises about 18 mm at max</text>
+<text x="40.0" y="918.0" class="n" text-anchor="start" >Effective area about 2942 mm² (use the calibrated value): 15 Pa ≈ 4.5 g, max 158 Pa ≈ 47 g; load cell max about 69 g / 100 g; oil inside bell rises about 19 mm at max</text>
 <text x="40.0" y="936.0" class="n" text-anchor="start" >Resolution: 1 mN ÷ area ≈ 0.34 Pa → speed error about ±1.1% at 5 m/s</text>
 <text x="820.0" y="130.0" class="l" text-anchor="start" >B  Backup: two BMP280s (I²C 0x76, 0x77)</text>
 <rect x="840.0" y="170.0" width="110.0" height="120.0" class="shell" rx="14"/>

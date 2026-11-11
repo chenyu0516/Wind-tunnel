@@ -22,20 +22,43 @@ def system_dp(U):
     return ac.q_of(U) * ac.system_K()
 
 
-def fan_array_flow(p, duty=1.0):
-    """Flow (m3/h) of the whole array at static pressure p, linear curve, fan laws for PWM duty (speed ~ duty)."""
+def fan_flow_each(p):
+    """Flow (m3/h) of one fan at full speed and static pressure p, from the datasheet P-Q points."""
+    pts = G["fan"]["pq_curve_each"]
+    if p <= 0:
+        return pts[-1][0]
+    if p >= pts[0][1]:
+        return 0.0
+    for (q1, p1), (q2, p2) in zip(pts, pts[1:]):
+        if p2 <= p <= p1:
+            return q1 + (q2 - q1) * (p1 - p) / (p1 - p2)
+    return 0.0
+
+
+def series_factor(case="design"):
+    lo, hi = G["fan"]["series_factor"]
+    return 1.0 if G["fan"]["layers"] == 1 else (lo if case == "design" else hi)
+
+
+def fan_array_flow(p, duty=1.0, case="design", layers=None):
+    """Flow (m3/h) of the whole array at static pressure p.
+
+    Parallel stacks of fans in series: each stack gives series_factor x one fan's pressure at the same flow.
+    Fan laws for PWM duty d (speed ~ d): Q ~ d, p ~ d^2.
+    """
     f = G["fan"]
-    qmax = f["count"] * f["q_max_m3h_each"] * duty
-    pmax = f["p_max_pa"] * duty**2
-    return max(0.0, qmax * (1 - p / pmax))
+    sf = series_factor(case) if layers is None else (1.0 if layers == 1 else series_factor(case))
+    if duty <= 0:
+        return 0.0
+    return f["parallel"] * duty * fan_flow_each(p / (sf * duty**2))
 
 
-def operating_point(duty=1.0):
+def operating_point(duty=1.0, case="design", layers=None):
     """Test-section speed where the fan curve meets the system curve."""
     lo, hi = 0.0, 60.0
     for _ in range(80):
         U = (lo + hi) / 2
-        if fan_array_flow(system_dp(U), duty) > ac.flow_m3h(U):
+        if fan_array_flow(system_dp(U), duty, case, layers) > ac.flow_m3h(U):
             lo = U
         else:
             hi = U
@@ -130,7 +153,7 @@ def budget():
 
 def psu_current():
     f = G["fan"]
-    return {"rated": f["count"] * f["current_a_max_each"], "measured_high": f["count"] * f["current_a_measured_each"][1]}
+    return {"rated": f["count"] * f["current_a_each"], "max": f["count"] * f["current_a_max_each"]}
 
 
 def report():
@@ -148,11 +171,15 @@ def report():
       f"wall angles width {dg['wall_angle_w_deg']:.1f} / height {dg['wall_angle_h_deg']:.1f} deg")
     p(f"- blockage {G['car']['frontal_area_m2']/ac.ts_area_m2()*100:.1f} % of full section")
     p(f"- sum K {ac.system_K():.3f}")
-    p("\n## Fan array operating points (linear fan curve, speed ~ PWM duty)")
+    fa = G["fan"]
+    p(f"\n## Fan array operating points ({fa['count']} fans: {fa['parallel']} stacks x {fa['layers']} layers; datasheet P-Q curve; speed ~ PWM duty)")
+    p(f"- series factor {series_factor('design')} (design) to {series_factor('ideal')} (ideal)")
     for d in (1.0, 0.8, 0.6, 0.4, 0.3):
         op = operating_point(d)
+        hi = operating_point(d, "ideal")
         f = forces_mN(op["U"])
-        p(f"- duty {d*100:.0f} %: U {op['U']:.1f} m/s, Q {op['Q_m3h']:.0f} m3/h, dp {op['dp']:.0f} Pa, drag {f['drag']:.1f} mN, lift {f['lift']:.1f} mN")
+        p(f"- duty {d*100:.0f} %: U {op['U']:.1f} m/s (ideal {hi['U']:.1f}), Q {op['Q_m3h']:.0f} m3/h, dp {op['dp']:.0f} Pa, drag {f['drag']:.1f} mN, lift {f['lift']:.1f} mN")
+    p(f"- one layer only ({fa['parallel']} fans): U {operating_point(1.0, layers=1)['U']:.1f} m/s at full power")
     for U in (5, 10, 12, 14):
         d = duty_for(U)
         p(f"- duty for {U} m/s: {'n/a' if d is None else f'{d*100:.0f} %'}")
@@ -183,7 +210,7 @@ def report():
     p(f"- blades {ds['k_blades']:.0f} N/m + cell {ds['k_cell']:.0f} N/m; cell share {ds['cell_share']*100:.0f} %; f {ds['f_Hz']:.1f} Hz; travel at max drag {ds['defl_um_at_max']:.1f} um")
     p("\n## Power and budget")
     pc = psu_current()
-    p(f"- fan current: rated {pc['rated']:.1f} A, measured-high {pc['measured_high']:.1f} A; PSU >= {G['electronics']['psu']['current_a_min']} A")
+    p(f"- fan current: rated {pc['rated']:.1f} A, datasheet max {pc['max']:.1f} A; PSU >= {G['electronics']['psu']['current_a_min']} A, fuse {G['electronics']['fuse_a']} A")
     b = budget()
     p(f"- budget NT${b['low']:,}-{b['high']:,} vs cap NT${b['cap']:,}")
     return "\n".join(out)

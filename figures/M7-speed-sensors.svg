@@ -48,8 +48,8 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <rect x="412.5" y="555.8" width="3.5" height="232.0" class="dark" />
 <rect x="590.0" y="555.8" width="3.5" height="232.0" class="dark" />
 <rect x="412.5" y="555.8" width="181.0" height="3.5" class="dark" />
-<line x1="416.0" y1="632.9" x2="590.0" y2="632.9" class="tbd" />
-<text x="584.0" y="626.9" class="w halo" text-anchor="end" >最大時液面</text>
+<line x1="416.0" y1="631.5" x2="590.0" y2="631.5" class="tbd" />
+<text x="584.0" y="625.5" class="w halo" text-anchor="end" >最大時液面</text>
 <polyline points="300.0,492.0 389.3,492.0 389.3,805.2 439.2,805.2 439.2,584.8" class="c2" />
 <circle cx="439.2" cy="584.8" r="3.0" class="c2" />
 <text x="447.2" y="580.8" class="n halo" text-anchor="start" >通氣管口</text>
@@ -84,7 +84,7 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <line x1="358.0" y1="846.8" x2="648.0" y2="846.8" class="dim" marker-start="url(#a)" marker-end="url(#a)"/>
 <text x="503.0" y="860.8" class="d halo" text-anchor="middle" >碗內徑 ≥ 100</text>
 <text x="40.0" y="900.0" class="n" text-anchor="start" >鐘罩：3D 列印 PETG 直筒（不要用錐形杯），壁厚 1.2 mm，約 28 g；液體：嬰兒油（不易蒸發、不導電）；通氣管：4 mm 黃銅管彎 U 形，從鐘罩口下方繞進去</text>
-<text x="40.0" y="918.0" class="n" text-anchor="start" >有效面積約 2942 mm²（校正後以實測為準）：15 Pa ≈ 4.5 g，最大 153 Pa ≈ 46 g；荷重元最大負載約 67 g / 100 g；最大時鐘罩內液面升高約 18 mm</text>
+<text x="40.0" y="918.0" class="n" text-anchor="start" >有效面積約 2942 mm²（校正後以實測為準）：15 Pa ≈ 4.5 g，最大 158 Pa ≈ 47 g；荷重元最大負載約 69 g / 100 g；最大時鐘罩內液面升高約 19 mm</text>
 <text x="40.0" y="936.0" class="n" text-anchor="start" >解析度：天平 1 mN ÷ 面積 ≈ 0.34 Pa → 5 m/s 風速誤差約 ±1.1%</text>
 <text x="820.0" y="130.0" class="l" text-anchor="start" >B　備援：兩顆 BMP280（I²C 0x76、0x77）</text>
 <rect x="840.0" y="170.0" width="110.0" height="120.0" class="shell" rx="14"/>

@@ -50,13 +50,21 @@
   "fan": {
     "x0": 986, "length": 100,
     "layers_max": 2,
-    "layout_note": "fan box (x 988-1086) holds two stacked 2x2 layers (x 998-1036 and 1036-1074): 4 x PFC1212DE in one layer, or 8 x QFR1212GHE stacked in pairs; choose after arduino/fan_pwm_test",
-    "model": "4 x Delta PFC1212DE (or equivalent 120x120x38 12 V 4-wire PWM high-static fan), 2x2 array",
-    "count": 4, "size": 120, "depth": 38,
-    "q_max_m3h_each": 430, "p_max_pa": 352,
-    "curve_note": "linear between published max flow and max static pressure; real curve to be checked",
-    "current_a_max_each": 4.8, "current_a_measured_each": [2.1, 3.0],
-    "voltage": 12, "pwm_hz": 25000, "noise_dba_each": 66.5
+    "layout_note": "fan box (x 988-1086) holds two stacked 2x2 layers (x 998-1036 and 1036-1074), both filled: 8 x QFR1212GHE, each front fan with one directly behind it (4 parallel stacks of 2 in series)",
+    "model": "8 x Delta QFR1212GHE (120x120x38, 12 V, 2-wire, no PWM or tach wire), 2x2 array, two layers",
+    "datasheet": "https://www.delta-fan.com/Download/Spec/QFR1212GHE.pdf (sample rev 00, 2006-11-02)",
+    "count": 8, "parallel": 4, "layers": 2, "size": 120, "depth": 38,
+    "q_max_m3h_each": 357.4, "p_max_pa": 286.2,
+    "pq_curve_each": [[0, 286], [54, 255], [78, 238], [156, 196], [234, 140], [276, 102], [312, 59], [357.4, 0]],
+    "pq_curve_note": "m3/h vs Pa at 12 V, read from the datasheet P-Q plot (section 9); fan laws for duty: Q ~ d, p ~ d^2",
+    "series_factor": [1.6, 2.0],
+    "series_note": "pressure of two stacked fans = factor x one fan at the same flow; 2.0 is ideal, 1.6 a design value for same-direction close-coupled fans (assumption, measure)",
+    "current_a_each": 1.80, "current_a_max_each": 2.70,
+    "rpm": 6000, "start_note": "built-in soft start: low speed, full speed after 10 s",
+    "mass_g_each": 330,
+    "voltage": 12, "noise_dba_each": 64.0,
+    "speed_control": "2 logic-level MOSFET modules (one per layer, signal pull-down) switching the fans' 12 V low side; layer 1 from Uno D9, layer 2 from D10 (both Timer1, same frequency and duty, so no pin drives more than one module's opto inputs); PWM frequency chosen with arduino/fan_pwm_test",
+    "fallback": "4 x Delta PFC1212DE (4-wire PWM, 430 m3/h, 352 Pa) in one layer if the one-fan test fails"
   },
   "portable": {
     "modules": [
@@ -143,9 +151,9 @@
   "electronics": {
     "board": "Arduino Uno R3",
     "pins": {
-      "D9":  "fan PWM, Timer1 25 kHz, all 4 fan PWM wires",
-      "D2":  "fan 1 tach (INT0, internal pull-up)",
-      "D3":  "fan 2 tach (INT1, internal pull-up)",
+      "D9":  "fan PWM, layer 1 MOSFET module (Timer1 OC1A)",
+      "D10": "fan PWM, layer 2 MOSFET module (Timer1 OC1B, same frequency and duty as D9)",
+      "D2":  "optional TCRT5000 optical rpm sensor (INT0); QFR fans have no tach wire",
       "D4":  "HX711 drag DT",
       "D5":  "HX711 drag SCK",
       "D6":  "HX711 vertical DT",
@@ -201,8 +209,10 @@
       },
       "fallback_rule": "use A if it passes calibration and agrees with B in the tunnel; else B (5 m/s less accurate); else C"
     },
-    "psu": { "voltage": 12, "current_a_min": 20, "option": "old ATX PC power supply (12 V rail >= 20 A) or 12 V 25 A LED supply" },
-    "fuse_a": 25,
+    "psu": { "voltage": 12, "current_a_min": 25, "option": "old ATX PC power supply (12 V rail >= 25 A) or 12 V 25-30 A LED supply" },
+    "fuse_a": 30,
+    "wire_awg": { "main": 12, "per_layer": 16, "fan_leads": 22 },
+    "bulk_capacitor": "1000 uF / 25 V across the 12 V output (Delta asks for > 4.7 uF with fans in parallel)",
     "estop": "latching switch in the 12 V line to the fans (hardware, independent of the Uno)",
     "logging": "Serial 115200 baud CSV to laptop"
   },
@@ -210,7 +220,7 @@
   "budget_ntd": {
     "cap": 5000,
     "items": [
-      { "item": "4 x 12038 PWM fan (Delta PFC1212DE or equivalent)", "low": 2000, "high": 3000, "basis": "US$16-24 each in 2026 listings (Newegg, eBay, Walmart); about NT$500-750" },
+      { "item": "8 x Delta QFR1212GHE fan + 2 logic-level MOSFET modules", "low": 2000, "high": 3000, "basis": "placeholder carried over from the 4 x PFC1212DE price (US$16-24 each); re-price for 8 x QFR" },
       { "item": "speed sensor A: 100 g load cell + HX711, airtight box, oil, fittings (bell printed at school)", "low": 230, "high": 350, "basis": "estimate" },
       { "item": "speed sensor B: 2 x BMP280 5 V modules, 2 film canisters / small boxes", "low": 120, "high": 300, "basis": "estimate" },
       { "item": "calibration: inclined manometer tube + board, 60 mL syringe, tees", "low": 80, "high": 150, "basis": "estimate" },

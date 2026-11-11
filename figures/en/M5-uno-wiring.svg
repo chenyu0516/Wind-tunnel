@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="960" viewBox="0 0 1400 960" role="img" aria-labelledby="title desc">
 <title id="title">Arduino Uno wiring</title>
-<desc id="desc">Uno with 4 PWM fans, 3 × HX711 (drag, vertical, bell manometer), two BMP280s, safety switches and optional outputs.</desc>
+<desc id="desc">Uno driving 8 2-wire fans through 2 MOSFETs, plus 3 × HX711 (drag, vertical, bell manometer), two BMP280s, safety switches and optional outputs.</desc>
 <defs>
 <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" fill="#6b7280"/></marker>
 <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#187c91"/></marker>
@@ -41,9 +41,9 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <text x="32.0" y="66.0" class="st" text-anchor="start" >Red: 12 V   Black: GND   Blue: signal   Green: I²C   All grounds common; never power the fans from the Uno</text>
 <rect x="600.0" y="150.0" width="240.0" height="600.0" class="shell" rx="10" style="fill:#e0f2fe"/>
 <text x="720.0" y="180.0" class="t" text-anchor="middle" >Arduino Uno R3</text>
-<text x="612.0" y="229.0" class="l" text-anchor="start" >D9</text>
-<text x="612.0" y="334.0" class="l" text-anchor="start" >D2</text>
-<text x="612.0" y="429.0" class="l" text-anchor="start" >D3</text>
+<text x="612.0" y="309.0" class="l" text-anchor="start" >D9</text>
+<text x="612.0" y="499.0" class="l" text-anchor="start" >D10</text>
+<text x="612.0" y="564.0" class="l" text-anchor="start" >D2</text>
 <text x="612.0" y="604.0" class="l" text-anchor="start" >D8</text>
 <text x="828.0" y="224.0" class="l" text-anchor="end" >D4</text>
 <text x="828.0" y="274.0" class="l" text-anchor="end" >D5</text>
@@ -59,47 +59,56 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <text x="720.0" y="730.0" class="n" text-anchor="middle" >USB → laptop (power + CSV)</text>
 <rect x="40.0" y="120.0" width="150.0" height="60.0" class="solid" rx="6"/>
 <text x="115.0" y="148.0" class="l" text-anchor="middle" >12 V supply</text>
-<text x="115.0" y="166.0" class="n" text-anchor="middle" >≥ 20 A (old ATX is fine)</text>
+<text x="115.0" y="166.0" class="n" text-anchor="middle" >≥ 25 A (old ATX is fine)</text>
 <rect x="220.0" y="130.0" width="80.0" height="40.0" class="shell" rx="6" style="fill:#fee2e2"/>
-<text x="260.0" y="155.0" class="n" text-anchor="middle" >Fuse 25 A</text>
-<rect x="330.0" y="130.0" width="90.0" height="40.0" class="shell" rx="6" style="fill:#fecaca"/>
-<text x="375.0" y="155.0" class="l" text-anchor="middle" >Emergency stop</text>
+<text x="260.0" y="155.0" class="n" text-anchor="middle" >Fuse 30 A</text>
+<rect x="330.0" y="130.0" width="120.0" height="40.0" class="shell" rx="6" style="fill:#fecaca"/>
+<text x="390.0" y="155.0" class="l" text-anchor="middle" >Emergency stop</text>
 <line x1="190.0" y1="150.0" x2="220.0" y2="150.0" class="thin" style="stroke:#dc2626;stroke-width:3"/>
 <line x1="300.0" y1="150.0" x2="330.0" y2="150.0" class="thin" style="stroke:#dc2626;stroke-width:3"/>
-<line x1="420.0" y1="150.0" x2="460.0" y2="150.0" class="thin" style="stroke:#dc2626;stroke-width:3"/>
-<rect x="60.0" y="260.0" width="200.0" height="70.0" class="shell" rx="8"/>
-<circle cx="95.0" cy="295.0" r="26.0" class="thin" />
-<text x="170.0" y="290.0" class="l" text-anchor="middle" >Fan 1 (4-wire PWM)</text>
-<text x="170.0" y="310.0" class="n" text-anchor="middle" >12V · GND · tach · PWM</text>
-<line x1="260.0" y1="268.0" x2="460.0" y2="268.0" class="thin" style="stroke:#dc2626;stroke-width:3"/>
-<line x1="260.0" y1="320.0" x2="300.0" y2="320.0" class="thin" style="stroke:#2563eb;stroke-width:2"/>
-<rect x="60.0" y="355.0" width="200.0" height="70.0" class="shell" rx="8"/>
-<circle cx="95.0" cy="390.0" r="26.0" class="thin" />
-<text x="170.0" y="385.0" class="l" text-anchor="middle" >Fan 2 (4-wire PWM)</text>
-<text x="170.0" y="405.0" class="n" text-anchor="middle" >12V · GND · tach · PWM</text>
-<line x1="260.0" y1="363.0" x2="460.0" y2="363.0" class="thin" style="stroke:#dc2626;stroke-width:3"/>
-<line x1="260.0" y1="415.0" x2="300.0" y2="415.0" class="thin" style="stroke:#2563eb;stroke-width:2"/>
-<rect x="60.0" y="450.0" width="200.0" height="70.0" class="shell" rx="8"/>
-<circle cx="95.0" cy="485.0" r="26.0" class="thin" />
-<text x="170.0" y="480.0" class="l" text-anchor="middle" >Fan 3 (4-wire PWM)</text>
-<text x="170.0" y="500.0" class="n" text-anchor="middle" >12V · GND · tach · PWM</text>
-<line x1="260.0" y1="458.0" x2="460.0" y2="458.0" class="thin" style="stroke:#dc2626;stroke-width:3"/>
-<line x1="260.0" y1="510.0" x2="300.0" y2="510.0" class="thin" style="stroke:#2563eb;stroke-width:2"/>
-<rect x="60.0" y="545.0" width="200.0" height="70.0" class="shell" rx="8"/>
-<circle cx="95.0" cy="580.0" r="26.0" class="thin" />
-<text x="170.0" y="575.0" class="l" text-anchor="middle" >Fan 4 (4-wire PWM)</text>
-<text x="170.0" y="595.0" class="n" text-anchor="middle" >12V · GND · tach · PWM</text>
-<line x1="260.0" y1="553.0" x2="460.0" y2="553.0" class="thin" style="stroke:#dc2626;stroke-width:3"/>
-<line x1="260.0" y1="605.0" x2="300.0" y2="605.0" class="thin" style="stroke:#2563eb;stroke-width:2"/>
-<line x1="460.0" y1="150.0" x2="460.0" y2="553.0" class="thin" style="stroke:#dc2626;stroke-width:3"/>
+<line x1="450.0" y1="150.0" x2="460.0" y2="150.0" class="thin" style="stroke:#dc2626;stroke-width:3"/>
+<rect x="60.0" y="250.0" width="220.0" height="120.0" class="shell" rx="8"/>
+<circle cx="87.0" cy="285.0" r="22.0" class="thin" />
+<circle cx="142.0" cy="285.0" r="22.0" class="thin" />
+<circle cx="197.0" cy="285.0" r="22.0" class="thin" />
+<circle cx="252.0" cy="285.0" r="22.0" class="thin" />
+<text x="170.0" y="330.0" class="l" text-anchor="middle" >Layer 1: 4 × QFR1212GHE</text>
+<text x="170.0" y="352.0" class="n" text-anchor="middle" >2-wire: red 12V · black → MOSFET</text>
+<line x1="280.0" y1="265.0" x2="460.0" y2="265.0" class="thin" style="stroke:#dc2626;stroke-width:3"/>
+<line x1="280.0" y1="310.0" x2="320.0" y2="310.0" class="thin" style="stroke:#111827;stroke-width:3"/>
+<rect x="320.0" y="290.0" width="110.0" height="50.0" class="shell" rx="6" style="fill:#ede9fe"/>
+<text x="375.0" y="311.0" class="n" text-anchor="middle" >MOSFET 1</text>
+<text x="375.0" y="330.0" class="n" text-anchor="middle" >pull-down</text>
+<line x1="320.0" y1="332.0" x2="300.0" y2="332.0" class="thin" style="stroke:#111827;stroke-width:3"/>
+<line x1="430.0" y1="305.0" x2="440.0" y2="305.0" class="thin" style="stroke:#2563eb;stroke-width:2"/>
+<rect x="60.0" y="440.0" width="220.0" height="120.0" class="shell" rx="8"/>
+<circle cx="87.0" cy="475.0" r="22.0" class="thin" />
+<circle cx="142.0" cy="475.0" r="22.0" class="thin" />
+<circle cx="197.0" cy="475.0" r="22.0" class="thin" />
+<circle cx="252.0" cy="475.0" r="22.0" class="thin" />
+<text x="170.0" y="520.0" class="l" text-anchor="middle" >Layer 2: 4 × QFR1212GHE</text>
+<text x="170.0" y="542.0" class="n" text-anchor="middle" >2-wire: red 12V · black → MOSFET</text>
+<line x1="280.0" y1="455.0" x2="460.0" y2="455.0" class="thin" style="stroke:#dc2626;stroke-width:3"/>
+<line x1="280.0" y1="500.0" x2="320.0" y2="500.0" class="thin" style="stroke:#111827;stroke-width:3"/>
+<rect x="320.0" y="480.0" width="110.0" height="50.0" class="shell" rx="6" style="fill:#ede9fe"/>
+<text x="375.0" y="501.0" class="n" text-anchor="middle" >MOSFET 2</text>
+<text x="375.0" y="520.0" class="n" text-anchor="middle" >pull-down</text>
+<line x1="320.0" y1="522.0" x2="300.0" y2="522.0" class="thin" style="stroke:#111827;stroke-width:3"/>
+<line x1="430.0" y1="495.0" x2="440.0" y2="495.0" class="thin" style="stroke:#2563eb;stroke-width:2"/>
+<line x1="300.0" y1="332.0" x2="300.0" y2="800.0" class="thin" style="stroke:#111827;stroke-width:3"/>
+<line x1="460.0" y1="150.0" x2="460.0" y2="455.0" class="thin" style="stroke:#dc2626;stroke-width:3"/>
 <text x="468.0" y="200.0" class="n" text-anchor="start" >12 V</text>
-<line x1="300.0" y1="225.0" x2="300.0" y2="605.0" class="thin" style="stroke:#2563eb;stroke-width:2"/>
-<line x1="300.0" y1="225.0" x2="600.0" y2="225.0" class="thin" style="stroke:#2563eb;stroke-width:2"/>
-<text x="312.0" y="219.0" class="n" text-anchor="start" >PWM 25 kHz (4 wires in parallel)</text>
-<path d="M260,296 L280,296 L280,330 L600,330" class="thin" style="stroke:#2563eb;stroke-width:2"/>
-<path d="M260,391 L270,391 L270,425 L600,425" class="thin" style="stroke:#2563eb;stroke-width:2"/>
-<text x="480.0" y="324.0" class="n" text-anchor="start" >Tach 1 → D2</text>
-<text x="480.0" y="419.0" class="n" text-anchor="start" >Tach 2 → D3</text>
+<line x1="440.0" y1="305.0" x2="600.0" y2="305.0" class="thin" style="stroke:#2563eb;stroke-width:2"/>
+<text x="592.0" y="299.0" class="n" text-anchor="end" >PWM → layer 1</text>
+<line x1="440.0" y1="495.0" x2="600.0" y2="495.0" class="thin" style="stroke:#2563eb;stroke-width:2"/>
+<text x="592.0" y="489.0" class="n" text-anchor="end" >PWM → layer 2</text>
+<line x1="480.0" y1="560.0" x2="600.0" y2="560.0" class="thin" style="stroke:#2563eb;stroke-width:2"/>
+<text x="592.0" y="554.0" class="n" text-anchor="end" >Optional: optical rpm → D2</text>
+<text x="60.0" y="600.0" class="n" text-anchor="start" >Schottky diode across each layer</text>
+<text x="60.0" y="620.0" class="n" text-anchor="start" >(1N5819 / SS34)</text>
+<text x="60.0" y="640.0" class="n" text-anchor="start" >1000 µF / 25 V across 12 V out</text>
+<text x="60.0" y="660.0" class="n" text-anchor="start" >MOSFET signal pull-down:</text>
+<text x="60.0" y="680.0" class="n" text-anchor="start" >fans stay off during Uno reset</text>
 <rect x="470.0" y="640.0" width="110.0" height="40.0" class="shell" rx="6"/>
 <text x="525.0" y="665.0" class="n" text-anchor="middle" >Hatch safety switch</text>
 <path d="M525,640 L525,600 L600,600" class="thin" style="stroke:#2563eb;stroke-width:2"/>
@@ -146,6 +155,6 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <text x="1190.0" y="748.0" class="n" text-anchor="start" >(regulator + level shifter)</text>
 <text x="1190.0" y="766.0" class="n" text-anchor="start" >Tubing: see figure M7</text>
 <text x="1190.0" y="784.0" class="n" text-anchor="start" >Zero before every fan start</text>
-<text x="40.0" y="880.0" class="n" text-anchor="start" >D10 unused (shares Timer1 with D9); D13 on-board status LED</text>
+<text x="40.0" y="880.0" class="n" text-anchor="start" >D9 and D10 share Timer1: same frequency and duty, one fan layer per pin; D13 on-board status LED</text>
 <text x="40.0" y="906.0" class="n" text-anchor="start" >Code: read q → PID sets PWM for constant speed; auto run "zero → ramp → settle 60 s → record 30 s → stop → re-zero"; CSV over USB to laptop</text>
 </svg>

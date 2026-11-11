@@ -161,7 +161,8 @@ EN = {
     "（板上有穩壓與電平轉換）": "(regulator + level shifter)",
     "管路見圖 M{0}": "Tubing: see figure M{0}",
     "每次開風扇前先歸零": "Zero before every fan start",
-    "D{0} 保留不用（與 D{1} 共用 Timer{2}）；D{3} 板上狀態燈": "D{0} unused (shares Timer{2} with D{1}); D{3} on-board status LED",
+    "D{0}、D{1} 同屬 Timer{2}：頻率相同、占空比相同，每個腳位只帶一層；D{3} 板上狀態燈":
+        "D{0} and D{1} share Timer{2}: same frequency and duty, one fan layer per pin; D{3} on-board status LED",
     "程式：讀 q → PID 調 PWM 定速；自動跑「歸零 → 升速 → 穩定 {0} s → 擷取 {1} s → 停機 → 再歸零」；每筆 CSV 經 USB 傳到筆電":
         "Code: read q → PID sets PWM for constant speed; auto run \"zero → ramp → settle {0} s → record {1} s → stop → re-zero\"; CSV over USB to laptop",
 
@@ -184,6 +185,25 @@ EN = {
     "用 PID 自動調到目標風速": "the pressure and its PID trims to the target",
     "直線只是粗估，真實曲線可能較低；": "Straight lines are rough; real curves may be lower;",
     "裝好後用 PWM 掃描實測一次": "sweep PWM once after building to measure them",
+
+    "Uno 經 {0} 個 MOSFET 控制 {1} 個 {2} 線風扇，另接 {3} 組 HX{4}（阻力、垂直、鐘罩壓力計）、兩顆 BMP{5}、安全開關與選配輸出。":
+        "Uno driving {1} {2}-wire fans through {0} MOSFETs, plus {3} × HX{4} (drag, vertical, bell manometer), two BMP{5}s, safety switches and optional outputs.",
+    "第 {0} 層：{1} × QFR{2}GHE": "Layer {0}: {1} × QFR{2}GHE",
+    "{0} 線：紅 {1}V · 黑 → MOSFET": "{0}-wire: red {1}V · black → MOSFET",
+    "訊號下拉": "pull-down",
+    "PWM → 第 {0} 層": "PWM → layer {0}",
+    "選配：光學轉速計 → D{0}": "Optional: optical rpm → D{0}",
+    "每層並一顆蕭特基二極體": "Schottky diode across each layer",
+    "（{0}N{1} / SS{2}）": "({0}N{1} / SS{2})",
+    "{0} V 輸出並 {1} µF / {2} V": "{1} µF / {2} V across {0} V out",
+    "MOSFET 訊號下拉：": "MOSFET signal pull-down:",
+    "Uno 重開機時風扇不轉": "fans stay off during Uno reset",
+    "{0} × {1} mm 風扇（兩層）": "{0} × {1} mm fans (two layers)",
+    "{0} 個 {1} mm 風扇（{2} 組兩兩串聯）在不同 PWM 下的估計曲線，與迷你風洞系統曲線的交點。":
+        "Estimated curves of {0} × {1} mm fans ({2} stacks of two in series) at different PWM and where they meet the mini tunnel's system curve.",
+    "紫線：{0} 個 QFR{1}GHE，原廠 P-Q 曲線，兩層串聯係數 {2}（待量測）　藍線：風洞需要的壓力":
+        "Purple: {0} × QFR{1}GHE, datasheet P-Q curve, two-layer series factor {2} (to be measured)   Blue: pressure the tunnel needs",
+    "兩層串聯的增益是假設，真實曲線可能較低；": "The two-layer gain is assumed; real curves may be lower;",
 
     # ---- M7 speed sensors ----
     "自製風速感測器": "Home-made speed sensors",

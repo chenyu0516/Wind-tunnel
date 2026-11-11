@@ -4,7 +4,7 @@ A desk-sized, open-return suction wind tunnel for measuring the drag and downfor
 
 ![Side and top view of the mini tunnel, to scale](figures/en/M1-airpath.svg)
 
-**Status (November 2026): design stage.** Nothing is built yet. The fan model is still being chosen, and the car dimensions are estimates until the model car is bought and measured. Every number below is a design target, not a measured result.
+**Status (November 2026): design stage.** Nothing is built yet. The fans are chosen (8 × Delta QFR1212GHE), pending a one-fan test, and the car dimensions are estimates until the model car is bought and measured. Every number below is a design target, not a measured result.
 
 ## At a glance
 
@@ -14,7 +14,7 @@ A desk-sized, open-return suction wind tunnel for measuring the drag and downfor
 | Test section | 168 × 126 × 336 mm, 3 mm clear polycarbonate |
 | Contraction | 6:1 |
 | Air speed | 5–14 m/s (class demo at 10 m/s; coefficient-grade data from 12 m/s up) |
-| Drive | 2 × 2 array of 120 mm 12 V fans, closed-loop speed control on measured dynamic pressure |
+| Drive | 8 × 120 mm 12 V fans (2 × 2, two layers deep), closed-loop speed control on measured dynamic pressure |
 | Force balance | 100 g load cell for drag, 1 kg load cell for vertical force, about 1 mN (0.1 gf) resolution |
 | Speed sensing | Home-made: (A) a bell manometer on a load cell, primary; (B) a pair of BMP280 barometers, backup |
 | Controller | Arduino Uno + 3 × HX711 |
@@ -59,14 +59,14 @@ After changing `spec/mini.json` (for example, after measuring the car), run the 
 
 ## Arduino
 
-[arduino/fan_pwm_test/fan_pwm_test.ino](arduino/fan_pwm_test/fan_pwm_test.ino) is a one-fan go/no-go test for the fan decision. It checks whether a cheap 2-wire fan (Delta QFR1212GHE), switched by a MOSFET from the Uno, can be speed-controlled smoothly from 30 % to 100 %. Wiring, Serial Monitor commands (115200 baud), and pass criteria are in the comment at the top of the sketch. If the test fails, the plan falls back to the 4-wire PFC1212DE.
+[arduino/fan_pwm_test/fan_pwm_test.ino](arduino/fan_pwm_test/fan_pwm_test.ino) is a one-fan go/no-go test to run before buying all eight fans. It checks whether a cheap 2-wire fan (Delta QFR1212GHE), switched by a MOSFET from the Uno, can be speed-controlled smoothly from 30 % to 100 %. Wiring, Serial Monitor commands (115200 baud), and pass criteria are in the comment at the top of the sketch. If the test fails, the fallback is 4 × PFC1212DE (4-wire PWM).
 
 The main control sketch (speed PID, automatic zero/ramp/settle/capture/re-zero sequence, CSV logging over USB, hatch interlock) is not written yet. The pin map is in `spec/mini.json` and figure M5.
 
 ## Safety notes
 
-- Four fans at full speed draw up to about 19 A at 12 V. Use the wire gauges and the 25 A fuse given in the build plan.
-- Setting PWM to 0 % does **not** stop 4-wire fans, and a disconnected PWM line makes them run at full speed. Stopping must cut the fans' 12 V. A hardware E-stop does this independently of the sketch.
+- The eight fans draw 14.4 A rated and up to 21.6 A at 12 V. Use a supply of at least 25 A, the 30 A fuse and the wire gauges given in the build plan.
+- Fan speed is set by a MOSFET switching the fans' 12 V. Use a MOSFET module with a pull-down on its signal input so the fans stay off while the Uno resets. A hardware E-stop cuts the 12 V independently of the sketch.
 - Fit a metal guard on the fan outlet, and do not point the exhaust at people.
 
 ## Repository layout

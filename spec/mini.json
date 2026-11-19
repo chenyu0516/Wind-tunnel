@@ -85,7 +85,7 @@
     ],
     "sleeves": [
       { "x": [0, 20], "on": "contraction end rib", "over": "test-section inlet" },
-      { "x": [316, 344], "on": "diffuser inlet", "over": "test-section outlet" }
+      { "x": [316, 336], "on": "3 mm plywood flange around the diffuser inlet (x 336-339)", "over": "test-section outlet" }
     ],
     "sleeve_t": 3, "sleeve_clearance": 0.3, "sleeve_seal": "tape the seam after assembly (tunnel runs below room pressure)",
     "levelling_feet": { "per_module": 4, "thread": "M6", "pad_d": 18 },
@@ -245,7 +245,7 @@
       { "item": "100 g + 1 kg load cells, 2 x HX711", "low": 250, "high": 400, "basis": "estimate" },
       { "item": "Pitot tube 4 mm, brass U-tube for the bell snorkel, silicone tubing, tees", "low": 150, "high": 300, "basis": "estimate" },
       { "item": "3 mm clear acrylic, laser-cut (test section, balance box walls, hatch, ground plate; about 0.4 m2)", "low": 300, "high": 600, "basis": "estimate" },
-      { "item": "3 mm plywood for laser cutting (about 2.5 m2: ribs and spines as 2 layers, panels, cradles), 1 mm PET sheet", "low": 450, "high": 900, "basis": "estimate" },
+      { "item": "3 mm plywood for laser cutting (about 4 m2: 14 beds of 600 x 400 + 4 diffuser panels; ribs and spines as 2 layers, panels, cradles), 1 mm PET sheet", "low": 600, "high": 1200, "basis": "estimate" },
       { "item": "straws or printed honeycomb, voile screens", "low": 100, "high": 200, "basis": "estimate" },
       { "item": "1:43 diecast car", "low": 80, "high": 450, "basis": "SHEIN Taiwan NT$77-445" },
       { "item": "12/16 AWG wire, main fuse holder, E-stop, 1000 uF capacitor, connectors, screws, glue", "low": 200, "high": 400, "basis": "estimate" },

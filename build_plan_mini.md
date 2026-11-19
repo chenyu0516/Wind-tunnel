@@ -59,6 +59,7 @@ Every CAD part name starts with how the part is made, then this plan's section c
   - Every laser part and every PET flat pattern is laid flat and packed onto bed-sized outlines, one row of beds per material (acrylic, plywood, PET).
   - Select the top faces of one bed and export them as DXF. Leave kerf compensation to the laser software.
   - Enter the real bed size in the feature. Parts bigger than the bed turn red and are set to the right of their row.
+  - Smaller parts are nested inside the openings of the ribs, screen frames and hatch. At the default 600 × 400 mm bed this gives 3 acrylic beds, 14 plywood beds (plus the 4 diffuser panels, which are too long) and 3 PET beds (plus the 2 contraction top/bottom sheets).
 - **Printed parts:** export each 3DP part as STL from the Assembled view.
 
 ## Components
@@ -69,7 +70,7 @@ The air path straightens the incoming air, speeds it up 6×, passes it over the 
 
 **A1. Inlet and flow conditioning.** A honeycomb and two screens remove swirl and even out the air before the contraction.
 - **Honeycomb:** 6 mm drinking straws cut to 40 mm and glued side by side into one panel (about 4,000 straws), or hexagonal cells printed in tiles on the school 3D printer. Glue it into the chamber.
-- **Screens:** polyester voile or stainless mesh with 60–70% open area. Each is glued between two laser-cut 3 mm plywood frames. The frame pair slides down through a slot in the chamber roof, so the screen can be pulled out for cleaning. Seal the slot with tape.
+- **Screens:** polyester voile or stainless mesh with 60–70% open area. Each is glued between two laser-cut 3 mm plywood frames. A narrower tab on top of each frame passes up through a slot in the chamber roof (the slot stops 10 mm short of the side walls, so the roof stays one piece), so the screen can be pulled out for cleaning. Seal the slot with tape.
 - **Settling chamber:** four 3 mm plywood panels with finger-jointed corners. The four high-side static taps at x = −420 are 1 mm holes cut by the laser.
 - **Inlet bell:** four 1 mm PET sheets on eight laser-cut plywood gussets, with four plywood lip strips across the front. The gussets' inner edges follow the lip curve. Each sheet bends one way only, so it is cut flat from its pattern in the laser view. The gussets' tails are glued onto the chamber.
 
@@ -79,7 +80,7 @@ The air path straightens the incoming air, speeds it up 6×, passes it over the 
 
 Build it from four 1 mm PET sheets bent over 7 plywood ribs, held in place by four plywood spines. Ribs and spines are 6 mm thick, made as two laser-cut 3 mm layers glued together.
 
-- **Ribs:** 6 mm frames (2 × 3 mm plywood) at s = 0, 76, 151, 189, 227, 302 and 378 mm, where s is measured from the contraction inlet. Make each **rib hole the figure-M2 size plus 2 × the sheet thickness**, with a 25 mm border. In the middle of each side, cut a half-lap slot 6 mm wide and 12.5 mm deep from the outer edge.
+- **Ribs:** 6 mm frames (2 × 3 mm plywood) at s = 0, 76, 151, 189, 227, 302 and 378 mm, where s is measured from the contraction inlet. Make each **rib hole the figure-M2 size plus 2 × the sheet thickness plus 0.4 mm clearance**, with a 25 mm border. The contraction narrows by up to 1.4 mm across a 6 mm rib, so the CAD gives each 3 mm layer its own hole, sized at its upstream face; the sheet then rests on the layer edges. In the middle of each side, cut a half-lap slot 6 mm wide and 12.5 mm deep from the outer edge.
 - **Spines (4, each 2 × 3 mm plywood):** one on top and one underneath standing on the centreline, and one on each side lying flat at axis height. The inner edge follows the outside of the sheet; the outer edge is straight. At every rib, cut a 12.5 mm half-lap slot from the inner edge so spine and rib interlock like an egg crate.
 - **Spine ends:** run the spines 15 mm past the first rib and 8 mm past the last, so the end ribs also sit in closed slots. The upstream extension steps out over the settling-chamber wall; the downstream one steps out over sleeve 1.
 - **Why spines:** the ribs drop into slots that are already evenly spaced and square, so nothing has to be aligned by hand.
@@ -105,7 +106,7 @@ The step from the contraction exit into the test section must be **≤ 0.3 mm an
 - **Panels:** each side panel is one piece with the balance-box wall below the floor (C). The 1 mm static taps (entrance ring at x = 30 and the side-wall taps) are cut by the laser, square to the wall.
 - **Why acrylic:** polycarbonate cannot be laser-cut cleanly. Acrylic is stiffer, so the roof sags less (under 0.23 mm at 14 m/s), but it is more brittle. Glue it with solvent cement, not superglue, and keep screws away from the edges.
 - **Roof:** it has the car hatch (H4). It is taped, not glued, so it can be hinged at the inlet end and shimmed up 0–6 mm at the outlet end to flatten the streamwise pressure gradient.
-- **Joints:** the inlet end slides 20 mm into sleeve 1 on the contraction; the outlet end slides 20 mm into sleeve 2 on the diffuser (see H1). The entrance pressure taps (D2) therefore sit at x = 30 mm, just clear of sleeve 1.
+- **Joints:** the inlet end slides 20 mm into sleeve 1 on the contraction; the outlet end slides 20 mm into sleeve 2, which is glued to a 3 mm plywood flange around the diffuser inlet (see H1). The entrance pressure taps (D2) therefore sit at x = 30 mm, just clear of sleeve 1.
 
 ![Test section: side and top views with ground plate, car, Pitot tube, pressure taps, survey points, balance box and car hatch.](figures/en/M3-test-section.svg)
 
@@ -307,8 +308,8 @@ Each sleeve is a rectangular collar of four 3 mm plywood strips glued into a fra
 
 | | Sleeve 1 | Sleeve 2 |
 | --- | --- | --- |
-| Glued to | Face of the contraction's last rib | Diffuser inlet |
-| Length | 20 mm | 28 mm (20 over the test section + 8 glued onto the diffuser) |
+| Glued to | Face of the contraction's last rib | Plywood flange around the diffuser inlet (x = 336–339); the diffuser panels pass through it |
+| Length | 20 mm | 20 mm |
 | Inside size | 174.6 × 132.6 mm | 174.6 × 132.6 mm |
 | Takes | Test-section inlet | Test-section outlet |
 
@@ -318,7 +319,7 @@ The test section is 174 × 132 mm outside, leaving 0.3 mm clearance on each side
 2. Slide it into sleeve 1 and hold the contraction against it.
 3. Feel inside the duct for a step where the contraction meets the test section. Any unavoidable step must be backward-facing (A2).
 4. Glue the sleeve to the rib **while the test section is in it**, so the alignment is fixed permanently.
-5. Do sleeve 2 the same way with the diffuser.
+5. Do sleeve 2 the same way against the diffuser flange.
 
 In use, push the test section 20 mm into each sleeve, then wrap the seam with masking or aluminium tape. The tunnel runs below room pressure, so any gap sucks air in. If the fit is loose, put one layer of masking tape around each end of the test section.
 
@@ -428,13 +429,13 @@ The low estimate fits NT$5,000 and the high one does not, so the low-cost route 
 | 100 g and 1 kg load cells + 2 × HX711 | 250–400 | Estimate |
 | Pitot tube, brass U-tube for the bell, silicone tubing, tees | 150–300 | Estimate |
 | 3 mm clear acrylic, laser-cut (about 0.4 m²) | 300–600 | Estimate |
-| 3 mm laser plywood (about 2.5 m²), 1 mm PET sheet | 450–900 | Estimate |
+| 3 mm laser plywood (about 4 m²), 1 mm PET sheet | 600–1,200 | Estimate |
 | Straws or printed honeycomb, screens | 100–200 | Estimate |
 | 1:43 diecast car | 80–450 | Checked: SHEIN Taiwan NT$77–445 |
 | 12/16 AWG wire, main fuse holder, emergency stop, 1000 µF capacitor, connectors, screws, hot glue | 200–400 | Estimate |
 | Hatch magnets, foam tape, microswitch; stop screws, lock nuts, heat-set inserts | 100–200 | Estimate |
 | Portability: 12 × M6 levelling feet, 2 transport-lock thumb screws, 2 pressure quick-connects | 150–300 | Estimate |
-| **Total** | **4,510–9,450** | |
+| **Total** | **4,660–9,750** | |
 
 To stay at NT$5,000, use an old PC power supply, a cheap car, and school tools and scrap wherever possible. If the order is still over budget, **cut speed sensor B first**: it saves NT$120–300 but loses the backup and cross-check. Speed sensor A and the calibration manometer cannot be cut.
 

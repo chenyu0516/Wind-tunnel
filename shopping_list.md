@@ -4,15 +4,15 @@ Goes with [build_plan_mini.md](build_plan_mini.md). The earlier Traditional Chin
 
 ## Why the upper estimate reaches NT$8,000–9,000
 
-Adding the most expensive case of every item gives **NT$9,450**; the cheapest case of every item gives **NT$4,510**. Most of the gap comes from three things:
+Adding the most expensive case of every item gives **NT$9,750**; the cheapest case of every item gives **NT$4,660**. Most of the gap comes from three things:
 
 | Item | Price | Share of the lowest total | Why it cannot be dropped |
 | --- | --- | --- | --- |
-| 8 × QFR1212GHE high-static-pressure fans (price to recheck) | 2,000–3,000 | 44% | Must push the whole tunnel's resistance at 14 m/s (about 85 Pa, 1,070 m³/h). Ordinary PC case fans reach only about 75 Pa; four of them give only about 7 m/s |
-| Home-made speed sensor A + backup B + calibration | 430–800 | 10% | The dynamic pressure is only 15–118 Pa; ready-made digital differential-pressure sensors cost NT$1,100–1,600 with shipping, so a home-made bell manometer (primary) + two BMP280s (backup) is used instead |
-| 12 V 25 A power supply | 0–900 | 0–20% | Eight QFR fans draw 14.4 A rated, 21.6 A max (datasheet); an old PC supply is free, a new one costs about 500–900 |
+| 8 × QFR1212GHE high-static-pressure fans (price to recheck) | 2,000–3,000 | 43% | Must push the whole tunnel's resistance at 14 m/s (about 85 Pa, 1,070 m³/h). Ordinary PC case fans reach only about 75 Pa; four of them give only about 7 m/s |
+| Home-made speed sensor A + backup B + calibration | 430–800 | 9% | The dynamic pressure is only 15–118 Pa; ready-made digital differential-pressure sensors cost NT$1,100–1,600 with shipping, so a home-made bell manometer (primary) + two BMP280s (backup) is used instead |
+| 12 V 25 A power supply | 0–900 | 0–19% | Eight QFR fans draw 14.4 A rated, 21.6 A max (datasheet); an old PC supply is free, a new one costs about 500–900 |
 
-**The other 11 small items cost only NT$80–900 each, but together add up to about NT$2,100–4,750.** So "8,000–9,000" is not one expensive item: the fans are half, plus many small things. A real order usually lands in between (about 5,000–6,000), so **staying at 5,000 means deliberately following the low-cost route below.**
+**The other 11 small items cost only NT$80–900 each, but together add up to about NT$2,230–5,050.** So "8,000–9,000" is not one expensive item: the fans are half, plus many small things. A real order usually lands in between (about 5,000–6,000), so **staying at 5,000 means deliberately following the low-cost route below.**
 
 ## Low-cost route (target ≤ NT$5,000)
 
@@ -87,8 +87,8 @@ The decision rule is in the plan, "D2. Home-made speed sensors". Normally **do n
 | Item | Spec and quantity | Shopee search | NT$ | Basis | Check before ordering |
 | --- | --- | --- | --- | --- | --- |
 | Clear acrylic sheet | **3 mm cast acrylic**, about 0.4 m² (test section, balance box walls, car hatch, ground plate), laser-cut from the CAD laser view | `壓克力板 3mm 透明 雷射切割` | 300–600 | Estimate | Cast, not extruded, if the shop offers both (cleaner laser edges, less cracking with solvent glue); peel the film only after cutting |
-| PET sheet | 1 mm clear rigid PET (bell and contraction walls, 8 pieces cut from the flat patterns), about 4 sheets of A3 | `PET 硬片 1mm` | 450–900 (incl. next two rows) | Estimate | Must bend without creasing; the two contraction top/bottom sheets (393 × 412 mm) are bigger than A3, so buy A2 or a roll |
-| Plywood | **3 mm only** (the laser's limit), about 2.5 m², e.g. eleven 60 × 40 cm sheets: ribs and spines as glued pairs, settling chamber and fan box (finger joints), diffuser, sleeves, cradles, balance plates | `椴木合板 3mm 雷射` | (as above) | Estimate | Laser plywood (basswood/poplar) cuts cleanly; MDF also works but is heavier. Ask the school for offcuts first |
+| PET sheet | 1 mm clear rigid PET (bell and contraction walls, 8 pieces cut from the flat patterns), about 4 sheets of A3 | `PET 硬片 1mm` | 600–1,200 (incl. next two rows) | Estimate | Must bend without creasing; the two contraction top/bottom sheets (393 × 412 mm) are bigger than A3, so buy A2 or a roll |
+| Plywood | **3 mm only** (the laser's limit), about 4 m², e.g. fourteen 60 × 40 cm sheets plus the four diffuser panels (about 650 × 245 mm each): ribs and spines as glued pairs, settling chamber and fan box (finger joints), diffuser, sleeves, cradles, balance plates | `椴木合板 3mm 雷射` | (as above) | Estimate | Laser plywood (basswood/poplar) cuts cleanly; MDF also works but is heavier. Ask the school for offcuts first |
 | Sealing and glue | Hot-glue sticks, foam tape, screws and nuts, acrylic solvent cement (test section), wood glue (laminated plywood pairs) | `泡棉膠條 單面`, `壓克力 接著劑` | (as above) | Estimate | |
 | Honeycomb | About 4,000 × 6 mm straws (cut to 40 mm), or 3D-printed hexagonal cells | `吸管 6mm 1000入` | 100–200 (incl. screens) | Estimate | About 6 mm diameter, must be straight |
 | Screens | Polyester voile (window screen) or fine stainless mesh, about 50 × 40 cm ×2 | `窗紗 布`, `不鏽鋼網 細` | (as above) | Estimate | Hold it up to a light: more opening than wire (60–70% open area) |
@@ -119,9 +119,9 @@ The decision rule is in the plan, "D2. Home-made speed sensors". Normally **do n
 | --- | --- | --- |
 | A. Fans and power (incl. wiring) | 2,500 | 5,300 |
 | B. Sensors | 830 | 1,500 |
-| C. Tunnel body | 850 | 1,700 |
+| C. Tunnel body | 1,000 | 2,000 |
 | D. Balance, car and portability | 330 | 950 |
-| **Total** | **4,510** | **9,450** |
+| **Total** | **4,660** | **9,750** |
 
 These numbers match `budget_ntd` in [spec/mini.json](spec/mini.json); `python3 tools/mini_calc.py` adds them up automatically.
 

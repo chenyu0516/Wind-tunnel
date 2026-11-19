@@ -18,7 +18,7 @@ A desk-sized, open-return suction wind tunnel for measuring the drag and downfor
 | Force balance | 100 g drag and 1 kg vertical load cells bolted in series (no slide), in a sealed box under the test section; about 1 mN (0.1 gf) resolution |
 | Speed sensing | Home-made: (A) a bell manometer on a load cell, primary; (B) a pair of BMP280 barometers, backup |
 | Controller | Arduino Uno + 3 × HX711 |
-| Budget | ≤ NT$5,000 (current estimate NT$4,510–9,450; see the shopping list for the low-cost route) |
+| Budget | ≤ NT$5,000 (current estimate NT$4,660–9,750; see the shopping list for the low-cost route) |
 
 The geometry is the earlier 1:18 design scaled by 0.42, with three changes: computer fans in place of an industrial fan, fixed V-shaped wheel saddles in place of rollers, and 3 mm panels. Every part is cut on a 3 mm laser cutter or 3D-printed; the CAD has a flat "laser sheets" view for DXF export.
 

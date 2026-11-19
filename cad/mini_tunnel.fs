@@ -91,6 +91,15 @@ function lc(context is Context, q is Query, mat is string, name is string, c is 
     return { "q" : q, "m" : mat };
 }
 
+// Same, for a part with openings that smaller parts can be nested in on the laser bed.
+// holes: [[cornerA, cornerB], ...], world points [x, y, z] on opposite corners of each rectangular opening.
+function lch(context is Context, q is Query, mat is string, name is string, c is Color, holes is array) returns map
+{
+    var e = lc(context, q, mat, name, c);
+    e.holes = holes;
+    return e;
+}
+
 function shellBox(context is Context, id is Id, a is array, b is array, ia is array, ib is array)
 {
     blk(context, id + "o", a, b);
@@ -103,6 +112,14 @@ function pipe(context is Context, id is Id, a is array, b is array, od is number
     cyl(context, id + "o", a, b, od);
     cyl(context, id + "i", a, b, bore);
     cut(context, id + "s", bodies(id + "o"), bodies(id + "i"), false);
+}
+
+// Half-width and half-height of a contraction rib opening at station x: outside of the 1 mm sheet + 0.2 mm.
+function ribHole(x is number) returns array
+{
+    const t = min(max((x + 378) / 378, 0), 1);
+    const f = 6 * t ^ 5 - 15 * t ^ 4 + 10 * t ^ 3;
+    return [(412 - 244 * f) / 2 + SH + 0.2, (309 - 183 * f) / 2 + SH + 0.2];
 }
 
 // Rectangular duct along x from four 3 mm panels with finger-jointed corners; inner w x h centred on (y 0, z zc).
@@ -191,11 +208,11 @@ function ductWalls(context is Context, id is Id, xs is array, ws is array, hs is
             var r = [-W - t, -W, ZC - H - t, ZC + H + t];
             if (j == 0)
             {
-                r = [-W, W, ZC + H, ZC + H + t];
+                r = [-W + 0.05, W - 0.05, ZC + H, ZC + H + t];
             }
             else if (j == 1)
             {
-                r = [-W, W, ZC - H - t, ZC - H];
+                r = [-W + 0.05, W - 0.05, ZC - H - t, ZC - H];
             }
             else if (j == 2)
             {
@@ -304,8 +321,10 @@ function flatPoly(context is Context, id is Id, pts is array, t is number)
 }
 
 // How to lay one part flat: largest planar face down, longest straight edge of that face along x.
-function flatInfo(context is Context, q is Query, bedX is number, bedY is number) returns map
+// Returns its flat footprint w x h and the nesting openings in footprint coordinates.
+function flatInfo(context is Context, e is map) returns map
 {
+    const q = e.q;
     const faces = evaluateQuery(context, qGeometry(qOwnedByBody(q, EntityType.FACE), GeometryType.PLANE));
     var best = faces[0];
     var bestA = 0 * meter * meter;
@@ -321,51 +340,42 @@ function flatInfo(context is Context, q is Query, bedX is number, bedY is number
     const pl = evPlane(context, { "face" : best });
     var dir = pl.x;
     var bestL = 0 * meter;
-    for (var e in evaluateQuery(context, qGeometry(qAdjacent(best, AdjacencyType.EDGE, EntityType.EDGE), GeometryType.LINE)))
+    for (var ed in evaluateQuery(context, qGeometry(qAdjacent(best, AdjacencyType.EDGE, EntityType.EDGE), GeometryType.LINE)))
     {
-        const len = evLength(context, { "entities" : e });
+        const len = evLength(context, { "entities" : ed });
         if (len > bestL)
         {
             bestL = len;
-            dir = evLine(context, { "edge" : e }).direction;
+            dir = evLine(context, { "edge" : ed }).direction;
         }
     }
     const zAx = -pl.normal;
     dir = normalize(dir - dot(dir, zAx) * zAx);
     const cs = coordSystem(pl.origin, dir, zAx);
+    const T0 = fromWorld(cs);
     const bx = evBox3d(context, { "topology" : q, "cSys" : cs, "tight" : true });
     const mn = bx.minCorner / millimeter;
     const mx = bx.maxCorner / millimeter;
-    const w = mx[0] - mn[0];
-    const h = mx[1] - mn[1];
-    const fits = w <= bedX - 12 && h <= bedY - 12;
-    const fitsR = h <= bedX - 12 && w <= bedY - 12;
-    var rot = false;
-    var big = false;
-    if (!fits && fitsR)
+    var holes = [];
+    if (e.holes != undefined)
     {
-        rot = true;
+        for (var hp in e.holes)
+        {
+            const a = (T0 * mmv(hp[0][0], hp[0][1], hp[0][2])) / millimeter;
+            const b = (T0 * mmv(hp[1][0], hp[1][1], hp[1][2])) / millimeter;
+            holes = append(holes, [min(a[0], b[0]) - mn[0], min(a[1], b[1]) - mn[1], max(a[0], b[0]) - mn[0], max(a[1], b[1]) - mn[1]]);
+        }
     }
-    else if (fits && fitsR && h > w)
-    {
-        rot = true;
-    }
-    else if (!fits && !fitsR)
-    {
-        big = true;
-        rot = h > w;
-    }
-    return { "q" : q, "T0" : fromWorld(cs), "mn" : mn, "mx" : mx, "rot" : rot, "big" : big,
-            "w" : rot ? h : w, "h" : rot ? w : h };
+    return { "q" : q, "T0" : T0, "mn" : mn, "mx" : mx, "w" : mx[0] - mn[0], "h" : mx[1] - mn[1], "holes" : holes };
 }
 
-// Move a part (flatInfo p) so its flat footprint starts at (px, py) on z = 0.
-function placeFlat(context is Context, id is Id, p is map, px is number, py is number)
+// Move a part (flatInfo p) so its flat footprint starts at (px, py) on z = 0, turned 90 degrees if rot.
+function placeFlat(context is Context, id is Id, p is map, px is number, py is number, rot is boolean)
 {
     var R = identityTransform();
     var x0 = p.mn[0];
     var y0 = p.mn[1];
-    if (p.rot)
+    if (rot)
     {
         R = rotationAround(line(mmv(0, 0, 0), vector(0, 0, 1)), 90 * degree);
         x0 = -p.mx[1];
@@ -382,9 +392,24 @@ function bedOutline(context is Context, id is Id, x0 is number, y0 is number, be
     skSolve(sk);
 }
 
+function without(arr is array, k is number) returns array
+{
+    var out = [];
+    for (var i = 0; i < size(arr); i += 1)
+    {
+        if (i != k)
+        {
+            out = append(out, arr[i]);
+        }
+    }
+    return out;
+}
+
 // Pack all laser and PET parts onto beds: one row of beds per material (acrylic, plywood, PET),
-// each bed outlined by a sketch rectangle. Parts that fit no bed go to the right of the row, in red.
-// Returns a one-line summary (shown as the feature's info message).
+// each bed outlined by a sketch rectangle. Largest parts first; each part goes into the free rectangle
+// it fills best on any bed (either way round), and the openings of ring-shaped parts (ribs, frames,
+// the hatch opening) become free space for smaller parts. Parts that fit no bed go to the right of
+// the row, in red. Returns a one-line summary (shown as the feature's info message).
 function layFlat(context is Context, id is Id, items is array, bedX is number, bedY is number) returns string
 {
     var report = "";
@@ -400,7 +425,7 @@ function layFlat(context is Context, id is Id, items is array, bedX is number, b
         {
             if (it.m == mats[g])
             {
-                parts = append(parts, flatInfo(context, it.q, bedX, bedY));
+                parts = append(parts, flatInfo(context, it));
             }
         }
         if (size(parts) == 0)
@@ -409,54 +434,100 @@ function layFlat(context is Context, id is Id, items is array, bedX is number, b
         }
         parts = sort(parts, function(a, b)
             {
-                return b.h - a.h;
+                return b.w * b.h - a.w * a.h;
             });
-        var sheet = 0;
-        var cx = GAP;
-        var cy = GAP;
-        var rowH = 0;
+        var beds = [];   // per bed: free rectangles [x, y, w, h]; a part needs (w + GAP) x (h + GAP)
         var big = [];
         for (var p in parts)
         {
-            if (p.big)
+            const fitsN = p.w + 2 * GAP <= bedX && p.h + 2 * GAP <= bedY;
+            const fitsR = p.h + 2 * GAP <= bedX && p.w + 2 * GAP <= bedY;
+            if (!fitsN && !fitsR)
             {
                 big = append(big, p);
                 continue;
             }
-            if (cx + p.w > bedX - GAP)
+            var bs = -1;
+            var bi = -1;
+            var br = false;
+            var bestScore = inf;
+            for (var s = 0; s < size(beds); s += 1)
             {
-                cy += rowH + GAP;
-                cx = GAP;
-                rowH = 0;
+                for (var i = 0; i < size(beds[s]); i += 1)
+                {
+                    const cand = beds[s][i];
+                    for (var r in [false, true])
+                    {
+                        const cw = r ? p.h : p.w;
+                        const chh = r ? p.w : p.h;
+                        if (cw + GAP <= cand[2] + 1e-6 && chh + GAP <= cand[3] + 1e-6)
+                        {
+                            const score = cand[2] * cand[3] - (cw + GAP) * (chh + GAP);
+                            if (score < bestScore)
+                            {
+                                bestScore = score;
+                                bs = s;
+                                bi = i;
+                                br = r;
+                            }
+                        }
+                    }
+                }
             }
-            if (cy + p.h > bedY - GAP)
+            if (bs < 0)
             {
-                sheet += 1;
-                cx = GAP;
-                cy = GAP;
-                rowH = 0;
+                beds = append(beds, [[GAP, GAP, bedX - GAP, bedY - GAP]]);
+                bs = size(beds) - 1;
+                bi = 0;
+                br = !fitsN || (fitsR && p.h > p.w);
             }
-            placeFlat(context, id + ("t" ~ n), p, sheet * (bedX + SG) + cx, Y0 + cy);
+            const fr = beds[bs][bi];
+            const w = br ? p.h : p.w;
+            const h = br ? p.w : p.h;
+            const W = w + GAP;
+            const H = h + GAP;
+            var free = without(beds[bs], bi);
+            const rw = fr[2] - W;
+            const th = fr[3] - H;
+            var pieces = rw < th ? [[fr[0] + W, fr[1], rw, H], [fr[0], fr[1] + H, fr[2], th]] : [[fr[0] + W, fr[1], rw, fr[3]], [fr[0], fr[1] + H, W, th]];
+            for (var hl in p.holes)
+            {
+                // opening in bed coordinates (footprint coordinates, turned if the part is turned)
+                var hr = [fr[0] + hl[0], fr[1] + hl[1], fr[0] + hl[2], fr[1] + hl[3]];
+                if (br)
+                {
+                    hr = [fr[0] + h - hl[3], fr[1] + hl[0], fr[0] + h - hl[1], fr[1] + hl[2]];
+                }
+                pieces = append(pieces, [hr[0] + GAP, hr[1] + GAP, hr[2] - hr[0] - GAP, hr[3] - hr[1] - GAP]);
+            }
+            for (var pc in pieces)
+            {
+                if (pc[2] > 10 && pc[3] > 10)
+                {
+                    free = append(free, pc);
+                }
+            }
+            beds[bs] = free;
+            placeFlat(context, id + ("t" ~ n), p, bs * (bedX + SG) + fr[0], Y0 + fr[1], br);
             n += 1;
-            cx += p.w + GAP;
-            rowH = max(rowH, p.h);
         }
-        for (var s = 0; s <= sheet; s += 1)
+        for (var s = 0; s < size(beds); s += 1)
         {
             bedOutline(context, id + ("bed" ~ g ~ "s" ~ s), s * (bedX + SG), Y0, bedX, bedY);
         }
-        var bx = (sheet + 1) * (bedX + SG);
+        var bx = size(beds) * (bedX + SG);
         var bigH = 0;
         for (var p in big)
         {
-            placeFlat(context, id + ("t" ~ n), p, bx, Y0 + GAP);
+            const rot = p.h > p.w;
+            placeFlat(context, id + ("t" ~ n), p, bx, Y0 + GAP, rot);
             n += 1;
             const nm = getProperty(context, { "entity" : p.q, "propertyType" : PropertyType.NAME });
             tagQ(context, p.q, nm ~ " [BIGGER THAN BED: split or cut elsewhere]", color(0.9, 0.1, 0.1));
-            bx += p.w + GAP;
-            bigH = max(bigH, p.h);
+            bx += (rot ? p.h : p.w) + GAP;
+            bigH = max(bigH, rot ? p.w : p.h);
         }
-        report = report ~ mats[g] ~ ": " ~ size(parts) ~ " parts on " ~ (sheet + 1) ~ " beds" ~ (size(big) > 0 ? ", " ~ size(big) ~ " too big" : "") ~ ". ";
+        report = report ~ mats[g] ~ ": " ~ size(parts) ~ " parts on " ~ size(beds) ~ " beds" ~ (size(big) > 0 ? ", " ~ size(big) ~ " too big" : "") ~ ". ";
         Y0 -= max(bedY, bigH + GAP) + 150;
     }
     return report;
@@ -569,10 +640,10 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         var gR = [];
         for (var k = 0; k <= 8; k += 1)
         {
-            gTop = append(gTop, [bx[k], ZC + bh[k] / 2 + SH]);
-            gBot = append(gBot, [bx[k], ZC - bh[k] / 2 - SH]);
-            gL = append(gL, [bx[k], bw[k] / 2 + SH]);
-            gR = append(gR, [bx[k], -bw[k] / 2 - SH]);
+            gTop = append(gTop, [bx[k], ZC + bh[k] / 2 + SH + 0.3]);
+            gBot = append(gBot, [bx[k], ZC - bh[k] / 2 - SH - 0.3]);
+            gL = append(gL, [bx[k], bw[k] / 2 + SH + 0.3]);
+            gR = append(gR, [bx[k], -bw[k] / 2 - SH - 0.3]);
         }
         for (var i = 0; i < 8; i += 1)
         {
@@ -604,7 +675,7 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         var slotQ = [];
         for (var i = 0; i < 2; i += 1)
         {
-            blk(context, id + ("slot" ~ i), [scrX[i] - 3.6, -206, ZC + 153], [scrX[i] + 3.6, 206, ZC + 159]);
+            blk(context, id + ("slot" ~ i), [scrX[i] - 3.6, -196.3, ZC + 153], [scrX[i] + 3.6, 196.3, ZC + 159]);
             slotQ = append(slotQ, bodies(id + ("slot" ~ i)));
         }
         // 1 mm static-tap holes at x = -420 (fittings glued on outside)
@@ -623,11 +694,18 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         {
             const xs = scrX[i];
             const sid = id + ("scr" ~ i);
-            shellBox(context, sid + "f1", [xs - 3.5, -206, ZC - 154.5], [xs - 0.5, 206, ZC + 165.5], [xs - 4.5, -191, ZC - 139.5], [xs + 0.5, 191, ZC + 139.5]);
-            shellBox(context, sid + "f2", [xs + 0.5, -206, ZC - 154.5], [xs + 3.5, 206, ZC + 165.5], [xs - 0.5, -191, ZC - 139.5], [xs + 4.5, 191, ZC + 139.5]);
-            blk(context, sid + "m", [xs - 0.5, -198, ZC - 148], [xs + 0.5, 198, ZC + 160]);
-            L = append(L, lc(context, bodies(sid + "f1"), "PLY", "A1 Screen " ~ (i + 1) ~ " frame front (pulls out through roof slot)", WOOD));
-            L = append(L, lc(context, bodies(sid + "f2"), "PLY", "A1 Screen " ~ (i + 1) ~ " frame back", WOOD));
+            // frame fills the chamber; a narrower tab (y +-196) passes through the roof slot as a grip
+            const fx = [[xs - 3.5, xs - 0.5], [xs + 0.5, xs + 3.5]];
+            for (var m = 0; m < 2; m += 1)
+            {
+                const fid = sid + ("f" ~ (m + 1));
+                shellBox(context, fid + "s", [fx[m][0], -206, ZC - 154.5], [fx[m][1], 206, ZC + 154.5], [fx[m][0] - 1, -191, ZC - 139.5], [fx[m][1] + 1, 191, ZC + 139.5]);
+                blk(context, fid + "t", [fx[m][0], -196, ZC + 154.5], [fx[m][1], 196, ZC + 165.5]);
+                fuse(context, fid + "u", bodies(fid));
+                L = append(L, lch(context, bodies(fid), "PLY", "A1 Screen " ~ (i + 1) ~ " frame " ~ (m == 0 ? "front (pulls out through roof slot)" : "back"), WOOD,
+                            [[[fx[m][0], -191, ZC - 139.5], [fx[m][0], 191, ZC + 139.5]]]));
+            }
+            blk(context, sid + "m", [xs - 0.5, -198, ZC - 148], [xs + 0.5, 198, ZC + 148]);
             tag(context, sid + "m", "BUY | A1 Screen " ~ (i + 1) ~ " mesh (voile or stainless, 60-70 % open), glued between frames", color(0.3, 0.3, 0.32, 0.35));
         }
 
@@ -658,14 +736,18 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             const s = ribS[k];
             const t = s / 378;
             const f = 6 * t ^ 5 - 15 * t ^ 4 + 10 * t ^ 3;
-            const w = 412 - 244 * f + 2 * SH;
-            const h = 309 - 183 * f + 2 * SH;
+            const w = 412 - 244 * f + 2 * SH + 0.4;   // 0.2 mm clearance around the sheets
+            const h = 309 - 183 * f + 2 * SH + 0.4;
             const xa = min(max(-378 + s - 3, -378), -6);
             const rid = id + ("rib" ~ k);
+            // each 3 mm layer gets its own opening, sized at its upstream face, so the narrowing sheet
+            // rests on the layer edges and never cuts into the rib
+            const ho = ribHole(xa);
+            const hi = ribHole(xa + 3);
             shellBox(context, rid + "a", [xa, -w / 2 - 25, ZC - h / 2 - 25], [xa + 3, w / 2 + 25, ZC + h / 2 + 25],
-                    [xa - 1, -w / 2, ZC - h / 2], [xa + 4, w / 2, ZC + h / 2]);
+                    [xa - 1, -ho[0], ZC - ho[1]], [xa + 4, ho[0], ZC + ho[1]]);
             shellBox(context, rid + "b", [xa + 3, -w / 2 - 25, ZC - h / 2 - 25], [xa + 6, w / 2 + 25, ZC + h / 2 + 25],
-                    [xa + 2, -w / 2, ZC - h / 2], [xa + 7, w / 2, ZC + h / 2]);
+                    [xa + 2, -hi[0], ZC - hi[1]], [xa + 7, hi[0], ZC + hi[1]]);
             ribs = append(ribs, bodies(rid));
             // half-lap slots: rib is notched from its outer edge (12.5 deep) at the middle of each side,
             // spine is notched from its curved inner edge (12.5 deep) at each rib station
@@ -695,8 +777,8 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             const t = k / 20;
             const f = 6 * t ^ 5 - 15 * t ^ 4 + 10 * t ^ 3;
             const x = -378 + 378 * t;
-            const h = 309 - 183 * f + 2 * SH;
-            const w = 412 - 244 * f + 2 * SH;
+            const h = 309 - 183 * f + 2 * SH + 0.4;
+            const w = 412 - 244 * f + 2 * SH + 0.4;
             vTop = append(vTop, [x, ZC + h / 2]);
             vBot = append(vBot, [x, ZC - h / 2]);
             vL = append(vL, [x, w / 2]);
@@ -750,8 +832,13 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         cut(context, id + "spcut", qUnion(spineQ), qUnion(spineSlots), false);
         for (var k = 0; k < size(ribS); k += 1)
         {
-            L = append(L, lc(context, bodies(id + ("rib" ~ k) + "a"), "PLY", "A2 Contraction rib s=" ~ ribS[k] ~ " layer 1 of 2", WOOD));
-            L = append(L, lc(context, bodies(id + ("rib" ~ k) + "b"), "PLY", "A2 Contraction rib s=" ~ ribS[k] ~ " layer 2 of 2", WOOD));
+            const xa = min(max(-378 + ribS[k] - 3, -378), -6);
+            const ho = ribHole(xa);
+            const hi = ribHole(xa + 3);
+            L = append(L, lch(context, bodies(id + ("rib" ~ k) + "a"), "PLY", "A2 Contraction rib s=" ~ ribS[k] ~ " layer 1 of 2", WOOD,
+                        [[[xa, -ho[0], ZC - ho[1]], [xa, ho[0], ZC + ho[1]]]]));
+            L = append(L, lch(context, bodies(id + ("rib" ~ k) + "b"), "PLY", "A2 Contraction rib s=" ~ ribS[k] ~ " layer 2 of 2", WOOD,
+                        [[[xa + 3, -hi[0], ZC - hi[1]], [xa + 3, hi[0], ZC + hi[1]]]]));
         }
         for (var e in spineEntries)
         {
@@ -802,7 +889,7 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         tagQ(context, qUnion([bodies(id + "hSw"), bodies(id + "hSwL")]), "BUY | D Hatch microswitch (cover tab presses lever; fans off when lifted)", BLACK);
 
         // ---------- H1 slip-joint sleeves: four 3 mm plywood strips each (0.3 mm clearance; tape the seam) ----------
-        const sleeves = [[0, 20, "H1 Sleeve 1 (glued to last contraction rib)"], [316, 344, "H1 Sleeve 2 (glued to diffuser inlet)"]];
+        const sleeves = [[0, 20, "H1 Sleeve 1 (glued to last contraction rib)"], [316, 336, "H1 Sleeve 2 (glued to the diffuser flange)"]];
         for (var i = 0; i < 2; i += 1)
         {
             const x0 = sleeves[i][0];
@@ -1007,9 +1094,11 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
 
         // module 2 laser parts
         L = append(L, lc(context, bodies(id + "tsF"), "ACR", "A3 Test-section floor (post and tap holes)", PC));
-        L = append(L, lc(context, bodies(id + "tsL"), "ACR", "A3 Test-section side left + balance box wall (one piece)", PC));
-        L = append(L, lc(context, bodies(id + "tsR"), "ACR", "A3 Test-section side right + balance box wall (one piece, side taps)", PC));
-        L = append(L, lc(context, bodies(id + "tsT"), "ACR", "A3 Test-section roof with hatch opening", PC));
+        L = append(L, lch(context, bodies(id + "tsL"), "ACR", "A3 Test-section side left + balance box wall (one piece)", PC,
+                    [[[0, 87, -86], [87, 87, -3]], [[273, 87, -86], [336, 87, -3]]]));
+        L = append(L, lch(context, bodies(id + "tsR"), "ACR", "A3 Test-section side right + balance box wall (one piece, side taps)", PC,
+                    [[[0, -87, -86], [87, -87, -3]], [[273, -87, -86], [336, -87, -3]]]));
+        L = append(L, lch(context, bodies(id + "tsT"), "ACR", "A3 Test-section roof with hatch opening", PC, [[[120, -75, 126], [300, 75, 126]]]));
         L = append(L, lc(context, bodies(id + "bxE1"), "ACR", "C Balance box end wall upstream", PC));
         L = append(L, lc(context, bodies(id + "bxE2"), "ACR", "C Balance box end wall downstream", PC));
         L = append(L, lc(context, bodies(id + "bxF" + "a"), "PLY", "C Balance tray / box floor layer 1 of 2 (T-nuts for feet)", WOOD));
@@ -1025,14 +1114,17 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         {
             L = append(L, lc(context, bodies(id + "dif" + wallNames[j]), "PLY", "A4 Diffuser panel " ~ wallLabels[j] ~ " (168x126 to 240x240)", WOOD));
         }
+        // inlet flange: sleeve 2 butts against it and is glued to it; the diffuser panels pass through it
+        shellBox(context, id + "dfl", [336, -90.3, ZC - 69.3], [339, 90.3, ZC + 69.3], [335, -87.2, ZC - 66.3], [340, 87.2, ZC + 66.3]);
+        L = append(L, lch(context, bodies(id + "dfl"), "PLY", "A4 Diffuser inlet flange (sleeve 2 glued to it)", WOOD, [[[336, -87.2, ZC - 66.3], [336, 87.2, ZC + 66.3]]]));
         shellBox(context, id + "mfr", [986, -123, ZC - 123], [989, 123, ZC + 123], [985, -120, ZC - 120], [990, 120, ZC + 120]);
-        L = append(L, lc(context, bodies(id + "mfr"), "PLY", "A4 Safety mesh frame", WOOD));
+        L = append(L, lch(context, bodies(id + "mfr"), "PLY", "A4 Safety mesh frame", WOOD, [[[986, -120, ZC - 120], [986, 120, ZC + 120]]]));
         var mesh = [];
-        for (var j = 0; j <= 30; j += 1)
+        for (var j = 0; j < 30; j += 1)
         {
-            const v = -120 + 8 * j;
-            blk(context, id + ("mh" ~ j), [989.1, -120, ZC + v - 0.4], [989.9, 120, ZC + v + 0.4]);
-            blk(context, id + ("mv" ~ j), [989.1, v - 0.4, ZC - 120], [989.9, v + 0.4, ZC + 120]);
+            const v = -116 + 8 * j;
+            blk(context, id + ("mh" ~ j), [989.1, -119.5, ZC + v - 0.4], [989.9, 119.5, ZC + v + 0.4]);
+            blk(context, id + ("mv" ~ j), [989.1, v - 0.4, ZC - 119.5], [989.9, v + 0.4, ZC + 119.5]);
             mesh = append(mesh, bodies(id + ("mh" ~ j)));
             mesh = append(mesh, bodies(id + ("mv" ~ j)));
         }
@@ -1053,12 +1145,12 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         }
 
         // ---------- H2 cradles: base plate + upright web, each two 3 mm plywood layers; M6 levelling feet ----------
-        // [base corner a, base corner b, [web x0, x1 ...], top z of webs, label]
+        // [base corner a, base corner b, [web x0 ...], top z of webs, label, web half-width]
         const cradles = [
-                [[-600, -180], [-570, 180], [-588], ZC - 157.5, "H2 Module 1 cradle (settling chamber, inlet end)"],
-                [[-480, -180], [-450, 180], [-468], ZC - 157.5, "H2 Module 1 cradle (settling chamber, outlet end)"],
-                [[600, -100], [630, 100], [612], -27.7, "H2 Module 3 cradle under the diffuser (wedge the 0.5 mm slope with glue)"],
-                [[992, -126], [1082, 126], [995, 1073], ZC - 123, "H2 Module 3 cradle under the fan box"]
+                [[-600, -180], [-570, 180], [-588], ZC - 157.5, "H2 Module 1 cradle (settling chamber, inlet end)", 180],
+                [[-480, -180], [-450, 180], [-468], ZC - 157.5, "H2 Module 1 cradle (settling chamber, outlet end)", 180],
+                [[600, -100], [630, 100], [612], -28, "H2 Module 3 cradle under the diffuser (fill the 0.3-0.8 mm slope with glue)", 95],
+                [[992, -126], [1082, 126], [995, 1073], ZC - 123, "H2 Module 3 cradle under the fan box", 126]
             ];
         for (var i = 0; i < size(cradles); i += 1)
         {
@@ -1067,7 +1159,7 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             lam(context, cid + "base", [cr[0][0], cr[0][1], DESK + 15], [cr[1][0], cr[1][1], DESK + 21], 2);
             for (var m = 0; m < size(cr[2]); m += 1)
             {
-                lam(context, cid + ("web" ~ m), [cr[2][m], cr[0][1], DESK + 21], [cr[2][m] + 6, cr[1][1], cr[3]], 0);
+                lam(context, cid + ("web" ~ m), [cr[2][m], -cr[5], DESK + 21], [cr[2][m] + 6, cr[5], cr[3]], 0);
             }
             L = append(L, lc(context, bodies(cid + "base" + "a"), "PLY", cr[4] ~ " base layer 1 of 2 (T-nuts for feet)", WOOD));
             L = append(L, lc(context, bodies(cid + "base" + "b"), "PLY", cr[4] ~ " base layer 2 of 2", WOOD));
@@ -1127,8 +1219,8 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         }
         blk(context, id + "conn", [350, -172, BZ], [388, -160, BZ + 10]);
         tag(context, id + "conn", "BUY | H5 Connector strip (3 load cells, fan PWM/tach, hatch switch, USB)", BLACK);
-        cyl(context, id + "qcH", [192, -215, BZ + 3], [206, -215, BZ + 3], 7);
-        cyl(context, id + "qcL", [192, -245, BZ + 3], [206, -245, BZ + 3], 7);
+        cyl(context, id + "qcH", [192, -215, BZ + 3.5], [206, -215, BZ + 3.5], 7);
+        cyl(context, id + "qcL", [192, -245, BZ + 3.5], [206, -245, BZ + 3.5], 7);
         tagQ(context, qUnion([bodies(id + "qcH"), bodies(id + "qcL")]), "BUY | H5 Pressure quick-connects (unplug to carry)", BRASS);
         blk(context, id + "psu", [700, 170, DESK], [850, 290, DESK + 86]);
         tag(context, id + "psu", "BUY | G 12 V 20 A+ power supply (old ATX)", DARK);

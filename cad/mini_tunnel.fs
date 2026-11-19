@@ -489,46 +489,31 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         blk(context, id + "bxE2", [270, -84, -60], [273, 84, -3]);
         tagQ(context, qUnion([bodies(id + "bxE1"), bodies(id + "bxE2")]), "C Balance box end walls (LC 3 mm acrylic)", PC);
 
-        // measured body below the floor: frame plate (posts screw into it), printed hangers and drag tab
+        // Balance with NO slide (after Weakly et al., ASEE 2024): two load cells bolted in series.
+        // tray -> base plate -> 1 kg vertical cell -> bracket plate -> 100 g drag cell -> frame -> posts -> saddles -> car.
+        // Nothing slides, so there is no friction; the only links to the outside are the two load cells.
+        // measured body below the floor: frame plate (posts screw into it), drag tab and stop lug
         blk(context, id + "frm", [140, -37, -14], [217, 37, -8]);
         tag(context, id + "frm", "C Common frame plate (LC 3 mm ply x2; four posts screw in)", WOOD);
-        blk(context, id + "fh0", [163.5, 34, -29], [193.5, 37, -14]);
-        blk(context, id + "fh1", [163.5, -37, -29], [193.5, -34, -14]);
-        blk(context, id + "ftab", [217, 13, -28], [222, 23, -8]);
-        const hangers = qUnion([bodies(id + "fh0"), bodies(id + "fh1"), bodies(id + "ftab")]);
-        tagQ(context, hangers, "C Frame hangers (outer rails) + drag tab bolted to cell (3DP PETG)", PRINT);
+        blk(context, id + "ftab", [167, 13.5, -27], [175, 23.5, -14]);
+        blk(context, id + "flug", [205, -5, -26], [210, 5, -14]);
+        tagQ(context, qUnion([bodies(id + "ftab"), bodies(id + "flug")]), "C Frame drag tab (bolted to drag cell free end) + stop lug (3DP PETG)", PRINT);
 
-        // drag stage = slide base; carried by the vertical load cell
+        // bracket plate on the vertical cell's free end; carries the drag cell's fixed end
         blk(context, id + "stg", [130, -40, -36], [232, 40, -30]);
-        tag(context, id + "stg", "C Drag stage (LC 3 mm ply x2)", WOOD);
-        const sides = [1, -1];
-        var risers = [];
-        var railsIn = [];
-        var railsOut = [];
-        var stops = [];
-        for (var i = 0; i < 2; i += 1)
-        {
-            const s = sides[i];
-            blk(context, id + ("rsr" ~ i), [163.5, min(16 * s, 22 * s), -30], [193.5, max(16 * s, 22 * s), -17]);
-            risers = append(risers, bodies(id + ("rsr" ~ i)));
-            blk(context, id + ("rIn" ~ i), [163.5, min(22 * s, 28 * s), -29], [193.5, max(22 * s, 28 * s), -17]);
-            railsIn = append(railsIn, bodies(id + ("rIn" ~ i)));
-            blk(context, id + ("rOut" ~ i), [163.5, min(28 * s, 34 * s), -29], [193.5, max(28 * s, 34 * s), -17]);
-            railsOut = append(railsOut, bodies(id + ("rOut" ~ i)));
-            blk(context, id + ("stA" ~ i), [158.5, min(33 * s, 38 * s), -30], [163.2, max(33 * s, 38 * s), -21]);
-            blk(context, id + ("stB" ~ i), [193.8, min(33 * s, 38 * s), -30], [198.5, max(33 * s, 38 * s), -21]);
-            stops = append(stops, bodies(id + ("stA" ~ i)));
-            stops = append(stops, bodies(id + ("stB" ~ i)));
-        }
-        tagQ(context, qUnion(risers), "C Rail risers on stage (3DP PETG)", PRINT);
-        tagQ(context, qUnion(railsIn), "C Slide: crossed-roller guide VR2-30, inner rails (to stage)", STEEL);
-        tagQ(context, qUnion(railsOut), "C Slide: crossed-roller guide VR2-30, outer rails (to frame)", ALU);
-        tagQ(context, qUnion(stops), "C Drag overload stops (0.3 mm from hanger ends)", BRASS);
+        tag(context, id + "stg", "C Bracket plate on vertical cell (LC 3 mm ply x2)", WOOD);
+        blk(context, id + "dfix", [181, -23.5, -30], [189, -13.5, -16]);
+        tag(context, id + "dfix", "C Drag cell fixed-end block (3DP PETG, bolted to bracket)", PRINT);
+        blk(context, id + "dcell", [175, -23.5, -28], [181, 23.5, -16]);
+        tag(context, id + "dcell", "C 100 g drag load cell (senses fore-aft; fixed end on bracket, free end bolted to frame tab)", CELLC);
 
-        blk(context, id + "dcp", [222, -23.5, -30], [228, -13.5, -28]);
-        tag(context, id + "dcp", "C Drag load cell mount on stage (3DP PETG)", PRINT);
-        blk(context, id + "dcell", [222, -23.5, -28], [228, 23.5, -16]);
-        tag(context, id + "dcell", "C 100 g drag load cell (fixed end on stage, free end bolted to drag tab)", CELLC);
+        // overload stops: fork around the frame lug (fore-aft) and a down-stop under the frame, 0.3 mm gaps
+        blk(context, id + "skA", [198, -8, -30], [204.7, 8, -22]);
+        blk(context, id + "skB", [210.3, -8, -30], [217, 8, -22]);
+        cyl(context, id + "zstop", [150, 0, -30], [150, 0, -14.3], 4);
+        tagQ(context, qUnion([bodies(id + "skA"), bodies(id + "skB"), bodies(id + "zstop")]),
+                "C Drag-cell overload stops (fork 0.3 mm each side of lug; down-stop 0.3 mm under frame)", BRASS);
+        const sides = [1, -1];
 
         blk(context, id + "vsp1", [140, -6.35, -38.3], [158, 6.35, -36]);
         tag(context, id + "vsp1", "C Load cell upper spacer", PRINT);
@@ -537,7 +522,7 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         blk(context, id + "vsp2", [202, -6.35, -54], [220, 6.35, -51]);
         tag(context, id + "vsp2", "C Load cell lower spacer", PRINT);
         cyl(context, id + "vstop", [226, 0, -54], [226, 0, -36.3], 4);
-        tag(context, id + "vstop", "C Vertical overload stop (M4 screw, 0.3 mm under stage)", BRASS);
+        tag(context, id + "vstop", "C Vertical overload stop (M4 screw, 0.3 mm under bracket plate)", BRASS);
         blk(context, id + "bbase", [120, -45, -60], [240, 45, -54]);
         tag(context, id + "bbase", "C Balance base plate (LC 3 mm ply x2, bolted to tray)", WOOD);
 

@@ -1,12 +1,33 @@
 FeatureScript 3112;
 import(path : "onshape/std/common.fs", version : "3112.0");
 
-// Mini wind tunnel (1:43, Arduino Uno) — 3D layout model from build_plan_mini.md.
+// Mini wind tunnel (1:43, Arduino Uno): the model the laser cutter and 3D printer work from (build_plan_mini.md).
 // Units mm. Frame from spec/mini.json: x downstream, y left, z up;
 // x = 0 at contraction exit, z = 0 on the test-section floor inner surface, duct axis z = 63.
+//
+// Every part name starts with how the part is made:
+//   LC3-PLY  laser-cut 3 mm plywood          LC3-ACR  laser-cut 3 mm clear acrylic
+//   PET      cut from 1 mm PET sheet (its flat pattern is in the laser view)
+//   3DP      3D-printed PETG                 BUY      bought part, shown for reference
+//   REF      not part of the tunnel (desks)
+// The laser cutter takes 3 mm at most, so thicker parts are two 3 mm layers glued together ("layer 1/2").
+// View "Laser sheets" lays every LC3 and PET part flat at z = 0, packed onto beds of the given size.
+// Export each bed's top faces as DXF. Parts bigger than the bed are set aside to the right and turned red.
+
+export enum TunnelView
+{
+    annotation { "Name" : "Assembled" }
+    ASSEMBLED,
+    annotation { "Name" : "Laser sheets (flat)" }
+    LASER
+}
+
+const BED_X_BOUNDS = { (millimeter) : [100, 600, 3000] } as LengthBoundSpec;
+const BED_Y_BOUNDS = { (millimeter) : [100, 400, 3000] } as LengthBoundSpec;
 
 const ZC = 63;      // duct axis height
-const T = 3;        // panel thickness
+const T = 3;        // laser-cut sheet thickness
+const SH = 1;       // PET sheet thickness (bell and contraction)
 const DESK = -150;  // desk top (assumed)
 
 function mmv(x is number, y is number, z is number) returns Vector
@@ -22,6 +43,18 @@ function bodies(id is Id) returns Query
 function blk(context is Context, id is Id, a is array, b is array)
 {
     fCuboid(context, id, { "corner1" : mmv(a[0], a[1], a[2]), "corner2" : mmv(b[0], b[1], b[2]) });
+}
+
+// Block split into two 3 mm layers along axis ax (0 = x, 1 = y, 2 = z): id + "a" (lower), id + "b" (upper).
+function lam(context is Context, id is Id, a is array, b is array, ax is number)
+{
+    const m = (a[ax] + b[ax]) / 2;
+    var b1 = b;
+    b1[ax] = m;
+    var a2 = a;
+    a2[ax] = m;
+    blk(context, id + "a", a, b1);
+    blk(context, id + "b", a2, b);
 }
 
 function cyl(context is Context, id is Id, a is array, b is array, d is number)
@@ -50,6 +83,14 @@ function tag(context is Context, id is Id, name is string, c is Color)
     tagQ(context, bodies(id), name, c);
 }
 
+// Name a laser-cut (mat "PLY" / "ACR") or PET part and return its entry for the laser view.
+// Each entry must be exactly one body.
+function lc(context is Context, q is Query, mat is string, name is string, c is Color) returns map
+{
+    tagQ(context, q, (mat == "PET" ? "PET" : "LC3-" ~ mat) ~ " | " ~ name, c);
+    return { "q" : q, "m" : mat };
+}
+
 function shellBox(context is Context, id is Id, a is array, b is array, ia is array, ib is array)
 {
     blk(context, id + "o", a, b);
@@ -64,39 +105,106 @@ function pipe(context is Context, id is Id, a is array, b is array, od is number
     cut(context, id + "s", bodies(id + "o"), bodies(id + "i"), false);
 }
 
-// Straight rectangular duct along x, open ends, inner w x h centred on the duct axis.
-function rectDuct(context is Context, id is Id, x0 is number, x1 is number, w is number, h is number)
+// Rectangular duct along x from four 3 mm panels with finger-jointed corners; inner w x h centred on (y 0, z zc).
+// Bodies id + "t", "b", "l", "r". Top and bottom own the end fingers.
+function boxPanels(context is Context, id is Id, x0 is number, x1 is number, w is number, h is number, zc is number)
 {
-    shellBox(context, id, [x0, -w / 2 - T, ZC - h / 2 - T], [x1, w / 2 + T, ZC + h / 2 + T],
-            [x0 - 1, -w / 2, ZC - h / 2], [x1 + 1, w / 2, ZC + h / 2]);
+    const W = w / 2;
+    const H = h / 2;
+    blk(context, id + "t", [x0, -W - T, zc + H], [x1, W + T, zc + H + T]);
+    blk(context, id + "b", [x0, -W - T, zc - H - T], [x1, W + T, zc - H]);
+    blk(context, id + "l", [x0, W, zc - H - T], [x1, W + T, zc + H + T]);
+    blk(context, id + "r", [x0, -W - T, zc - H - T], [x1, -W, zc + H + T]);
+    var n = round((x1 - x0) / 20);
+    if (n % 2 == 0)
+    {
+        n += 1;
+    }
+    const L = (x1 - x0) / n;
+    const corners = [[1, 1], [-1, 1], [1, -1], [-1, -1]];
+    for (var c = 0; c < 4; c += 1)
+    {
+        const sy = corners[c][0];
+        const sz = corners[c][1];
+        const ya = sy > 0 ? W : -W - T - 0.5;
+        const za = sz > 0 ? zc + H : zc - H - T - 0.5;
+        var toSide = [];
+        var toTop = [];
+        for (var k = 0; k < n; k += 1)
+        {
+            const gid = id + ("g" ~ c) + ("k" ~ k);
+            const xa = k == 0 ? x0 - 0.5 : x0 + k * L;
+            const xb = k == n - 1 ? x1 + 0.5 : x0 + (k + 1) * L;
+            blk(context, gid, [xa, ya, za], [xb, ya + T + 0.5, za + T + 0.5]);
+            if (k % 2 == 0)
+            {
+                toSide = append(toSide, bodies(gid));
+            }
+            else
+            {
+                toTop = append(toTop, bodies(gid));
+            }
+        }
+        const sidePanel = bodies(id + (sy > 0 ? "l" : "r"));
+        const capPanel = bodies(id + (sz > 0 ? "t" : "b"));
+        cut(context, id + ("c" ~ c) + "s", sidePanel, qUnion(toSide), false);
+        cut(context, id + ("c" ~ c) + "t", capPanel, qUnion(toTop), false);
+    }
 }
 
-// Rectangle w x h in the y-z plane at station x (sketch x = world y, sketch y = world z).
-function rectSection(context is Context, id is Id, x is number, w is number, h is number) returns Query
+// Rectangle r = [y0, y1, z0, z1] in the y-z plane at station x (sketch x = world y, sketch y = world z).
+function rectSection(context is Context, id is Id, x is number, r is array) returns Query
 {
     const sk = newSketchOnPlane(context, id, { "sketchPlane" : plane(mmv(x, 0, 0), vector(1, 0, 0), vector(0, 1, 0)) });
-    skRectangle(sk, "r", { "firstCorner" : vector(-w / 2, ZC - h / 2) * millimeter, "secondCorner" : vector(w / 2, ZC + h / 2) * millimeter });
+    skRectangle(sk, "r", { "firstCorner" : vector(r[0], r[2]) * millimeter, "secondCorner" : vector(r[1], r[3]) * millimeter });
     skSolve(sk);
     return qSketchRegion(id);
 }
 
-// Hollow lofted duct through rectangular stations (inner sizes), wall thickness t.
-function loftDuct(context is Context, id is Id, xs is array, ws is array, hs is array, t is number)
+// One duct wall lofted through rectangular sections secs[i] at stations xs[i].
+function loftWall(context is Context, id is Id, xs is array, secs is array)
 {
-    var outer = [];
-    var inner = [];
+    var profiles = [];
     var sketches = [];
     for (var i = 0; i < size(xs); i += 1)
     {
-        outer = append(outer, rectSection(context, id + ("o" ~ i), xs[i], ws[i] + 2 * t, hs[i] + 2 * t));
-        inner = append(inner, rectSection(context, id + ("i" ~ i), xs[i], ws[i], hs[i]));
-        sketches = append(sketches, bodies(id + ("o" ~ i)));
-        sketches = append(sketches, bodies(id + ("i" ~ i)));
+        profiles = append(profiles, rectSection(context, id + ("s" ~ i), xs[i], secs[i]));
+        sketches = append(sketches, bodies(id + ("s" ~ i)));
     }
-    opLoft(context, id + "lo", { "profileSubqueries" : outer, "bodyType" : ToolBodyType.SOLID });
-    opLoft(context, id + "li", { "profileSubqueries" : inner, "bodyType" : ToolBodyType.SOLID });
-    cut(context, id + "s", bodies(id + "lo"), bodies(id + "li"), false);
+    opLoft(context, id + "lo", { "profileSubqueries" : profiles, "bodyType" : ToolBodyType.SOLID });
     opDeleteBodies(context, id + "d", { "entities" : qUnion(sketches) });
+}
+
+// Four separate duct walls of thickness t through stations xs with inner sizes ws x hs (centred on the duct axis).
+// Top and bottom fit between the sides; the sides are 2 t taller and cover their edges.
+// Bodies id + "t", "b", "l", "r". Each wall bends one way only, so it can be cut from a flat sheet.
+function ductWalls(context is Context, id is Id, xs is array, ws is array, hs is array, t is number)
+{
+    const names = ["t", "b", "l", "r"];
+    for (var j = 0; j < 4; j += 1)
+    {
+        var secs = [];
+        for (var i = 0; i < size(xs); i += 1)
+        {
+            const W = ws[i] / 2;
+            const H = hs[i] / 2;
+            var r = [-W - t, -W, ZC - H - t, ZC + H + t];
+            if (j == 0)
+            {
+                r = [-W, W, ZC + H, ZC + H + t];
+            }
+            else if (j == 1)
+            {
+                r = [-W, W, ZC - H - t, ZC - H];
+            }
+            else if (j == 2)
+            {
+                r = [W, W + t, ZC - H - t, ZC + H + t];
+            }
+            secs = append(secs, r);
+        }
+        loftWall(context, id + names[j], xs, secs);
+    }
 }
 
 // Side profile (points [x, z]) extruded across y0..y1.
@@ -155,6 +263,205 @@ function curveBoard(context is Context, id is Id, pl is Plane, pts is array, vOu
     opDeleteBodies(context, id + "del", { "entities" : bodies(id + "sk") });
 }
 
+// Flat pattern of a sheet bent one way: stations xs, distance of the sheet from the duct axis rs (the bend curve),
+// half-width across the bend hw. Returns outline points [s, v] with s = distance along the sheet.
+function unroll(xs is array, rs is array, hw is array) returns array
+{
+    var s = 0;
+    var up = [];
+    var dn = [];
+    for (var i = 0; i < size(xs); i += 1)
+    {
+        if (i > 0)
+        {
+            s += sqrt((xs[i] - xs[i - 1]) ^ 2 + (rs[i] - rs[i - 1]) ^ 2);
+        }
+        up = append(up, [s, hw[i]]);
+        dn = append(dn, [s, -hw[i]]);
+    }
+    for (var i = size(dn) - 1; i >= 0; i -= 1)
+    {
+        up = append(up, dn[i]);
+    }
+    return up;
+}
+
+// Closed outline (points [x, y]) on the XY plane, extruded t upwards.
+function flatPoly(context is Context, id is Id, pts is array, t is number)
+{
+    const sk = newSketchOnPlane(context, id + "sk", { "sketchPlane" : XY_PLANE });
+    var p = [];
+    for (var q in pts)
+    {
+        p = append(p, vector(q[0], q[1]) * millimeter);
+    }
+    p = append(p, p[0]);
+    skPolyline(sk, "p", { "points" : p });
+    skSolve(sk);
+    opExtrude(context, id + "ex", { "entities" : qSketchRegion(id + "sk"), "direction" : vector(0, 0, 1),
+                "endBound" : BoundingType.BLIND, "endDepth" : t * millimeter });
+    opDeleteBodies(context, id + "del", { "entities" : bodies(id + "sk") });
+}
+
+// How to lay one part flat: largest planar face down, longest straight edge of that face along x.
+function flatInfo(context is Context, q is Query, bedX is number, bedY is number) returns map
+{
+    const faces = evaluateQuery(context, qGeometry(qOwnedByBody(q, EntityType.FACE), GeometryType.PLANE));
+    var best = faces[0];
+    var bestA = 0 * meter * meter;
+    for (var f in faces)
+    {
+        const a = evArea(context, { "entities" : f });
+        if (a > bestA)
+        {
+            bestA = a;
+            best = f;
+        }
+    }
+    const pl = evPlane(context, { "face" : best });
+    var dir = pl.x;
+    var bestL = 0 * meter;
+    for (var e in evaluateQuery(context, qGeometry(qAdjacent(best, AdjacencyType.EDGE, EntityType.EDGE), GeometryType.LINE)))
+    {
+        const len = evLength(context, { "entities" : e });
+        if (len > bestL)
+        {
+            bestL = len;
+            dir = evLine(context, { "edge" : e }).direction;
+        }
+    }
+    const zAx = -pl.normal;
+    dir = normalize(dir - dot(dir, zAx) * zAx);
+    const cs = coordSystem(pl.origin, dir, zAx);
+    const bx = evBox3d(context, { "topology" : q, "cSys" : cs, "tight" : true });
+    const mn = bx.minCorner / millimeter;
+    const mx = bx.maxCorner / millimeter;
+    const w = mx[0] - mn[0];
+    const h = mx[1] - mn[1];
+    const fits = w <= bedX - 12 && h <= bedY - 12;
+    const fitsR = h <= bedX - 12 && w <= bedY - 12;
+    var rot = false;
+    var big = false;
+    if (!fits && fitsR)
+    {
+        rot = true;
+    }
+    else if (fits && fitsR && h > w)
+    {
+        rot = true;
+    }
+    else if (!fits && !fitsR)
+    {
+        big = true;
+        rot = h > w;
+    }
+    return { "q" : q, "T0" : fromWorld(cs), "mn" : mn, "mx" : mx, "rot" : rot, "big" : big,
+            "w" : rot ? h : w, "h" : rot ? w : h };
+}
+
+// Move a part (flatInfo p) so its flat footprint starts at (px, py) on z = 0.
+function placeFlat(context is Context, id is Id, p is map, px is number, py is number)
+{
+    var R = identityTransform();
+    var x0 = p.mn[0];
+    var y0 = p.mn[1];
+    if (p.rot)
+    {
+        R = rotationAround(line(mmv(0, 0, 0), vector(0, 0, 1)), 90 * degree);
+        x0 = -p.mx[1];
+        y0 = p.mn[0];
+    }
+    const tr = transform(mmv(px - x0, py - y0, -p.mn[2])) * R * p.T0;
+    opTransform(context, id, { "bodies" : p.q, "transform" : tr });
+}
+
+function bedOutline(context is Context, id is Id, x0 is number, y0 is number, bedX is number, bedY is number)
+{
+    const sk = newSketchOnPlane(context, id, { "sketchPlane" : XY_PLANE });
+    skRectangle(sk, "r", { "firstCorner" : vector(x0, y0) * millimeter, "secondCorner" : vector(x0 + bedX, y0 + bedY) * millimeter });
+    skSolve(sk);
+}
+
+// Pack all laser and PET parts onto beds: one row of beds per material (acrylic, plywood, PET),
+// each bed outlined by a sketch rectangle. Parts that fit no bed go to the right of the row, in red.
+// Returns a one-line summary (shown as the feature's info message).
+function layFlat(context is Context, id is Id, items is array, bedX is number, bedY is number) returns string
+{
+    var report = "";
+    const GAP = 6;
+    const SG = 60;
+    const mats = ["ACR", "PLY", "PET"];
+    var n = 0;
+    var Y0 = 0;
+    for (var g = 0; g < size(mats); g += 1)
+    {
+        var parts = [];
+        for (var it in items)
+        {
+            if (it.m == mats[g])
+            {
+                parts = append(parts, flatInfo(context, it.q, bedX, bedY));
+            }
+        }
+        if (size(parts) == 0)
+        {
+            continue;
+        }
+        parts = sort(parts, function(a, b)
+            {
+                return b.h - a.h;
+            });
+        var sheet = 0;
+        var cx = GAP;
+        var cy = GAP;
+        var rowH = 0;
+        var big = [];
+        for (var p in parts)
+        {
+            if (p.big)
+            {
+                big = append(big, p);
+                continue;
+            }
+            if (cx + p.w > bedX - GAP)
+            {
+                cy += rowH + GAP;
+                cx = GAP;
+                rowH = 0;
+            }
+            if (cy + p.h > bedY - GAP)
+            {
+                sheet += 1;
+                cx = GAP;
+                cy = GAP;
+                rowH = 0;
+            }
+            placeFlat(context, id + ("t" ~ n), p, sheet * (bedX + SG) + cx, Y0 + cy);
+            n += 1;
+            cx += p.w + GAP;
+            rowH = max(rowH, p.h);
+        }
+        for (var s = 0; s <= sheet; s += 1)
+        {
+            bedOutline(context, id + ("bed" ~ g ~ "s" ~ s), s * (bedX + SG), Y0, bedX, bedY);
+        }
+        var bx = (sheet + 1) * (bedX + SG);
+        var bigH = 0;
+        for (var p in big)
+        {
+            placeFlat(context, id + ("t" ~ n), p, bx, Y0 + GAP);
+            n += 1;
+            const nm = getProperty(context, { "entity" : p.q, "propertyType" : PropertyType.NAME });
+            tagQ(context, p.q, nm ~ " [BIGGER THAN BED: split or cut elsewhere]", color(0.9, 0.1, 0.1));
+            bx += p.w + GAP;
+            bigH = max(bigH, p.h);
+        }
+        report = report ~ mats[g] ~ ": " ~ size(parts) ~ " parts on " ~ (sheet + 1) ~ " beds" ~ (size(big) > 0 ? ", " ~ size(big) ~ " too big" : "") ~ ". ";
+        Y0 -= max(bedY, bigH + GAP) + 150;
+    }
+    return report;
+}
+
 // M6 levelling foot: rubber pad on the desk plus bolt up into the part above (top z).
 function levelFoot(context is Context, id is Id, x is number, y is number, zTop is number)
 {
@@ -176,7 +483,7 @@ function fan(context is Context, id is Id, x0 is number, yc is number, zc is num
     blk(context, id + "s3", [x1 - 4, yc - 2, zc - 59], [x1, yc + 2, zc - 18]);
     const frame = qUnion([bodies(id + "fr"), bodies(id + "s0"), bodies(id + "s1"), bodies(id + "s2"), bodies(id + "s3")]);
     fuse(context, id + "fu", frame);
-    tagQ(context, frame, "A5 12038 fan frame " ~ n, frameColor);
+    tagQ(context, frame, "BUY | A5 Fan QFR1212GHE frame " ~ n, frameColor);
 
     cyl(context, id + "hub", [x0 + 2, yc, zc], [x1 - 4, yc, zc], 40);
     var rotor = [bodies(id + "hub")];
@@ -191,13 +498,19 @@ function fan(context is Context, id is Id, x0 is number, yc is number, zc is num
         rotor = append(rotor, bodies(bid));
     }
     fuse(context, id + "ru", qUnion(rotor));
-    tagQ(context, qUnion(rotor), "A5 Fan rotor " ~ n, rotorColor);
+    tagQ(context, qUnion(rotor), "BUY | A5 Fan rotor " ~ n, rotorColor);
 }
 
 annotation { "Feature Type Name" : "MiniWindTunnel" }
 export const miniWindTunnel = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
     {
+        annotation { "Name" : "View" }
+        definition.view is TunnelView;
+        annotation { "Name" : "Laser bed length" }
+        isLength(definition.bedX, BED_X_BOUNDS);
+        annotation { "Name" : "Laser bed width" }
+        isLength(definition.bedY, BED_Y_BOUNDS);
     }
     {
         const WOOD = color(0.80, 0.68, 0.50);
@@ -217,33 +530,108 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         const SPINE = color(0.62, 0.45, 0.28);
         const HIGHP = color(0.90, 0.30, 0.30, 0.85);
         const LOWP = color(0.30, 0.50, 0.90, 0.85);
+        const wallNames = ["t", "b", "l", "r"];
+        const wallLabels = ["top", "bottom", "left", "right"];
+        var L = [];   // laser-cut and PET parts, one body per entry (for the laser view)
 
-        // ---------- A1 inlet bell (lip radius 42) ----------
+        // ---------- A1 inlet bell: 4 PET sheets bent over 8 plywood gussets, 4 plywood lip strips in front ----------
+        // Elliptic lip, 63 long x 42 radial. Each sheet bends one way only, so it is cut flat (pattern in the laser view).
         var bx = [];
         var bw = [];
         var bh = [];
-        for (var k = 0; k <= 5; k += 1)
+        for (var k = 0; k <= 8; k += 1)
         {
-            const u = k / 5;
-            const d = 42 * (1 - sqrt(1 - (1 - u) * (1 - u)));
-            bx = append(bx, -696 + 63 * u);
+            const phi = (90 - 11.25 * k) * degree;
+            const d = 42 * (1 - cos(phi));
+            bx = append(bx, -633 - 63 * sin(phi));
             bw = append(bw, 412 + 2 * d);
             bh = append(bh, 309 + 2 * d);
         }
-        loftDuct(context, id + "bell", bx, bw, bh, T);
-        tag(context, id + "bell", "A1 Inlet bell", PET);
+        ductWalls(context, id + "bell", bx, bw, bh, SH);
+        for (var j = 0; j < 4; j += 1)
+        {
+            tag(context, id + "bell" + wallNames[j], "PET | A1 Inlet bell sheet " ~ wallLabels[j] ~ " (cut from its flat pattern)", PET);
+        }
+        const HO = 205.5;   // lip strips and gussets: outer half-height
+        const WO = 257;     // outer half-width
+        blk(context, id + "lipt", [-699, -WO, ZC + 196.5], [-696, WO, ZC + HO]);
+        blk(context, id + "lipb", [-699, -WO, ZC - HO], [-696, WO, ZC - 196.5]);
+        blk(context, id + "lipl", [-699, 248, ZC - 196.5], [-696, WO, ZC + 196.5]);
+        blk(context, id + "lipr", [-699, -WO, ZC - 196.5], [-696, -248, ZC + 196.5]);
+        for (var j = 0; j < 4; j += 1)
+        {
+            L = append(L, lc(context, bodies(id + ("lip" ~ wallNames[j])), "PLY", "A1 Bell lip strip " ~ wallLabels[j], WOOD));
+        }
+        // gussets: inner edge follows the outside of the sheet, outer edge straight; tail glued onto the settling chamber
+        var gTop = [];
+        var gBot = [];
+        var gL = [];
+        var gR = [];
+        for (var k = 0; k <= 8; k += 1)
+        {
+            gTop = append(gTop, [bx[k], ZC + bh[k] / 2 + SH]);
+            gBot = append(gBot, [bx[k], ZC - bh[k] / 2 - SH]);
+            gL = append(gL, [bx[k], bw[k] / 2 + SH]);
+            gR = append(gR, [bx[k], -bw[k] / 2 - SH]);
+        }
+        for (var i = 0; i < 8; i += 1)
+        {
+            const gid = id + ("bg" ~ i);
+            const s = i % 2 == 0 ? 1 : -1;
+            if (i < 4)
+            {
+                // top (i 0, 1) and bottom (i 2, 3) gussets in planes y = +-130
+                const c = s * 130;
+                const up = i < 2;
+                curveBoard(context, gid + "c", plane(mmv(0, c + 1.5, 0), vector(0, -1, 0), vector(1, 0, 0)), up ? gTop : gBot, up ? ZC + HO : ZC - HO, 3);
+                blk(context, gid + "e", [-633, c - 1.5, up ? ZC + 157.5 : ZC - HO], [-603, c + 1.5, up ? ZC + HO : ZC - 157.5]);
+            }
+            else
+            {
+                // left (i 4, 5) and right (i 6, 7) gussets in planes z = axis +-90
+                const c = ZC + s * 90;
+                const lft = i < 6;
+                curveBoard(context, gid + "c", plane(mmv(0, 0, c - 1.5), vector(0, 0, 1), vector(1, 0, 0)), lft ? gL : gR, lft ? WO : -WO, 3);
+                blk(context, gid + "e", [-633, lft ? 209 : -WO, c - 1.5], [-603, lft ? WO : -209, c + 1.5]);
+            }
+            fuse(context, gid + "u", bodies(gid));
+            L = append(L, lc(context, bodies(gid), "PLY", "A1 Bell gusset " ~ (i + 1), SPINE));
+        }
 
-        // ---------- A1 settling chamber, honeycomb, screens ----------
-        rectDuct(context, id + "set", -633, -378, 412, 309);
-        tag(context, id + "set", "A1 Settling chamber 412x309", WOOD);
+        // ---------- A1 settling chamber (finger-jointed plywood), honeycomb, screens in pull-out frames ----------
+        boxPanels(context, id + "set", -633, -378, 412, 309, ZC);
+        const scrX = [-513, -450];
+        var slotQ = [];
+        for (var i = 0; i < 2; i += 1)
+        {
+            blk(context, id + ("slot" ~ i), [scrX[i] - 3.6, -206, ZC + 153], [scrX[i] + 3.6, 206, ZC + 159]);
+            slotQ = append(slotQ, bodies(id + ("slot" ~ i)));
+        }
+        // 1 mm static-tap holes at x = -420 (fittings glued on outside)
+        cyl(context, id + "sth0", [-420, 0, ZC + 153], [-420, 0, ZC + 159], 1);
+        cyl(context, id + "sth1", [-420, 0, ZC - 159], [-420, 0, ZC - 153], 1);
+        cyl(context, id + "sth2", [-420, 205, ZC], [-420, 210, ZC], 1);
+        cyl(context, id + "sth3", [-420, -210, ZC], [-420, -205, ZC], 1);
+        cut(context, id + "setc", bodies(id + "set"), qUnion(append(slotQ, qUnion([bodies(id + "sth0"), bodies(id + "sth1"), bodies(id + "sth2"), bodies(id + "sth3")]))), false);
+        for (var j = 0; j < 4; j += 1)
+        {
+            L = append(L, lc(context, bodies(id + "set" + wallNames[j]), "PLY", "A1 Settling chamber panel " ~ wallLabels[j] ~ (j == 0 ? " (2 screen slots)" : ""), WOOD));
+        }
         blk(context, id + "hc", [-616, -206, ZC - 154.5], [-576, 206, ZC + 154.5]);
-        tag(context, id + "hc", "A1 Honeycomb (6 mm straws, 40 deep)", color(0.95, 0.93, 0.75, 0.55));
-        blk(context, id + "sc1", [-513.5, -206, ZC - 154.5], [-512.5, 206, ZC + 154.5]);
-        tag(context, id + "sc1", "A1 Screen 1", color(0.3, 0.3, 0.32, 0.35));
-        blk(context, id + "sc2", [-450.5, -206, ZC - 154.5], [-449.5, 206, ZC + 154.5]);
-        tag(context, id + "sc2", "A1 Screen 2", color(0.3, 0.3, 0.32, 0.35));
+        tag(context, id + "hc", "3DP | A1 Honeycomb (printed hex tiles, or 6 mm straws; 40 deep)", color(0.95, 0.93, 0.75, 0.55));
+        for (var i = 0; i < 2; i += 1)
+        {
+            const xs = scrX[i];
+            const sid = id + ("scr" ~ i);
+            shellBox(context, sid + "f1", [xs - 3.5, -206, ZC - 154.5], [xs - 0.5, 206, ZC + 165.5], [xs - 4.5, -191, ZC - 139.5], [xs + 0.5, 191, ZC + 139.5]);
+            shellBox(context, sid + "f2", [xs + 0.5, -206, ZC - 154.5], [xs + 3.5, 206, ZC + 165.5], [xs - 0.5, -191, ZC - 139.5], [xs + 4.5, 191, ZC + 139.5]);
+            blk(context, sid + "m", [xs - 0.5, -198, ZC - 148], [xs + 0.5, 198, ZC + 160]);
+            L = append(L, lc(context, bodies(sid + "f1"), "PLY", "A1 Screen " ~ (i + 1) ~ " frame front (pulls out through roof slot)", WOOD));
+            L = append(L, lc(context, bodies(sid + "f2"), "PLY", "A1 Screen " ~ (i + 1) ~ " frame back", WOOD));
+            tag(context, sid + "m", "BUY | A1 Screen " ~ (i + 1) ~ " mesh (voile or stainless, 60-70 % open), glued between frames", color(0.3, 0.3, 0.32, 0.35));
+        }
 
-        // ---------- A2 contraction 6:1, 5th-order profile ----------
+        // ---------- A2 contraction 6:1, 5th-order profile: 4 PET sheets ----------
         var cx = [];
         var cw = [];
         var ch = [];
@@ -255,8 +643,12 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             cw = append(cw, 412 - 244 * f);
             ch = append(ch, 309 - 183 * f);
         }
-        loftDuct(context, id + "con", cx, cw, ch, 1);
-        tag(context, id + "con", "A2 Contraction 6:1 (PET sheet)", PET);
+        ductWalls(context, id + "con", cx, cw, ch, SH);
+        for (var j = 0; j < 4; j += 1)
+        {
+            tag(context, id + "con" + wallNames[j], "PET | A2 Contraction sheet " ~ wallLabels[j] ~ " (cut from its flat pattern)", PET);
+        }
+        // ribs: each is two 3 mm plywood layers glued (6 mm), half-lapped with the spines
         const ribS = [0, 76, 151, 189, 227, 302, 378];
         var ribs = [];
         var ribSlots = [];
@@ -266,12 +658,14 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             const s = ribS[k];
             const t = s / 378;
             const f = 6 * t ^ 5 - 15 * t ^ 4 + 10 * t ^ 3;
-            const w = 412 - 244 * f + 2;
-            const h = 309 - 183 * f + 2;
+            const w = 412 - 244 * f + 2 * SH;
+            const h = 309 - 183 * f + 2 * SH;
             const xa = min(max(-378 + s - 3, -378), -6);
             const rid = id + ("rib" ~ k);
-            shellBox(context, rid, [xa, -w / 2 - 25, ZC - h / 2 - 25], [xa + 6, w / 2 + 25, ZC + h / 2 + 25],
-                    [xa - 1, -w / 2, ZC - h / 2], [xa + 7, w / 2, ZC + h / 2]);
+            shellBox(context, rid + "a", [xa, -w / 2 - 25, ZC - h / 2 - 25], [xa + 3, w / 2 + 25, ZC + h / 2 + 25],
+                    [xa - 1, -w / 2, ZC - h / 2], [xa + 4, w / 2, ZC + h / 2]);
+            shellBox(context, rid + "b", [xa + 3, -w / 2 - 25, ZC - h / 2 - 25], [xa + 6, w / 2 + 25, ZC + h / 2 + 25],
+                    [xa + 2, -w / 2, ZC - h / 2], [xa + 7, w / 2, ZC + h / 2]);
             ribs = append(ribs, bodies(rid));
             // half-lap slots: rib is notched from its outer edge (12.5 deep) at the middle of each side,
             // spine is notched from its curved inner edge (12.5 deep) at each rib station
@@ -289,8 +683,9 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             spineSlots = append(spineSlots, bodies(pid));
         }
 
-        // Four spines (6 mm plywood): inner edge = sheet outer surface curve, outer edge straight,
-        // so the ribs drop into the slots already spaced and squared.
+        // Four spines, each two 3 mm plywood layers: inner edge = sheet outer surface curve, outer edge straight,
+        // so the ribs drop into the slots already spaced and squared. They run 15 mm past the inlet rib
+        // (stepping out over the settling chamber) and 8 mm past the exit rib (over sleeve 1).
         var vTop = [];
         var vBot = [];
         var vL = [];
@@ -300,49 +695,70 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             const t = k / 20;
             const f = 6 * t ^ 5 - 15 * t ^ 4 + 10 * t ^ 3;
             const x = -378 + 378 * t;
-            const h = 309 - 183 * f + 2;
-            const w = 412 - 244 * f + 2;
+            const h = 309 - 183 * f + 2 * SH;
+            const w = 412 - 244 * f + 2 * SH;
             vTop = append(vTop, [x, ZC + h / 2]);
             vBot = append(vBot, [x, ZC - h / 2]);
             vL = append(vL, [x, w / 2]);
             vR = append(vR, [x, -w / 2]);
         }
-        const xzPlane = plane(mmv(0, 3, 0), vector(0, -1, 0), vector(1, 0, 0));
-        const xyPlane = plane(mmv(0, 0, ZC - 3), vector(0, 0, 1), vector(1, 0, 0));
-        curveBoard(context, id + "spT", xzPlane, vTop, ZC + 155.5 + 25, 6);
-        curveBoard(context, id + "spB", xzPlane, vBot, ZC - 155.5 - 25, 6);
-        curveBoard(context, id + "spL", xyPlane, vL, 207 + 25, 6);
-        curveBoard(context, id + "spR", xyPlane, vR, -207 - 25, 6);
-        // spine extensions past both end ribs so the end ribs sit in closed slots;
-        // inlet end steps out over the settling-chamber wall, exit end over sleeve 1
-        blk(context, id + "xspT1", [-393, -3, ZC + 157.5], [-378, 3, ZC + 180.5]);
-        blk(context, id + "xspT2", [0, -3, ZC + 69.3], [8, 3, ZC + 180.5]);
-        blk(context, id + "xspB1", [-393, -3, ZC - 180.5], [-378, 3, ZC - 157.5]);
-        blk(context, id + "xspB2", [0, -3, ZC - 180.5], [8, 3, ZC - 69.3]);
-        blk(context, id + "xspL1", [-393, 209, ZC - 3], [-378, 232, ZC + 3]);
-        blk(context, id + "xspL2", [0, 90.3, ZC - 3], [8, 232, ZC + 3]);
-        blk(context, id + "xspR1", [-393, -232, ZC - 3], [-378, -209, ZC + 3]);
-        blk(context, id + "xspR2", [0, -232, ZC - 3], [8, -90.3, ZC + 3]);
-        const spineNames = ["spT", "spB", "spL", "spR"];
-        const spineLabels = ["A2 Spine top (6 mm plywood, half-lapped with ribs)", "A2 Spine bottom (straight edge = datum)", "A2 Spine left", "A2 Spine right"];
+        const spines = [
+                { "nm" : "spT", "pts" : vTop, "vo" : ZC + 180.5, "ax" : 1, "label" : "A2 Spine top",
+                    "e" : [[[-393, -3, ZC + 157.5], [-378, 3, ZC + 180.5]], [[0, -3, ZC + 69.3], [8, 3, ZC + 180.5]]] },
+                { "nm" : "spB", "pts" : vBot, "vo" : ZC - 180.5, "ax" : 1, "label" : "A2 Spine bottom (straight edge = assembly datum)",
+                    "e" : [[[-393, -3, ZC - 180.5], [-378, 3, ZC - 157.5]], [[0, -3, ZC - 180.5], [8, 3, ZC - 69.3]]] },
+                { "nm" : "spL", "pts" : vL, "vo" : 232, "ax" : 2, "label" : "A2 Spine left",
+                    "e" : [[[-393, 209, ZC - 3], [-378, 232, ZC + 3]], [[0, 90.3, ZC - 3], [8, 232, ZC + 3]]] },
+                { "nm" : "spR", "pts" : vR, "vo" : -232, "ax" : 2, "label" : "A2 Spine right",
+                    "e" : [[[-393, -232, ZC - 3], [-378, -209, ZC + 3]], [[0, -232, ZC - 3], [8, -90.3, ZC + 3]]] }
+            ];
         var spineQ = [];
-        for (var k = 0; k < 4; k += 1)
+        var spineEntries = [];
+        for (var j = 0; j < 4; j += 1)
         {
-            const nm = spineNames[k];
-            spineQ = append(spineQ, qUnion([bodies(id + nm), bodies(id + ("x" ~ nm ~ "1")), bodies(id + ("x" ~ nm ~ "2"))]));
-            fuse(context, id + ("spfu" ~ k), spineQ[k]);
+            const sp = spines[j];
+            for (var ly = 0; ly < 2; ly += 1)
+            {
+                const sid = id + sp.nm + (ly == 0 ? "a" : "b");
+                var pl = plane(mmv(0, ly == 0 ? 3 : 0, 0), vector(0, -1, 0), vector(1, 0, 0));
+                if (sp.ax == 2)
+                {
+                    pl = plane(mmv(0, 0, ly == 0 ? ZC : ZC - 3), vector(0, 0, 1), vector(1, 0, 0));
+                }
+                curveBoard(context, sid + "c", pl, sp.pts, sp.vo, 3);
+                for (var m = 0; m < 2; m += 1)
+                {
+                    var a = sp.e[m][0];
+                    var b = sp.e[m][1];
+                    const mid = (a[sp.ax] + b[sp.ax]) / 2;
+                    if (ly == 0)
+                    {
+                        a[sp.ax] = mid;
+                    }
+                    else
+                    {
+                        b[sp.ax] = mid;
+                    }
+                    blk(context, sid + ("e" ~ m), a, b);
+                }
+                fuse(context, sid + "u", bodies(sid));
+                spineQ = append(spineQ, bodies(sid));
+                spineEntries = append(spineEntries, { "q" : bodies(sid), "label" : sp.label ~ " layer " ~ (ly + 1) ~ " of 2" });
+            }
         }
         cut(context, id + "ribcut", qUnion(ribs), qUnion(ribSlots), false);
         cut(context, id + "spcut", qUnion(spineQ), qUnion(spineSlots), false);
         for (var k = 0; k < size(ribS); k += 1)
         {
-            tag(context, id + ("rib" ~ k), "A2 Contraction rib s=" ~ ribS[k] ~ " (half-lap slots)", WOOD);
+            L = append(L, lc(context, bodies(id + ("rib" ~ k) + "a"), "PLY", "A2 Contraction rib s=" ~ ribS[k] ~ " layer 1 of 2", WOOD));
+            L = append(L, lc(context, bodies(id + ("rib" ~ k) + "b"), "PLY", "A2 Contraction rib s=" ~ ribS[k] ~ " layer 2 of 2", WOOD));
         }
-        for (var k = 0; k < 4; k += 1)
+        for (var e in spineEntries)
         {
-            tagQ(context, spineQ[k], spineLabels[k], SPINE);
+            L = append(L, lc(context, e.q, "PLY", e.label, SPINE));
         }
-        // ---------- A3 test section 168 x 126 x 336: flat 3 mm clear acrylic panels (laser-cut) ----------
+
+        // ---------- A3 test section 168 x 126 x 336: flat 3 mm clear acrylic panels (laser-cut, solvent-glued) ----------
         // The side panels run down past the floor at x 87..273 and form the side walls of the balance box (C),
         // so the test section and the balance are one module with no separate plenum.
         blk(context, id + "tsF", [0, -84, -3], [336, 84, 0]);
@@ -362,39 +778,50 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         cut(context, id + "tsTc", bodies(id + "tsT"), qUnion(magHoles), false);
 
         // ---------- A3 car hatch: plug fills the opening (0.5 mm recess), cover rests on a foam gasket ----------
-        // Suction pulls the hatch inwards, so the magnets only locate it.
+        // Suction pulls the hatch inwards, so the magnets only locate it. Plug and cover are glued together.
         blk(context, id + "hPlug", [120.3, -74.7, 126.5], [299.7, 74.7, 129.5]);
+        L = append(L, lc(context, bodies(id + "hPlug"), "ACR", "A3 Car hatch plug (glued under the cover)", PC));
         blk(context, id + "hCov", [108, -86, 129.5], [312, 86, 132.5]);
         blk(context, id + "hTab", [200, 86, 129.5], [214, 93, 132.5]);
-        const hatch = qUnion([bodies(id + "hPlug"), bodies(id + "hCov"), bodies(id + "hTab")]);
-        fuse(context, id + "hFu", hatch);
-        tagQ(context, hatch, "A3 Car hatch: plug + cover (LC 3 mm acrylic x2, glued)", PC);
+        fuse(context, id + "hFu", qUnion([bodies(id + "hCov"), bodies(id + "hTab")]));
+        L = append(L, lc(context, qUnion([bodies(id + "hCov"), bodies(id + "hTab")]), "ACR", "A3 Car hatch cover with switch tab", PC));
         shellBox(context, id + "hGsk", [116, -79, 129], [304, 79, 129.5], [120, -75, 128.9], [300, 75, 129.6]);
-        tag(context, id + "hGsk", "A3 Hatch gasket (2 mm foam tape, compressed)", DARK);
+        tag(context, id + "hGsk", "BUY | A3 Hatch gasket (2 mm foam tape, compressed)", DARK);
         cyl(context, id + "hKnob", [210, 0, 132.5], [210, 0, 145], 20);
-        tag(context, id + "hKnob", "A3 Hatch knob (3DP PETG)", PRINT);
+        tag(context, id + "hKnob", "3DP | A3 Hatch knob", PRINT);
         var mags = [];
         for (var i = 0; i < 4; i += 1)
         {
             cyl(context, id + ("hMag" ~ i), [magPos[i][0], magPos[i][1], 126], [magPos[i][0], magPos[i][1], 129], 6);
             mags = append(mags, bodies(id + ("hMag" ~ i)));
         }
-        tagQ(context, qUnion(mags), "A3 Hatch magnets 6x3 in roof (steel washers under cover)", STEEL);
+        tagQ(context, qUnion(mags), "BUY | A3 Hatch magnets 6x3 in roof (steel washers under cover)", STEEL);
         blk(context, id + "hSw", [200, 87, 112], [214, 93, 128]);
         blk(context, id + "hSwL", [205, 89, 128], [209, 91, 129.5]);
         fuse(context, id + "hSwF", qUnion([bodies(id + "hSw"), bodies(id + "hSwL")]));
-        tagQ(context, qUnion([bodies(id + "hSw"), bodies(id + "hSwL")]), "D Hatch microswitch (cover tab presses lever; fans off when lifted)", BLACK);
+        tagQ(context, qUnion([bodies(id + "hSw"), bodies(id + "hSwL")]), "BUY | D Hatch microswitch (cover tab presses lever; fans off when lifted)", BLACK);
 
-        // ---------- slip-joint sleeves (3 mm, 0.3 mm clearance; tape the seam after assembly) ----------
-        shellBox(context, id + "sl1", [0, -90.3, ZC - 69.3], [20, 90.3, ZC + 69.3], [-1, -87.3, ZC - 66.3], [21, 87.3, ZC + 66.3]);
-        tag(context, id + "sl1", "H1 Sleeve 1 (glued to last contraction rib; test section slides in 20 mm; tape seam)", WOOD);
-        shellBox(context, id + "sl2", [316, -90.3, ZC - 69.3], [344, 90.3, ZC + 69.3], [315, -87.3, ZC - 66.3], [345, 87.3, ZC + 66.3]);
-        tag(context, id + "sl2", "H1 Sleeve 2 (glued to diffuser inlet; over test-section outlet 20 mm; tape seam)", WOOD);
+        // ---------- H1 slip-joint sleeves: four 3 mm plywood strips each (0.3 mm clearance; tape the seam) ----------
+        const sleeves = [[0, 20, "H1 Sleeve 1 (glued to last contraction rib)"], [316, 344, "H1 Sleeve 2 (glued to diffuser inlet)"]];
+        for (var i = 0; i < 2; i += 1)
+        {
+            const x0 = sleeves[i][0];
+            const x1 = sleeves[i][1];
+            const sid = id + ("sl" ~ (i + 1));
+            blk(context, sid + "t", [x0, -90.3, ZC + 66.3], [x1, 90.3, ZC + 69.3]);
+            blk(context, sid + "b", [x0, -90.3, ZC - 69.3], [x1, 90.3, ZC - 66.3]);
+            blk(context, sid + "l", [x0, 87.3, ZC - 66.3], [x1, 90.3, ZC + 66.3]);
+            blk(context, sid + "r", [x0, -90.3, ZC - 66.3], [x1, -87.3, ZC + 66.3]);
+            for (var j = 0; j < 4; j += 1)
+            {
+                L = append(L, lc(context, bodies(sid + wallNames[j]), "PLY", sleeves[i][2] ~ " strip " ~ wallLabels[j], WOOD));
+            }
+        }
 
         // ---------- B ground plate, wheel wells, saddles ----------
         sideExtrude(context, id + "gp", [[42, 22.5], [48, 21], [294, 21], [294, 24], [48, 24]], -83, 83);
         sideExtrude(context, id + "flap", [[294.5, 21], [310, 19.5], [310, 21], [294.5, 24]], -83, 83);
-        tag(context, id + "flap", "B Ground plate trailing-edge flap", WHITE);
+        L = append(L, lc(context, bodies(id + "flap"), "ACR", "B Ground plate trailing-edge flap (sand the taper)", WHITE));
         const WH = [[147, -19], [147, 19], [210, -19], [210, 19]];
         const TR = 8;
         const ANG = 20.9 * degree;
@@ -419,38 +846,38 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
 
             sideExtrude(context, id + ("sad" ~ i), [[x - HW, 13], [x + HW, 13], [x + HW, czo + (HW - cxo) * sl],
                         [x, czo - cxo * sl], [x - HW, czo + (HW - cxo) * sl]], y - 4, y + 4);
-            tag(context, id + ("sad" ~ i), "B V-saddle " ~ n, PRINT);
+            tag(context, id + ("sad" ~ i), "3DP | B V-saddle " ~ n, PRINT);
 
             cyl(context, id + ("tyre" ~ i), [x, y - 3, TZ], [x, y + 3, TZ], 16);
-            tag(context, id + ("tyre" ~ i), "Car tyre " ~ n, BLACK);
+            tag(context, id + ("tyre" ~ i), "BUY | Car tyre " ~ n, BLACK);
 
             blk(context, id + ("post" ~ i), [x - 1.5, y - 1.5, -8], [x + 1.5, y + 1.5, 13]);
-            tag(context, id + ("post" ~ i), "C Saddle post " ~ n, STEEL);
+            tag(context, id + ("post" ~ i), "BUY | C Saddle post " ~ n ~ " (3 mm steel rod, screws into the frame)", STEEL);
 
             pipe(context, id + ("shr" ~ i), [x, y, 0], [x, y, 9], 5.5, 4.5);
-            tag(context, id + ("shr" ~ i), "B Post shroud " ~ n, ALU);
+            tag(context, id + ("shr" ~ i), "BUY | B Post shroud " ~ n ~ " (aluminium tube)", ALU);
 
             cyl(context, id + ("hole" ~ i), [x, y, -4], [x, y, 12.5], 4.6);
             holes = append(holes, bodies(id + ("hole" ~ i)));
         }
         cut(context, id + "gpc", bodies(id + "gp"), qUnion(openings), false);
-        tag(context, id + "gp", "B Ground plate (3 mm, 4:1 elliptic leading edge)", WHITE);
+        L = append(L, lc(context, bodies(id + "gp"), "ACR", "B Ground plate (sand the 4:1 elliptic leading edge)", WHITE));
         cut(context, id + "hcut", qUnion(wells), qUnion(holes), false);
         for (var i = 0; i < 4; i += 1)
         {
-            tag(context, id + ("well" ~ i), "B Wheel well (closed) " ~ (i + 1), DARK);
+            tag(context, id + ("well" ~ i), "3DP | B Wheel well (closed) " ~ (i + 1), DARK);
         }
         const legs = [[60, -70], [60, 70], [280, -70], [280, 70]];
         for (var i = 0; i < 4; i += 1)
         {
             cyl(context, id + ("gpl" ~ i), [legs[i][0], legs[i][1], 0], [legs[i][0], legs[i][1], 21], 6);
-            tag(context, id + ("gpl" ~ i), "B Ground plate standoff " ~ (i + 1), ALU);
+            tag(context, id + ("gpl" ~ i), "BUY | B Ground plate standoff M3 x 21 " ~ (i + 1), ALU);
         }
 
         // ---------- 1:43 car (planning shape) ----------
         sideExtrude(context, id + "car", [[126, 27], [126, 37], [129, 41], [152, 44], [170, 57], [218, 58], [229, 52], [231, 44], [231, 27]], -19, 19);
         try silent(opFillet(context, id + "car" + "fil", { "entities" : qCreatedBy(id + "car" + "ex", EntityType.EDGE), "radius" : 1.5 * millimeter }));
-        tag(context, id + "car", "1:43 car (planning shape)", RED);
+        tag(context, id + "car", "BUY | 1:43 diecast car (planning shape)", RED);
 
         // ---------- probes and taps ----------
         cyl(context, id + "pit1", [55, 55, 87], [85, 55, 87], 4);
@@ -458,11 +885,7 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         cut(context, id + "pitc", bodies(id + "tsT"), bodies(id + "pit2"), true);
         const pitot = qUnion([bodies(id + "pit1"), bodies(id + "pit2")]);
         fuse(context, id + "pitf", pitot);
-        tagQ(context, pitot, "D Pitot tube D4", BRASS);
-        tag(context, id + "tsF", "A3 Test-section floor (LC 3 mm acrylic; post holes)", PC);
-        tag(context, id + "tsL", "A3 Test-section side left + balance box wall (LC 3 mm acrylic, one piece)", PC);
-        tag(context, id + "tsR", "A3 Test-section side right + balance box wall (LC 3 mm acrylic, one piece)", PC);
-        tag(context, id + "tsT", "A3 Test-section roof with hatch opening (LC 3 mm acrylic)", PC);
+        tagQ(context, pitot, "BUY | D Pitot tube D4 (brass)", BRASS);
 
         const taps = [
                 [[-420, 209, ZC], [-420, 215, ZC]], [[-420, -209, ZC], [-420, -215, ZC]],
@@ -478,50 +901,82 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             cyl(context, id + ("tap" ~ i), taps[i][0], taps[i][1], 2.5);
             tapQ = append(tapQ, bodies(id + ("tap" ~ i)));
         }
-        tagQ(context, qUnion(tapQ), "D Wall static tap fittings", BRASS);
+        tagQ(context, qUnion(tapQ), "BUY | D Wall static tap fittings", BRASS);
+        // 1 mm tap holes in the test-section panels (laser-cut, square to the wall)
+        const tapHoles = [[[30, 83, ZC], [30, 88, ZC]], [[30, -88, ZC], [30, -83, ZC]], [[30, 0, 125], [30, 0, 130]], [[30, 0, -4], [30, 0, 1]],
+                [[42, -88, 75], [42, -83, 75]], [[126, -88, 75], [126, -83, 75]], [[210, -88, 75], [210, -83, 75]], [[294, -88, 75], [294, -83, 75]]];
+        var thQ = [];
+        for (var i = 0; i < size(tapHoles); i += 1)
+        {
+            cyl(context, id + ("tth" ~ i), tapHoles[i][0], tapHoles[i][1], 1);
+            thQ = append(thQ, bodies(id + ("tth" ~ i)));
+        }
+        cut(context, id + "tthc", qUnion([bodies(id + "tsF"), bodies(id + "tsL"), bodies(id + "tsR"), bodies(id + "tsT")]), qUnion(thQ), false);
 
         // ---------- C balance box: part of module 2, directly under the test-section floor ----------
         // Walls: the two side panels (tsL/tsR) plus two end walls; floor = removable tray that carries the balance.
         // The box is sealed except through the wheel wells, so its pressure matches the air at the car.
-        blk(context, id + "bxF", [87, -87, -92], [273, 87, -86]);
-        tag(context, id + "bxF", "C Balance tray / box floor (LC 3 mm ply x2; balance bolts on, comes out with it)", WOOD);
+        lam(context, id + "bxF", [87, -87, -92], [273, 87, -86], 2);
         blk(context, id + "bxE1", [87, -84, -86], [90, 84, -3]);
         blk(context, id + "bxE2", [270, -84, -86], [273, 84, -3]);
-        tagQ(context, qUnion([bodies(id + "bxE1"), bodies(id + "bxE2")]), "C Balance box end walls (LC 3 mm acrylic)", PC);
 
         // Balance with NO slide, laid out like the UPenn build guide (Weakly et al., ASEE 2024):
         // the drag cell STANDS UP from the base, a corner bracket on its top end joins it to the
         // vertical (lift) cell, which lies flat and carries the frame on its free end.
         // Load path: car -> saddles -> posts -> frame -> 1 kg vertical cell -> corner bracket -> 100 g drag cell -> foot -> base.
         // The weight runs along the drag cell's length, so it does not bend the drag cell sideways.
-        blk(context, id + "frm", [140, -37, -14], [217, 37, -8]);
-        tag(context, id + "frm", "C Common frame plate (LC 3 mm ply x2; four posts screw in)", WOOD);
+        lam(context, id + "frm", [140, -37, -14], [217, 37, -8], 2);
         blk(context, id + "flug", [160, 22, -26], [165, 30, -14]);
-        tag(context, id + "flug", "C Frame stop lug (3DP PETG)", PRINT);
+        tag(context, id + "flug", "3DP | C Frame stop lug", PRINT);
         blk(context, id + "vsp1", [154.7, -6.35, -16.3], [172.7, 6.35, -14]);
-        tag(context, id + "vsp1", "C Spacer: vertical cell free end to frame (3DP PETG)", PRINT);
+        tag(context, id + "vsp1", "3DP | C Spacer: vertical cell free end to frame", PRINT);
         blk(context, id + "vcell", [154.7, -6.35, -29], [234.7, 6.35, -16.3]);
-        tag(context, id + "vcell", "C 1 kg vertical load cell (lies flat; free end carries the frame)", CELLC);
+        tag(context, id + "vcell", "BUY | C 1 kg vertical load cell (lies flat; free end carries the frame)", CELLC);
         blk(context, id + "brkH", [214, -10, -32], [240, 10, -29]);
         blk(context, id + "brkV", [234.7, -10, -46], [240, 10, -32]);
         fuse(context, id + "brkF", qUnion([bodies(id + "brkH"), bodies(id + "brkV")]));
-        tagQ(context, qUnion([bodies(id + "brkH"), bodies(id + "brkV")]), "C Corner bracket joining the two load cells (3DP PETG or aluminium)", PRINT);
+        tagQ(context, qUnion([bodies(id + "brkH"), bodies(id + "brkV")]), "3DP | C Corner bracket joining the two load cells", PRINT);
         blk(context, id + "dcell", [222, -6.35, -79], [234.7, 6.35, -32]);
-        tag(context, id + "dcell", "C 100 g drag load cell (stands up; senses fore-aft; top end in corner bracket)", CELLC);
+        tag(context, id + "dcell", "BUY | C 100 g drag load cell (stands up; senses fore-aft; top end in corner bracket)", CELLC);
         blk(context, id + "dfoot", [209.3, -10, -80], [222, 10, -66]);
-        tag(context, id + "dfoot", "C Drag cell foot (3DP PETG, bolted to base plate)", PRINT);
-        blk(context, id + "bbase", [120, -45, -86], [245, 45, -80]);
-        tag(context, id + "bbase", "C Balance base plate (LC 3 mm ply x2, bolted to tray)", WOOD);
+        tag(context, id + "dfoot", "3DP | C Drag cell foot (bolted to base plate)", PRINT);
+        lam(context, id + "bbase", [120, -45, -86], [245, 45, -80], 2);
 
-        // overload stops fixed to the base, 0.3 mm gaps: fork around the frame lug (fore-aft) and a down-stop under the frame
-        blk(context, id + "skA", [153, 20, -80], [159.7, 32, -22]);
-        blk(context, id + "skB", [165.3, 20, -80], [172, 32, -22]);
-        cyl(context, id + "zstop", [145, 0, -80], [145, 0, -14.3], 4);
-        tagQ(context, qUnion([bodies(id + "skA"), bodies(id + "skB"), bodies(id + "zstop")]),
-                "C Overload stops on base (fork 0.3 mm each side of lug; down-stop 0.3 mm under frame)", BRASS);
-        const sides = [1, -1];
+        // Overload stops, adjustable so the 0.3 mm gaps can be set on the bench (tray out):
+        // down-stop = M4 pan-head screw, head up, in a printed pillar under the frame;
+        // fore-aft = printed fork around the frame lug with an M3 screw from each side.
+        blk(context, id + "zpil", [139, -6, -80], [151, 6, -20.5]);
+        cyl(context, id + "zpH1", [145, 0, -30.5], [145, 0, -20], 5.6);
+        cyl(context, id + "zpH2", [145, 0, -45], [145, 0, -30], 4.2);
+        cut(context, id + "zpc", bodies(id + "zpil"), qUnion([bodies(id + "zpH1"), bodies(id + "zpH2")]), false);
+        tag(context, id + "zpil", "3DP | C Down-stop pillar (M4 heat-set insert on top)", PRINT);
+        cyl(context, id + "zscH", [145, 0, -17.3], [145, 0, -14.3], 8);
+        cyl(context, id + "zscN", [145, 0, -20.5], [145, 0, -17.3], 7.5);
+        cyl(context, id + "zscS", [145, 0, -40], [145, 0, -17.3], 4);
+        fuse(context, id + "zscU", qUnion([bodies(id + "zscH"), bodies(id + "zscN"), bodies(id + "zscS")]));
+        tagQ(context, qUnion([bodies(id + "zscH"), bodies(id + "zscN"), bodies(id + "zscS")]),
+                "BUY | C Down-stop M4 x 25 pan-head screw + lock nut (head 0.3 mm under the frame)", STEEL);
+        blk(context, id + "fkA", [151, 20, -80], [157, 32, -19]);
+        blk(context, id + "fkB", [168, 20, -80], [174, 32, -19]);
+        blk(context, id + "fkC", [151, 20, -80], [174, 32, -74]);
+        fuse(context, id + "fkU", qUnion([bodies(id + "fkA"), bodies(id + "fkB"), bodies(id + "fkC")]));
+        cyl(context, id + "fkH1", [150, 26, -22], [158, 26, -22], 2.5);
+        cyl(context, id + "fkH2", [167, 26, -22], [175, 26, -22], 2.5);
+        cut(context, id + "fkc", qUnion([bodies(id + "fkA"), bodies(id + "fkB"), bodies(id + "fkC")]), qUnion([bodies(id + "fkH1"), bodies(id + "fkH2")]), false);
+        tagQ(context, qUnion([bodies(id + "fkA"), bodies(id + "fkB"), bodies(id + "fkC")]), "3DP | C Stop fork around the frame lug (M3 tapped holes)", PRINT);
+        const fs = [[145.6, 148.6, 151, 159.7], [179.4, 176.4, 174, 165.3]];   // head end, head/nut, nut/arm, tip
+        for (var i = 0; i < 2; i += 1)
+        {
+            const sid = id + ("fks" ~ i);
+            cyl(context, sid + "h", [fs[i][0], 26, -22], [fs[i][1], 26, -22], 5.5);
+            cyl(context, sid + "n", [fs[i][1], 26, -22], [fs[i][2], 26, -22], 6.2);
+            cyl(context, sid + "s", [fs[i][0], 26, -22], [fs[i][3], 26, -22], 3);
+            fuse(context, sid + "u", bodies(sid));
+            tag(context, sid, "BUY | C Fore-aft stop M3 x 16 screw + lock nut (tip 0.3 mm from the lug)", STEEL);
+        }
 
         // transport lock: one thumb screw per side through the box wall, clamping the frame plate
+        const sides = [1, -1];
         var lockQ = [];
         var shaftQ = [];
         for (var i = 0; i < 2; i += 1)
@@ -538,39 +993,58 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         {
             fuse(context, id + ("locku" ~ i), bodies(id + ("lock" ~ i)));
         }
-        tagQ(context, qUnion(lockQ), "H3 Transport lock thumb screws M4 (shown locked; back out before measuring)", BRASS);
+        tagQ(context, qUnion(lockQ), "BUY | H3 Transport lock M4 thumb screws (shown locked; back out before measuring)", BRASS);
 
         // module 2 feet under the tray corners (no pedestal, no ballast)
         var feet2 = [];
         const pf = [[95, -79], [95, 79], [265, -79], [265, 79]];
         for (var i = 0; i < 4; i += 1)
         {
-            levelFoot(context, id + ("pft" ~ i), pf[i][0], pf[i][1], -92);
+            levelFoot(context, id + ("pft" ~ i), pf[i][0], pf[i][1], -86);
             feet2 = append(feet2, bodies(id + ("pft" ~ i)));
         }
-        tagQ(context, qUnion(feet2), "H2 Module 2 levelling feet M6 x4", DARK);
+        tagQ(context, qUnion(feet2), "BUY | H2 Module 2 levelling feet M6 x4 (T-nuts in the tray)", DARK);
 
-        // ---------- A4 diffuser, safety mesh ----------
-        loftDuct(context, id + "dif", [336, 986], [168, 240], [126, 240], T);
-        tag(context, id + "dif", "A4 Diffuser 168x126 to 240x240", WOOD);
+        // module 2 laser parts
+        L = append(L, lc(context, bodies(id + "tsF"), "ACR", "A3 Test-section floor (post and tap holes)", PC));
+        L = append(L, lc(context, bodies(id + "tsL"), "ACR", "A3 Test-section side left + balance box wall (one piece)", PC));
+        L = append(L, lc(context, bodies(id + "tsR"), "ACR", "A3 Test-section side right + balance box wall (one piece, side taps)", PC));
+        L = append(L, lc(context, bodies(id + "tsT"), "ACR", "A3 Test-section roof with hatch opening", PC));
+        L = append(L, lc(context, bodies(id + "bxE1"), "ACR", "C Balance box end wall upstream", PC));
+        L = append(L, lc(context, bodies(id + "bxE2"), "ACR", "C Balance box end wall downstream", PC));
+        L = append(L, lc(context, bodies(id + "bxF" + "a"), "PLY", "C Balance tray / box floor layer 1 of 2 (T-nuts for feet)", WOOD));
+        L = append(L, lc(context, bodies(id + "bxF" + "b"), "PLY", "C Balance tray / box floor layer 2 of 2", WOOD));
+        L = append(L, lc(context, bodies(id + "frm" + "a"), "PLY", "C Common frame plate layer 1 of 2 (posts screw in)", WOOD));
+        L = append(L, lc(context, bodies(id + "frm" + "b"), "PLY", "C Common frame plate layer 2 of 2", WOOD));
+        L = append(L, lc(context, bodies(id + "bbase" + "a"), "PLY", "C Balance base plate layer 1 of 2 (bolted to tray)", WOOD));
+        L = append(L, lc(context, bodies(id + "bbase" + "b"), "PLY", "C Balance base plate layer 2 of 2", WOOD));
 
+        // ---------- A4 diffuser: four flat plywood panels; safety mesh on a plywood frame ----------
+        ductWalls(context, id + "dif", [336, 986], [168, 240], [126, 240], T);
+        for (var j = 0; j < 4; j += 1)
+        {
+            L = append(L, lc(context, bodies(id + "dif" + wallNames[j]), "PLY", "A4 Diffuser panel " ~ wallLabels[j] ~ " (168x126 to 240x240)", WOOD));
+        }
+        shellBox(context, id + "mfr", [986, -123, ZC - 123], [989, 123, ZC + 123], [985, -120, ZC - 120], [990, 120, ZC + 120]);
+        L = append(L, lc(context, bodies(id + "mfr"), "PLY", "A4 Safety mesh frame", WOOD));
         var mesh = [];
-        shellBox(context, id + "mfr", [985.5, -123, ZC - 123], [988, 123, ZC + 123], [985, -120, ZC - 120], [989, 120, ZC + 120]);
-        mesh = append(mesh, bodies(id + "mfr"));
         for (var j = 0; j <= 30; j += 1)
         {
             const v = -120 + 8 * j;
-            blk(context, id + ("mh" ~ j), [986.4, -120, ZC + v - 0.4], [987.2, 120, ZC + v + 0.4]);
-            blk(context, id + ("mv" ~ j), [986.4, v - 0.4, ZC - 120], [987.2, v + 0.4, ZC + 120]);
+            blk(context, id + ("mh" ~ j), [989.1, -120, ZC + v - 0.4], [989.9, 120, ZC + v + 0.4]);
+            blk(context, id + ("mv" ~ j), [989.1, v - 0.4, ZC - 120], [989.9, v + 0.4, ZC + 120]);
             mesh = append(mesh, bodies(id + ("mh" ~ j)));
             mesh = append(mesh, bodies(id + ("mv" ~ j)));
         }
         fuse(context, id + "meshf", qUnion(mesh));
-        tagQ(context, qUnion(mesh), "A4 Safety mesh (7 mm opening)", STEEL);
+        tagQ(context, qUnion(mesh), "BUY | A4 Safety mesh (7 mm opening)", STEEL);
 
-        // ---------- A5 fan box: two 2 x 2 layers stacked (x 998-1036 and 1036-1074) ----------
-        rectDuct(context, id + "fm", 988, 1086, 240, 240);
-        tag(context, id + "fm", "A5 Fan box 240x240 (two stacked 2x2 layers)", WOOD);
+        // ---------- A5 fan box (finger-jointed plywood): two 2 x 2 layers stacked (x 998-1036 and 1036-1074) ----------
+        boxPanels(context, id + "fm", 989, 1086, 240, 240, ZC);
+        for (var j = 0; j < 4; j += 1)
+        {
+            L = append(L, lc(context, bodies(id + "fm" + wallNames[j]), "PLY", "A5 Fan box panel " ~ wallLabels[j], WOOD));
+        }
         const fp = [[-60, ZC - 60], [60, ZC - 60], [-60, ZC + 60], [60, ZC + 60]];
         for (var i = 0; i < 4; i += 1)
         {
@@ -578,27 +1052,44 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             fan(context, id + ("fanB" ~ i), 1036, fp[i][0], fp[i][1], "layer 2 #" ~ (i + 1), BLACK, DARK);
         }
 
-        // ---------- supports and desks ----------
-        // module 1 (inlet: bell + settling + contraction) and module 3 (diffuser + fans) cradles on M6 levelling feet
-        blk(context, id + "sup1", [-600, -180, DESK + 15], [-570, 180, ZC - 157.5]);
-        blk(context, id + "sup2", [-480, -180, DESK + 15], [-450, 180, ZC - 157.5]);
-        tagQ(context, qUnion([bodies(id + "sup1"), bodies(id + "sup2")]), "H2 Module 1 cradles", WOOD);
-        blk(context, id + "sup3", [992, -126, DESK + 15], [1082, 126, ZC - 123]);
-        sideExtrude(context, id + "sup5", [[600, DESK + 15], [630, DESK + 15], [630, -28.8], [600, -26.15]], -100, 100);
-        tagQ(context, qUnion([bodies(id + "sup3"), bodies(id + "sup5")]), "H2 Module 3 cradles", WOOD);
+        // ---------- H2 cradles: base plate + upright web, each two 3 mm plywood layers; M6 levelling feet ----------
+        // [base corner a, base corner b, [web x0, x1 ...], top z of webs, label]
+        const cradles = [
+                [[-600, -180], [-570, 180], [-588], ZC - 157.5, "H2 Module 1 cradle (settling chamber, inlet end)"],
+                [[-480, -180], [-450, 180], [-468], ZC - 157.5, "H2 Module 1 cradle (settling chamber, outlet end)"],
+                [[600, -100], [630, 100], [612], -27.7, "H2 Module 3 cradle under the diffuser (wedge the 0.5 mm slope with glue)"],
+                [[992, -126], [1082, 126], [995, 1073], ZC - 123, "H2 Module 3 cradle under the fan box"]
+            ];
+        for (var i = 0; i < size(cradles); i += 1)
+        {
+            const cr = cradles[i];
+            const cid = id + ("cr" ~ i);
+            lam(context, cid + "base", [cr[0][0], cr[0][1], DESK + 15], [cr[1][0], cr[1][1], DESK + 21], 2);
+            for (var m = 0; m < size(cr[2]); m += 1)
+            {
+                lam(context, cid + ("web" ~ m), [cr[2][m], cr[0][1], DESK + 21], [cr[2][m] + 6, cr[1][1], cr[3]], 0);
+            }
+            L = append(L, lc(context, bodies(cid + "base" + "a"), "PLY", cr[4] ~ " base layer 1 of 2 (T-nuts for feet)", WOOD));
+            L = append(L, lc(context, bodies(cid + "base" + "b"), "PLY", cr[4] ~ " base layer 2 of 2", WOOD));
+            for (var m = 0; m < size(cr[2]); m += 1)
+            {
+                L = append(L, lc(context, bodies(cid + ("web" ~ m) + "a"), "PLY", cr[4] ~ " web " ~ (m + 1) ~ " layer 1 of 2", WOOD));
+                L = append(L, lc(context, bodies(cid + ("web" ~ m) + "b"), "PLY", cr[4] ~ " web " ~ (m + 1) ~ " layer 2 of 2", WOOD));
+            }
+        }
         var feet1 = [];
         var feet3 = [];
         const feet1Pos = [[-585, -165], [-585, 165], [-465, -165], [-465, 165]];
         const feet3Pos = [[615, -85], [615, 85], [1037, -110], [1037, 110]];
         for (var i = 0; i < 4; i += 1)
         {
-            levelFoot(context, id + ("f1t" ~ i), feet1Pos[i][0], feet1Pos[i][1], DESK + 25);
+            levelFoot(context, id + ("f1t" ~ i), feet1Pos[i][0], feet1Pos[i][1], DESK + 21);
             feet1 = append(feet1, bodies(id + ("f1t" ~ i)));
-            levelFoot(context, id + ("f3t" ~ i), feet3Pos[i][0], feet3Pos[i][1], DESK + 25);
+            levelFoot(context, id + ("f3t" ~ i), feet3Pos[i][0], feet3Pos[i][1], DESK + 21);
             feet3 = append(feet3, bodies(id + ("f3t" ~ i)));
         }
-        tagQ(context, qUnion(feet1), "H2 Module 1 levelling feet M6 x4", DARK);
-        tagQ(context, qUnion(feet3), "H2 Module 3 levelling feet M6 x4", DARK);
+        tagQ(context, qUnion(feet1), "BUY | H2 Module 1 levelling feet M6 x4", DARK);
+        tagQ(context, qUnion(feet3), "BUY | H2 Module 3 levelling feet M6 x4", DARK);
 
         const desks = [[-715, 185], [185, 1085]];
         for (var i = 0; i < 2; i += 1)
@@ -611,16 +1102,16 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             blk(context, did + "l1", [dx0 + 20, 240, -900], [dx0 + 60, 280, DESK - 20]);
             blk(context, did + "l2", [dx1 - 60, -280, -900], [dx1 - 20, -240, DESK - 20]);
             blk(context, did + "l3", [dx1 - 60, 240, -900], [dx1 - 20, 280, DESK - 20]);
-            tag(context, did, "Desk " ~ (i + 1), DESKC);
+            tag(context, did, "REF | Desk " ~ (i + 1), DESKC);
         }
 
         // ---------- D electronics and speed sensors (on desk 2) ----------
         // electronics board: everything that plugs together lives on one plywood board, carried as one piece
-        const BZ = DESK + 6;
+        const BZ = DESK + 3;
         blk(context, id + "eboard", [190, -295, DESK], [390, -155, BZ]);
-        tag(context, id + "eboard", "H5 Electronics board (Uno, 3 HX711, sensor B, tees, connectors)", WOOD);
+        L = append(L, lc(context, bodies(id + "eboard"), "PLY", "H5 Electronics board (Uno, 3 HX711, sensor B, tees, connectors)", WOOD));
         blk(context, id + "uno", [215, -209, BZ + 6], [283.6, -155.6, BZ + 7.6]);
-        tag(context, id + "uno", "D Arduino Uno", color(0.0, 0.45, 0.65));
+        tag(context, id + "uno", "BUY | D Arduino Uno", color(0.0, 0.45, 0.65));
         var standoffs = [];
         const sop = [[218, -206], [280.6, -206], [218, -158.6], [280.6, -158.6]];
         for (var i = 0; i < 4; i += 1)
@@ -628,60 +1119,60 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             cyl(context, id + ("so" ~ i), [sop[i][0], sop[i][1], BZ], [sop[i][0], sop[i][1], BZ + 6], 4);
             standoffs = append(standoffs, bodies(id + ("so" ~ i)));
         }
-        tagQ(context, qUnion(standoffs), "H5 Uno standoffs", BRASS);
+        tagQ(context, qUnion(standoffs), "BUY | H5 Uno standoffs", BRASS);
         for (var i = 0; i < 3; i += 1)
         {
             blk(context, id + ("hx" ~ i), [200 + 24 * i, -292, BZ], [221 + 24 * i, -258, BZ + 3]);
-            tag(context, id + ("hx" ~ i), "D HX711 #" ~ (i + 1), color(0.1, 0.5, 0.2));
+            tag(context, id + ("hx" ~ i), "BUY | D HX711 #" ~ (i + 1), color(0.1, 0.5, 0.2));
         }
         blk(context, id + "conn", [350, -172, BZ], [388, -160, BZ + 10]);
-        tag(context, id + "conn", "H5 Connector strip (3 load cells, fan PWM/tach, hatch switch, USB)", BLACK);
+        tag(context, id + "conn", "BUY | H5 Connector strip (3 load cells, fan PWM/tach, hatch switch, USB)", BLACK);
         cyl(context, id + "qcH", [192, -215, BZ + 3], [206, -215, BZ + 3], 7);
         cyl(context, id + "qcL", [192, -245, BZ + 3], [206, -245, BZ + 3], 7);
-        tagQ(context, qUnion([bodies(id + "qcH"), bodies(id + "qcL")]), "H5 Pressure quick-connects (unplug to carry)", BRASS);
+        tagQ(context, qUnion([bodies(id + "qcH"), bodies(id + "qcL")]), "BUY | H5 Pressure quick-connects (unplug to carry)", BRASS);
         blk(context, id + "psu", [700, 170, DESK], [850, 290, DESK + 86]);
-        tag(context, id + "psu", "G 12 V 20 A+ power supply (old ATX)", DARK);
+        tag(context, id + "psu", "BUY | G 12 V 20 A+ power supply (old ATX)", DARK);
 
         shellBox(context, id + "sabox", [400, -295, DESK], [600, -165, DESK + 150], [402, -293, DESK + 2], [598, -167, DESK + 148]);
-        tag(context, id + "sabox", "D2 Speed sensor A airtight box", color(0.9, 0.95, 1.0, 0.22));
+        tag(context, id + "sabox", "BUY | D2 Speed sensor A airtight box (food container)", color(0.9, 0.95, 1.0, 0.22));
         pipe(context, id + "dish", [510, -230, DESK + 2], [510, -230, DESK + 52], 106, 100);
         cyl(context, id + "dishf", [510, -230, DESK + 2], [510, -230, DESK + 5], 106);
         const dish = qUnion([bodies(id + "dish"), bodies(id + "dishf")]);
         fuse(context, id + "dishu", dish);
-        tagQ(context, dish, "D2 A Oil dish ID 100", WHITE);
+        tagQ(context, dish, "BUY | D2 A Oil dish ID 100", WHITE);
         cyl(context, id + "oil", [510, -230, DESK + 5], [510, -230, DESK + 50], 100);
         cyl(context, id + "bellA", [510, -230, DESK + 15], [510, -230, DESK + 95], 62.4);
         cyl(context, id + "bellB", [510, -230, DESK + 14], [510, -230, DESK + 93.8], 60);
         cut(context, id + "bellc", bodies(id + "bellA"), bodies(id + "bellB"), false);
         cut(context, id + "oilc", bodies(id + "oil"), bodies(id + "bellA"), true);
-        tag(context, id + "oil", "D2 A Baby oil 45 deep", color(1.0, 0.85, 0.35, 0.5));
-        tag(context, id + "bellA", "D2 A Bell ID 60 (PETG)", PRINT);
+        tag(context, id + "oil", "BUY | D2 A Baby oil 45 deep", color(1.0, 0.85, 0.35, 0.5));
+        tag(context, id + "bellA", "3DP | D2 A Bell ID 60", PRINT);
         cyl(context, id + "thread", [510, -230, DESK + 95], [510, -230, DESK + 120], 1);
-        tag(context, id + "thread", "D2 A Thread", WHITE);
+        tag(context, id + "thread", "BUY | D2 A Thread", WHITE);
         blk(context, id + "sacell", [466, -236, DESK + 120], [513, -224, DESK + 126]);
-        tag(context, id + "sacell", "D2 A 100 g load cell", CELLC);
+        tag(context, id + "sacell", "BUY | D2 A 100 g load cell", CELLC);
         blk(context, id + "saarm", [405, -238, DESK + 126], [470, -222, DESK + 136]);
         blk(context, id + "sapil", [405, -240, DESK + 2], [425, -220, DESK + 126]);
         const bracket = qUnion([bodies(id + "saarm"), bodies(id + "sapil")]);
         fuse(context, id + "sabr", bracket);
-        tagQ(context, bracket, "D2 A Rigid bracket (glued to box floor)", ALU);
+        tagQ(context, bracket, "BUY | D2 A Rigid bracket (aluminium, glued to box floor)", ALU);
         // ports on the tunnel-side wall of the box (x = 400)
         cyl(context, id + "portH", [392, -190, DESK + 60], [402, -190, DESK + 60], 4);
-        tag(context, id + "portH", "D2 A High port (box air only)", BRASS);
+        tag(context, id + "portH", "BUY | D2 A High port (box air only)", BRASS);
         // low side: brass U-snorkel from the port, over the dish rim, down, under the bell rim, up inside the bell
         tubePath(context, id + "snork", [[392, -270, DESK + 60], [510, -270, DESK + 60], [510, -270, DESK + 10],
                     [510, -245, DESK + 10], [510, -245, DESK + 85]], 4);
         cut(context, id + "snorkc", bodies(id + "oil"), bodies(id + "snork"), true);
-        tag(context, id + "snork", "D2 A Low port + brass U-tube (tip 35 above oil)", BRASS);
+        tag(context, id + "snork", "BUY | D2 A Low port + brass U-tube (tip 35 above oil)", BRASS);
 
         // speed sensor B: two film canisters taped together, one barb each on top
         cyl(context, id + "bmp1", [330, -207, BZ], [330, -207, BZ + 50], 35);
         cyl(context, id + "bmp2", [330, -243, BZ], [330, -243, BZ + 50], 35);
-        tag(context, id + "bmp1", "D2 B High canister BMP280 0x77", BLACK);
-        tag(context, id + "bmp2", "D2 B Low canister BMP280 0x76", BLACK);
+        tag(context, id + "bmp1", "BUY | D2 B High canister BMP280 0x77", BLACK);
+        tag(context, id + "bmp2", "BUY | D2 B Low canister BMP280 0x76", BLACK);
         cyl(context, id + "bnub1", [330, -207, BZ + 50], [330, -207, BZ + 56], 4);
         cyl(context, id + "bnub2", [330, -243, BZ + 50], [330, -243, BZ + 56], 4);
-        tagQ(context, qUnion([bodies(id + "bnub1"), bodies(id + "bnub2")]), "D2 B Barbs", BRASS);
+        tagQ(context, qUnion([bodies(id + "bnub1"), bodies(id + "bnub2")]), "BUY | D2 B Barbs", BRASS);
 
         // ---------- D pressure lines: wall static rings -> tees -> sensors A and B ----------
         // high side: settling-chamber ring (4 taps at x = -420, joined by a loop)
@@ -691,7 +1182,7 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         tubePath(context, id + "H" + "toA", [[300, -215, BZ + 3], [300, -190, BZ + 3], [300, -190, DESK + 60], [392, -190, DESK + 60]], 4);
         tubePath(context, id + "H" + "toB", [[300, -215, BZ + 3], [300, -215, DESK + 70], [330, -207, DESK + 70], [330, -207, BZ + 56]], 4);
         fuse(context, id + "Hu", bodies(id + "H"));
-        tag(context, id + "H", "D High-side line (red): settling ring > tee > A box air, B high", HIGHP);
+        tag(context, id + "H", "BUY | D High-side line (red): settling ring > tee > A box air, B high", HIGHP);
         // low side: test-section entrance ring (4 taps at x = 30, clear of sleeve 1)
         tubePath(context, id + "L" + "ring", [[30, 93, ZC], [30, 93, ZC + 72], [30, -93, ZC + 72],
                     [30, -93, ZC - 72], [30, 93, ZC - 72], [30, 93, ZC]], 4);
@@ -699,28 +1190,88 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         tubePath(context, id + "L" + "toA", [[300, -245, BZ + 3], [300, -270, BZ + 3], [300, -270, DESK + 60], [392, -270, DESK + 60]], 4);
         tubePath(context, id + "L" + "toB", [[300, -245, BZ + 3], [300, -245, DESK + 75], [330, -243, DESK + 75], [330, -243, BZ + 56]], 4);
         fuse(context, id + "Lu", bodies(id + "L"));
-        tag(context, id + "L", "D Low-side line (blue): entrance ring > tee > inside A bell, B low", LOWP);
+        tag(context, id + "L", "BUY | D Low-side line (blue): entrance ring > tee > inside A bell, B low", LOWP);
         blk(context, id + "teeH", [296, -219, BZ], [304, -211, BZ + 7]);
         blk(context, id + "teeL", [296, -249, BZ], [304, -241, BZ + 7]);
-        tagQ(context, qUnion([bodies(id + "teeH"), bodies(id + "teeL")]), "D Tees", BRASS);
+        tagQ(context, qUnion([bodies(id + "teeH"), bodies(id + "teeL")]), "BUY | D Tees", BRASS);
 
         // ---------- E smoke: removable wand through a roof grommet, jar source sucked by the tunnel ----------
         tubePath(context, id + "wand", [[100, 0, 215], [100, 0, 47], [114, 0, 47]], 4);
         cut(context, id + "wandc", bodies(id + "tsT"), bodies(id + "wand"), true);
-        tag(context, id + "wand", "E Smoke wand D4 (tip downstream ahead of car; remove for force runs)", BRASS);
+        tag(context, id + "wand", "BUY | E Smoke wand D4 brass (tip downstream ahead of car; remove for force runs)", BRASS);
         pipe(context, id + "grom", [100, 0, 129], [100, 0, 133], 12, 4);
-        tag(context, id + "grom", "E Wand grommet (roof x = 100)", DARK);
+        tag(context, id + "grom", "BUY | E Wand grommet (roof x = 100)", DARK);
         pipe(context, id + "jar", [40, 210, DESK], [40, 210, DESK + 130], 90, 86);
         cyl(context, id + "jarb", [40, 210, DESK], [40, 210, DESK + 2], 90);
         const jar = qUnion([bodies(id + "jar"), bodies(id + "jarb")]);
         fuse(context, id + "jaru", jar);
-        tagQ(context, jar, "E Smoke source jar", color(0.85, 0.95, 0.9, 0.3));
+        tagQ(context, jar, "BUY | E Smoke source jar", color(0.85, 0.95, 0.9, 0.3));
         cyl(context, id + "lid", [40, 210, DESK + 130], [40, 210, DESK + 136], 92);
-        tag(context, id + "lid", "E Jar lid (smoke barb + small air inlet)", ALU);
+        tag(context, id + "lid", "BUY | E Jar lid (smoke barb + small air inlet)", ALU);
         cyl(context, id + "incense", [40, 210, DESK + 2], [40, 210, DESK + 95], 2);
-        tag(context, id + "incense", "E Incense stick (or ultrasonic mister)", color(0.45, 0.28, 0.15));
+        tag(context, id + "incense", "BUY | E Incense stick (or ultrasonic mister)", color(0.45, 0.28, 0.15));
         tubePath(context, id + "hose", [[40, 210, DESK + 136], [40, 210, 215], [100, 0, 215]], 6);
-        tag(context, id + "hose", "E Smoke hose (fed by tunnel suction, no blower)", SILICONE);
+        tag(context, id + "hose", "BUY | E Smoke hose (fed by tunnel suction, no blower)", SILICONE);
         blk(context, id + "clamp", [34, 204, 60], [46, 216, 72]);
-        tag(context, id + "clamp", "E Pinch clamp (sets smoke flow)", BLACK);
-    }, {});
+        tag(context, id + "clamp", "BUY | E Pinch clamp (sets smoke flow)", BLACK);
+
+        // ---------- Laser view: flat patterns of the PET sheets, then every laser part laid flat on beds ----------
+        if (definition.view == TunnelView.LASER)
+        {
+            const fid = id + "flat";
+            var px = [];
+            var pr = [];
+            var pq = [];
+            for (var k = 0; k <= 40; k += 1)
+            {
+                const t = k / 40;
+                const f = 6 * t ^ 5 - 15 * t ^ 4 + 10 * t ^ 3;
+                px = append(px, -378 + 378 * t);
+                pr = append(pr, (309 - 183 * f) / 2);   // half-height: bend curve of top/bottom, half-width of sides (- SH)
+                pq = append(pq, (412 - 244 * f) / 2);   // half-width: half-width of top/bottom, bend curve of sides
+            }
+            var qx = [];
+            var qr = [];
+            var qq = [];
+            for (var k = 0; k <= 30; k += 1)
+            {
+                const phi = (90 - 3 * k) * degree;
+                const d = 42 * (1 - cos(phi));
+                qx = append(qx, -633 - 63 * sin(phi));
+                qr = append(qr, 309 / 2 + d);
+                qq = append(qq, 412 / 2 + d);
+            }
+            var prS = [];
+            var qrS = [];
+            for (var k = 0; k < size(pr); k += 1)
+            {
+                prS = append(prS, pr[k] + SH);
+            }
+            for (var k = 0; k < size(qr); k += 1)
+            {
+                qrS = append(qrS, qr[k] + SH);
+            }
+            const pats = [
+                    [unroll(px, pr, pq), "A2 Contraction sheet top (flat pattern)"],
+                    [unroll(px, pr, pq), "A2 Contraction sheet bottom (flat pattern)"],
+                    [unroll(px, pq, prS), "A2 Contraction sheet left (flat pattern)"],
+                    [unroll(px, pq, prS), "A2 Contraction sheet right (flat pattern)"],
+                    [unroll(qx, qr, qq), "A1 Bell sheet top (flat pattern)"],
+                    [unroll(qx, qr, qq), "A1 Bell sheet bottom (flat pattern)"],
+                    [unroll(qx, qq, qrS), "A1 Bell sheet left (flat pattern)"],
+                    [unroll(qx, qq, qrS), "A1 Bell sheet right (flat pattern)"]
+                ];
+            for (var i = 0; i < size(pats); i += 1)
+            {
+                flatPoly(context, fid + ("p" ~ i), pats[i][0], SH);
+                L = append(L, lc(context, bodies(fid + ("p" ~ i)), "PET", pats[i][1], PET));
+            }
+            var keep = [];
+            for (var e in L)
+            {
+                keep = append(keep, e.q);
+            }
+            opDeleteBodies(context, fid + "del", { "entities" : qSubtraction(qCreatedBy(id, EntityType.BODY), qUnion(keep)) });
+            reportFeatureInfo(context, id, layFlat(context, fid + "lay", L, definition.bedX / millimeter, definition.bedY / millimeter));
+        }
+    }, { "view" : TunnelView.ASSEMBLED, "bedX" : 600 * millimeter, "bedY" : 400 * millimeter });

@@ -82,7 +82,9 @@ Build it from four 1 mm PET sheets bent over 7 plywood ribs, held in place by fo
 
 - **Ribs:** 6 mm frames (2 × 3 mm plywood) at s = 0, 76, 151, 189, 227, 302 and 378 mm, where s is measured from the contraction inlet. Make each **rib hole the figure-M2 size plus 2 × the sheet thickness plus 0.4 mm clearance**, with a 25 mm border. The contraction narrows by up to 1.4 mm across a 6 mm rib, so the CAD gives each 3 mm layer its own hole, sized at its upstream face; the sheet then rests on the layer edges. In the middle of each side, cut a half-lap slot 6 mm wide and 12.5 mm deep from the outer edge.
 - **Spines (4, each 2 × 3 mm plywood):** one on top and one underneath standing on the centreline, and one on each side lying flat at axis height. The inner edge follows the outside of the sheet; the outer edge is straight. At every rib, cut a 12.5 mm half-lap slot from the inner edge so spine and rib interlock like an egg crate.
-- **Spine ends:** run the spines 15 mm past the first rib and 8 mm past the last, so the end ribs also sit in closed slots. The upstream extension steps out over the settling-chamber wall; the downstream one steps out over sleeve 1.
+- **Spine ends:** run the spines 30 mm past the first rib and 8 mm past the last, so the end ribs also sit in closed slots. The upstream extension lies on the settling-chamber wall inside a notch in the joint collar; the downstream one steps out over sleeve 1.
+- **Joint to the settling chamber (joint collar):** rib 0's opening is only slightly smaller than the chamber, so it covers just 1.8 mm of the panels' end grain, which is not a joint. Build a collar of four 3 mm plywood strips (36 mm wide, x −414 to −378) with finger-jointed corners (three fingers each, like the chamber), so the collar is one rigid frame rather than four loose strips. Glue it around the outside of the chamber's outlet end, butting rib 0's upstream face. Each strip has a closed 6 mm notch the spine tab sits in, so each spine is glued on three sides. The strips stop 6 mm short of the static-tap ring at x = −420.
+- **Contraction prop:** both module 1 cradles are under the settling chamber, so without support the contraction and sleeve 1 (about 400 mm) would hang off that joint. A small pad (two 3 mm layers, 40 × 30 mm, T-nut in the lower layer) sits under the bottom spine at x −60 to −30, with two 12 mm cheeks glued to the sides of the spine, on one M6 levelling foot.
 - **Why spines:** the ribs drop into slots that are already evenly spaced and square, so nothing has to be aligned by hand.
 - **Assembly:** lay the bottom spine's straight edge on a flat board as the datum and push the ribs into its slots. Fit the side spines, then the top spine. Glue on the four sheets in the order bottom, sides, top, with hot glue along the rib-hole edges and spine edges. Seal the four corners from outside with tape or hot glue.
 - **Saving wood:** the spines are about 116 mm deep near the exit. You can cut large lightening holes in the middle, as long as both edges and all slots stay intact.
@@ -304,7 +306,7 @@ The tunnel splits into three modules that each stand on their own feet, carry by
 
 #### H1. Sleeves (the joints)
 
-Each sleeve is a rectangular collar of four 3 mm plywood strips glued into a frame, which the test section slides into.
+Each sleeve is a rectangular collar of four 3 mm plywood strips with finger-jointed corners (three fingers per corner), glued into one rigid frame, which the test section slides into.
 
 | | Sleeve 1 | Sleeve 2 |
 | --- | --- | --- |
@@ -323,19 +325,19 @@ The test section is 174 × 132 mm outside, leaving 0.3 mm clearance on each side
 
 In use, push the test section 20 mm into each sleeve, then wrap the seam with masking or aluminium tape. The tunnel runs below room pressure, so any gap sucks air in. If the fit is loose, put one layer of masking tape around each end of the test section.
 
-#### H2. Levelling feet (4 per module, 12 in total)
+#### H2. Levelling feet (4 per module plus the contraction prop, 13 in total)
 
 Each module stands on four M6 levelling feet with rubber pads, so it can match desks of slightly different height. Screw the feet into T-nuts pressed into the plywood, or into nuts glued underneath.
 
 | Module | Feet (x, y in mm) |
 | --- | --- |
-| 1 | Two wooden cradles under the settling chamber (x −600 and −480), feet at y ±165 |
+| 1 | Two wooden cradles under the settling chamber (x −600 and −480), feet at y ±165; plus the contraction prop's single foot (x −45, y 0) |
 | 2 | The four corners of the balance tray (x 95 / 265, y ±79), in T-nuts pressed into the plywood tray |
 | 3 | A wedge cradle under the middle of the diffuser (x 615, y ±85) and the fan-box cradle (x 1037, y ±110) |
 
 Level in this order:
 
-1. Level module 1; it is the reference.
+1. Level module 1 on its four cradle feet; it is the reference. Then screw the contraction prop's foot down until it just touches the desk, without lifting the contraction.
 2. Adjust module 2's feet until the test section slides into sleeve 1 without pushing up or down.
 3. Adjust module 3 until sleeve 2 slides on freely.
 
@@ -434,7 +436,7 @@ The low estimate fits NT$5,000 and the high one does not, so the low-cost route 
 | 1:43 diecast car | 80–450 | Checked: SHEIN Taiwan NT$77–445 |
 | 12/16 AWG wire, main fuse holder, emergency stop, 1000 µF capacitor, connectors, screws, hot glue | 200–400 | Estimate |
 | Hatch magnets, foam tape, microswitch; stop screws, lock nuts, heat-set inserts | 100–200 | Estimate |
-| Portability: 12 × M6 levelling feet, 2 transport-lock thumb screws, 2 pressure quick-connects | 150–300 | Estimate |
+| Portability: 13 × M6 levelling feet, 2 transport-lock thumb screws, 2 pressure quick-connects | 150–300 | Estimate |
 | **Total** | **4,660–9,750** | |
 
 To stay at NT$5,000, use an old PC power supply, a cheap car, and school tools and scrap wherever possible. If the order is still over budget, **cut speed sensor B first**: it saves NT$120–300 but loses the backup and cross-check. Speed sensor A and the calibration manometer cannot be cut.

@@ -87,8 +87,9 @@ function tag(context is Context, id is Id, name is string, c is Color)
 // Each entry must be exactly one body.
 function lc(context is Context, q is Query, mat is string, name is string, c is Color) returns map
 {
-    tagQ(context, q, (mat == "PET" ? "PET" : "LC3-" ~ mat) ~ " | " ~ name, c);
-    return { "q" : q, "m" : mat };
+    const full = (mat == "PET" ? "PET" : "LC3-" ~ mat) ~ " | " ~ name;
+    tagQ(context, q, full, c);
+    return { "q" : q, "m" : mat, "nm" : full };
 }
 
 // Same, for a part with openings that smaller parts can be nested in on the laser bed.
@@ -123,7 +124,8 @@ function ribHole(x is number) returns array
 }
 
 // Rectangular duct along x from four 3 mm panels with finger-jointed corners; inner w x h centred on (y 0, z zc).
-// Bodies id + "t", "b", "l", "r". Top and bottom own the end fingers.
+// Bodies id + "t", "b", "l", "r". Top and bottom own the end fingers. Fingers are about 20 mm long, and short
+// frames (collar, sleeves) still get at least 3 per corner so every corner interlocks.
 function boxPanels(context is Context, id is Id, x0 is number, x1 is number, w is number, h is number, zc is number)
 {
     const W = w / 2;
@@ -132,7 +134,7 @@ function boxPanels(context is Context, id is Id, x0 is number, x1 is number, w i
     blk(context, id + "b", [x0, -W - T, zc - H - T], [x1, W + T, zc - H]);
     blk(context, id + "l", [x0, W, zc - H - T], [x1, W + T, zc + H + T]);
     blk(context, id + "r", [x0, -W - T, zc - H - T], [x1, -W, zc + H + T]);
-    var n = round((x1 - x0) / 20);
+    var n = max(round((x1 - x0) / 20), 3);
     if (n % 2 == 0)
     {
         n += 1;
@@ -366,7 +368,7 @@ function flatInfo(context is Context, e is map) returns map
             holes = append(holes, [min(a[0], b[0]) - mn[0], min(a[1], b[1]) - mn[1], max(a[0], b[0]) - mn[0], max(a[1], b[1]) - mn[1]]);
         }
     }
-    return { "q" : q, "T0" : T0, "mn" : mn, "mx" : mx, "w" : mx[0] - mn[0], "h" : mx[1] - mn[1], "holes" : holes };
+    return { "q" : q, "T0" : T0, "mn" : mn, "mx" : mx, "w" : mx[0] - mn[0], "h" : mx[1] - mn[1], "holes" : holes, "nm" : e.nm };
 }
 
 // Move a part (flatInfo p) so its flat footprint starts at (px, py) on z = 0, turned 90 degrees if rot.
@@ -522,8 +524,7 @@ function layFlat(context is Context, id is Id, items is array, bedX is number, b
             const rot = p.h > p.w;
             placeFlat(context, id + ("t" ~ n), p, bx, Y0 + GAP, rot);
             n += 1;
-            const nm = getProperty(context, { "entity" : p.q, "propertyType" : PropertyType.NAME });
-            tagQ(context, p.q, nm ~ " [BIGGER THAN BED: split or cut elsewhere]", color(0.9, 0.1, 0.1));
+            tagQ(context, p.q, p.nm ~ " [BIGGER THAN BED: split or cut elsewhere]", color(0.9, 0.1, 0.1));
             bx += (rot ? p.h : p.w) + GAP;
             bigH = max(bigH, rot ? p.w : p.h);
         }
@@ -766,8 +767,8 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         }
 
         // Four spines, each two 3 mm plywood layers: inner edge = sheet outer surface curve, outer edge straight,
-        // so the ribs drop into the slots already spaced and squared. They run 15 mm past the inlet rib
-        // (stepping out over the settling chamber) and 8 mm past the exit rib (over sleeve 1).
+        // so the ribs drop into the slots already spaced and squared. They run 30 mm past the inlet rib
+        // (stepping out over the settling chamber, into a notch in the joint collar) and 8 mm past the exit rib (over sleeve 1).
         var vTop = [];
         var vBot = [];
         var vL = [];
@@ -786,13 +787,13 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         }
         const spines = [
                 { "nm" : "spT", "pts" : vTop, "vo" : ZC + 180.5, "ax" : 1, "label" : "A2 Spine top",
-                    "e" : [[[-393, -3, ZC + 157.5], [-378, 3, ZC + 180.5]], [[0, -3, ZC + 69.3], [8, 3, ZC + 180.5]]] },
+                    "e" : [[[-408, -3, ZC + 157.5], [-378, 3, ZC + 180.5]], [[0, -3, ZC + 69.3], [8, 3, ZC + 180.5]]] },
                 { "nm" : "spB", "pts" : vBot, "vo" : ZC - 180.5, "ax" : 1, "label" : "A2 Spine bottom (straight edge = assembly datum)",
-                    "e" : [[[-393, -3, ZC - 180.5], [-378, 3, ZC - 157.5]], [[0, -3, ZC - 180.5], [8, 3, ZC - 69.3]]] },
+                    "e" : [[[-408, -3, ZC - 180.5], [-378, 3, ZC - 157.5]], [[0, -3, ZC - 180.5], [8, 3, ZC - 69.3]]] },
                 { "nm" : "spL", "pts" : vL, "vo" : 232, "ax" : 2, "label" : "A2 Spine left",
-                    "e" : [[[-393, 209, ZC - 3], [-378, 232, ZC + 3]], [[0, 90.3, ZC - 3], [8, 232, ZC + 3]]] },
+                    "e" : [[[-408, 209, ZC - 3], [-378, 232, ZC + 3]], [[0, 90.3, ZC - 3], [8, 232, ZC + 3]]] },
                 { "nm" : "spR", "pts" : vR, "vo" : -232, "ax" : 2, "label" : "A2 Spine right",
-                    "e" : [[[-393, -232, ZC - 3], [-378, -209, ZC + 3]], [[0, -232, ZC - 3], [8, -90.3, ZC + 3]]] }
+                    "e" : [[[-408, -232, ZC - 3], [-378, -209, ZC + 3]], [[0, -232, ZC - 3], [8, -90.3, ZC + 3]]] }
             ];
         var spineQ = [];
         var spineEntries = [];
@@ -844,6 +845,16 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         {
             L = append(L, lc(context, e.q, "PLY", e.label, SPINE));
         }
+        // Joint collar: rib 0 only covers 1.8 mm of the chamber panels' end grain, so a frame of four 3 mm plywood strips
+        // with finger-jointed corners (3 fingers each) is glued around the outside of the chamber's outlet end, butting
+        // rib 0's upstream face. Each strip has a closed notch the spine tab sits in (glued on three sides).
+        // The collar stops at x = -414, clear of the static-tap ring at x = -420.
+        boxPanels(context, id + "col", -414, -378, 418, 315, ZC);
+        cut(context, id + "colc", bodies(id + "col"), qUnion(spineQ), true);
+        for (var j = 0; j < 4; j += 1)
+        {
+            L = append(L, lc(context, bodies(id + "col" + wallNames[j]), "PLY", "A2 Joint collar strip " ~ wallLabels[j] ~ " (chamber to rib 0, notched for spine)", WOOD));
+        }
 
         // ---------- A3 test section 168 x 126 x 336: flat 3 mm clear acrylic panels (laser-cut, solvent-glued) ----------
         // The side panels run down past the floor at x 87..273 and form the side walls of the balance box (C),
@@ -888,17 +899,14 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         fuse(context, id + "hSwF", qUnion([bodies(id + "hSw"), bodies(id + "hSwL")]));
         tagQ(context, qUnion([bodies(id + "hSw"), bodies(id + "hSwL")]), "BUY | D Hatch microswitch (cover tab presses lever; fans off when lifted)", BLACK);
 
-        // ---------- H1 slip-joint sleeves: four 3 mm plywood strips each (0.3 mm clearance; tape the seam) ----------
+        // ---------- H1 slip-joint sleeves: four 3 mm plywood strips each, finger-jointed corners (0.3 mm clearance; tape the seam) ----------
         const sleeves = [[0, 20, "H1 Sleeve 1 (glued to last contraction rib)"], [316, 336, "H1 Sleeve 2 (glued to the diffuser flange)"]];
         for (var i = 0; i < 2; i += 1)
         {
             const x0 = sleeves[i][0];
             const x1 = sleeves[i][1];
             const sid = id + ("sl" ~ (i + 1));
-            blk(context, sid + "t", [x0, -90.3, ZC + 66.3], [x1, 90.3, ZC + 69.3]);
-            blk(context, sid + "b", [x0, -90.3, ZC - 69.3], [x1, 90.3, ZC - 66.3]);
-            blk(context, sid + "l", [x0, 87.3, ZC - 66.3], [x1, 90.3, ZC + 66.3]);
-            blk(context, sid + "r", [x0, -90.3, ZC - 66.3], [x1, -87.3, ZC + 66.3]);
+            boxPanels(context, sid, x0, x1, 174.6, 132.6, ZC);
             for (var j = 0; j < 4; j += 1)
             {
                 L = append(L, lc(context, bodies(sid + wallNames[j]), "PLY", sleeves[i][2] ~ " strip " ~ wallLabels[j], WOOD));
@@ -1181,6 +1189,18 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             feet3 = append(feet3, bodies(id + ("f3t" ~ i)));
         }
         tagQ(context, qUnion(feet1), "BUY | H2 Module 1 levelling feet M6 x4", DARK);
+        // Contraction prop: both module 1 cradles are under the settling chamber, so without this the contraction and
+        // sleeve 1 hang off the chamber joint. Pad (two layers, T-nut in layer 1) with two cheeks glued to the sides of
+        // the bottom spine; its M6 foot is screwed down to just touch the desk after module 1 is levelled on its 4 feet.
+        lam(context, id + "prop" + "pad", [-60, -20, ZC - 186.5], [-30, 20, ZC - 180.5], 2);
+        blk(context, id + "prop" + "cl", [-60, 3, ZC - 180.5], [-30, 6, ZC - 168.5]);
+        blk(context, id + "prop" + "cr", [-60, -6, ZC - 180.5], [-30, -3, ZC - 168.5]);
+        L = append(L, lc(context, bodies(id + "prop" + "pad" + "a"), "PLY", "H2 Module 1 contraction prop pad layer 1 of 2 (T-nut for foot)", WOOD));
+        L = append(L, lc(context, bodies(id + "prop" + "pad" + "b"), "PLY", "H2 Module 1 contraction prop pad layer 2 of 2", WOOD));
+        L = append(L, lc(context, bodies(id + "prop" + "cl"), "PLY", "H2 Module 1 contraction prop cheek left (glued to bottom spine)", WOOD));
+        L = append(L, lc(context, bodies(id + "prop" + "cr"), "PLY", "H2 Module 1 contraction prop cheek right (glued to bottom spine)", WOOD));
+        levelFoot(context, id + "f1p", -45, 0, ZC - 183.5);
+        tag(context, id + "f1p", "BUY | H2 Module 1 prop foot M6 (set after levelling)", DARK);
         tagQ(context, qUnion(feet3), "BUY | H2 Module 3 levelling feet M6 x4", DARK);
 
         const desks = [[-715, 185], [185, 1085]];

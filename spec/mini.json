@@ -88,7 +88,9 @@
       { "x": [316, 336], "on": "3 mm plywood flange around the diffuser inlet (x 336-339)", "over": "test-section outlet" }
     ],
     "sleeve_t": 3, "sleeve_clearance": 0.3, "sleeve_seal": "tape the seam after assembly (tunnel runs below room pressure)",
-    "levelling_feet": { "per_module": 4, "thread": "M6", "pad_d": 18 },
+    "levelling_feet": { "per_module": 4, "extra": "1 under the contraction prop (x -45, y 0), set after module 1 is levelled", "thread": "M6", "pad_d": 18 },
+    "chamber_joint": { "collar": "4 x 3 mm plywood strips on the chamber outside, x -414..-378, butting rib 0; closed 6 mm notches for the spine tabs", "spine_tab_upstream_mm": 30 },
+    "contraction_prop": { "x": [-60, -30], "pad": "2 x 3 mm plywood, 40 x 30, T-nut", "cheeks": "2 x 3 mm plywood, 30 x 12, glued to the bottom spine", "feet": 1 },
     "transport_lock": { "x": 200, "screws": 2, "clamps": ["common frame (z -11), one M4 thumb screw from each side"], "rule": "tighten for transport; back out fully and check clearance before measuring" },
     "electronics_board": { "x": [190, 390], "y": [-295, -155], "holds": "Uno, 3 x HX711, sensor B canisters, tees, connector strip, 2 pressure quick-connects" },
     "sensor_A_transport": "pour the oil back into its bottle; carry the bell separately; refill to the 45 mm mark"
@@ -250,7 +252,7 @@
       { "item": "1:43 diecast car", "low": 80, "high": 450, "basis": "SHEIN Taiwan NT$77-445" },
       { "item": "12/16 AWG wire, main fuse holder, E-stop, 1000 uF capacitor, connectors, screws, glue", "low": 200, "high": 400, "basis": "estimate" },
       { "item": "hatch magnets, foam tape, microswitch; stop screws (M4, M3), lock nuts, heat-set inserts", "low": 100, "high": 200, "basis": "estimate" },
-      { "item": "portable: 12 x M6 levelling feet, 2 thumb screws (transport lock), 2 pressure quick-connects", "low": 150, "high": 300, "basis": "estimate" }
+      { "item": "portable: 13 x M6 levelling feet, 2 thumb screws (transport lock), 2 pressure quick-connects", "low": 150, "high": 300, "basis": "estimate" }
     ],
     "first_cut_if_over": "skip speed sensor B (saves NT$120-300); then the cheapest fans and a free ATX PSU"
   }

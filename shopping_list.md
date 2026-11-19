@@ -101,7 +101,7 @@ The decision rule is in the plan, "D2. Home-made speed sensors". Normally **do n
 | Stop and balance screws | M4 × 25 pan-head screw + M4 lock nut + M4 heat-set insert (down-stop); 2 × M3 × 16 screw + 2 M3 lock nuts (fore-aft stops); M3/M4 screws for the load cells, bracket and frame | `M4 熱熔螺母`, `M3 螺絲 不鏽鋼` | (as above) | Estimate | Check the load cells' thread size when they arrive |
 | 1:43 car | **Closed body**, ordinary saloon or hatchback, ×1 | `1:43 合金 模型車` | 80–450 | Checked (SHEIN Taiwan NT$77–445) | Wheels must turn freely, length about 100–110 mm; measure it after buying and update the spec |
 | V-saddles | 4, 3D-printed (PETG) | — | 0 | School printer | |
-| Portability parts | 12 × M6 levelling feet (with rubber pads) and T-nuts, 2 × M4 thumb screws with nuts or inserts (transport lock), 2 × Ø4 mm tube quick-connects | `M6 調整腳 橡膠`, `手轉螺絲 M4`, `4mm 快速接頭` | 150–300 | Estimate | The feet's thread must fit the T-nuts in the cradles and the balance tray |
+| Portability parts | 13 × M6 levelling feet (with rubber pads) and T-nuts, 2 × M4 thumb screws with nuts or inserts (transport lock), 2 × Ø4 mm tube quick-connects | `M6 調整腳 橡膠`, `手轉螺絲 M4`, `4mm 快速接頭` | 150–300 | Estimate | The feet's thread must fit the T-nuts in the cradles and the balance tray |
 
 ### E. Borrow (not budgeted)
 

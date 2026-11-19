@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
 <title id="title">Speed sensor calibration</title>
-<desc id="desc">A syringe makes the pressure difference; a 1:10 inclined water manometer is the reference for the bell manometer and the barometer pair.</desc>
+<desc id="desc">A syringe makes the pressure difference; a 1:10 inclined water manometer is the reference for the barometer pair.</desc>
 <defs>
 <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" fill="#6b7280"/></marker>
 <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#187c91"/></marker>
@@ -38,7 +38,7 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 </style></defs>
 <rect width="1400" height="760" rx="14" fill="#fafcfd"/>
 <text x="32.0" y="42.0" class="t" text-anchor="start" >Figure M8  Bench calibration of the speed sensors (fans off)</text>
-<text x="32.0" y="66.0" class="st" text-anchor="start" >Pull the syringe slowly → manometer reading L → Δp = ρ g L / 10 ≈ 0.98 Pa/mm; record A and B at the same time</text>
+<text x="32.0" y="66.0" class="st" text-anchor="start" >Pull the syringe slowly → manometer reading L → Δp = ρ g L / 10 ≈ 0.98 Pa/mm; record the barometers at the same time</text>
 <rect x="60.0" y="250.0" width="200.0" height="50.0" class="shell" rx="6"/>
 <rect x="260.0" y="265.0" width="40.0" height="20.0" class="solid" />
 <rect x="20.0" y="262.0" width="60.0" height="26.0" class="solid" />
@@ -47,16 +47,13 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <line x1="300.0" y1="275.0" x2="373.0" y2="275.0" class="c2" />
 <text x="380.0" y="255.0" class="n" text-anchor="middle" >Tee</text>
 <path d="M380,282 L380,420 L470,420" class="c2" />
-<path d="M387,275 L700,275" class="c2" />
-<circle cx="700.0" cy="275.0" r="7.0" class="c2" />
-<path d="M700,268 L700,170 L900,170" class="c2" />
-<path d="M707,275 L900,275" class="c2" />
-<rect x="900.0" y="140.0" width="220.0" height="60.0" class="shell" rx="6" style="fill:#fef9c3"/>
-<text x="1010.0" y="176.0" class="l" text-anchor="middle" >Inside A's bell (low port)</text>
+<path d="M387,275 L900,275" class="c2" />
 <rect x="900.0" y="245.0" width="220.0" height="60.0" class="shell" rx="6" style="fill:#dcfce7"/>
-<text x="1010.0" y="281.0" class="l" text-anchor="middle" >B low canister</text>
-<text x="1140.0" y="165.0" class="n" text-anchor="start" >A's box air and B's high canister:</text>
-<text x="1140.0" y="183.0" class="n" text-anchor="start" >open to room (high ports free)</text>
+<text x="1010.0" y="281.0" class="l" text-anchor="middle" >Low canister (0x76)</text>
+<rect x="900.0" y="140.0" width="220.0" height="60.0" class="shell" rx="6" style="fill:#fee2e2"/>
+<text x="1010.0" y="176.0" class="l" text-anchor="middle" >High canister (0x77)</text>
+<text x="1140.0" y="165.0" class="n" text-anchor="start" >Open to the room</text>
+<text x="1140.0" y="183.0" class="n" text-anchor="start" >(high port left free)</text>
 <line x1="470.0" y1="600.0" x2="1027.2" y2="544.3" class="shell0" style="stroke-width:10;stroke:#e5e7eb"/>
 <line x1="470.0" y1="600.0" x2="1027.2" y2="544.3" class="c1" />
 <rect x="430.0" y="570.0" width="50.0" height="60.0" class="pc" style="fill:#bfdbfe"/>
@@ -80,8 +77,8 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <text x="900.0" y="380.0" class="n" text-anchor="start" >Steps</text>
 <text x="900.0" y="399.0" class="n" text-anchor="start" >1. Pinch the syringe tube 60 s: change &lt; 0.5 Pa (leak test)</text>
 <text x="900.0" y="418.0" class="n" text-anchor="start" >2. Vertical water 0 → 2 → 5 → 10 → 15 → 20 mm (0–200 mm along the tube)</text>
-<text x="900.0" y="437.0" class="n" text-anchor="start" >   hold 10 s per point, record L, A, B; then step back to 0</text>
-<text x="900.0" y="456.0" class="n" text-anchor="start" >3. Repeat 3 times; A's slope = effective area (write to the spec)</text>
+<text x="900.0" y="437.0" class="n" text-anchor="start" >   hold 10 s per point, record L and the barometers; then step back to 0</text>
+<text x="900.0" y="456.0" class="n" text-anchor="start" >3. Repeat 3 times; slope = gain correction (write to the spec)</text>
 <text x="900.0" y="475.0" class="n" text-anchor="start" >4. Pass: linearity ≤ 0.5 Pa or 1.0%</text>
-<text x="900.0" y="494.0" class="n" text-anchor="start" >   hysteresis ≤ 0.5 Pa; A vs B ≤ 1.0 Pa or 2.0%</text>
+<text x="900.0" y="494.0" class="n" text-anchor="start" >   hysteresis ≤ 0.5 Pa; drift ≤ 2.0 Pa within 2 min of zeroing</text>
 </svg>

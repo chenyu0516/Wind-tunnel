@@ -125,7 +125,7 @@ def test_fans_reach_target_speed():
     op = mc.operating_point(1.0)
     assert op["U"] >= G["speeds_m_s"]["max_target"], f"top speed {op['U']:.1f} m/s"
     watch(op["U"] >= 1.1 * G["speeds_m_s"]["max_target"],
-          f"WATCH top speed {op['U']:.1f} m/s has < 10 % margin over target; series stacking factor is an assumption")
+          f"WATCH top speed {op['U']:.1f} m/s has < 10 % margin over target; the system loss is an estimate (fallback: stronger fans)")
 
 
 def test_min_speed_controllable():
@@ -165,36 +165,21 @@ def test_vertical_cell_capacity():
 def test_uno_pins():
     pins = G["electronics"]["pins"]
     assert len(pins) == len(set(pins)), "duplicate pin"
-    assert "fan PWM" in pins["D9"] and "fan PWM" in pins["D10"], \
-        "one Timer1 pin per fan layer (D9, D10): same frequency, and each pin drives only one module"
+    assert "fan PWM" in pins["D9"], "fan PWM on D9 (Timer1)"
+    assert "D10" not in pins, "D10 shares Timer1 with D9; keep it free (one fan layer, one board)"
     assert "D3" not in pins or "tach" not in pins["D3"], "QFR fans have no tach wire"
     assert "SDA" in pins["A4"] and "SCL" in pins["A5"]
 
 
-def test_speed_sensor_A_bell():
-    b = mc.bell()
-    assert b["load_max_g"] <= 0.8 * b["cap_g"], f"bell load {b['load_max_g']:.0f} g too close to the {b['cap_g']:.0f} g cell"
-    assert b["net_g"] > 0, "bell must hang in tension (net weight > 0)"
-    assert b["immersion"] >= 1.5 * b["dh_max_mm"], "rim not deep enough: liquid inside the bell moves by the full dp"
-    assert b["tip_mm"] >= b["dh_max_mm"] + 10, "snorkel tip would be flooded at max dp"
-    assert b["tip_mm"] <= b["headroom_mm"] - 5, "snorkel tip must stay below the bell top"
-    assert b["liquid_depth"] >= b["immersion"] + b["rim_gap"], "dish too shallow for the immersion"
-    assert mc.speed_error(G["speeds_m_s"]["min"], "A") <= 0.02, "bell resolution too coarse at minimum speed"
-
-
-def test_speed_sensor_B_backup():
+def test_speed_sensor_barometer_pair():
     ss = G["electronics"]["speed_sensor"]
     e = mc.baro_pair_error_pa()
-    assert mc.speed_error(G["speeds_m_s"]["coefficient_grade_min"], "B") <= 0.02
-    addr = ss["B_barometer_pair"]["i2c_addresses"] + ["0x27"]
+    assert mc.speed_error(G["speeds_m_s"]["coefficient_grade_min"]) <= 0.02
+    addr = ss["barometer_pair"]["i2c_addresses"] + ["0x27"]
     assert len(addr) == len(set(addr)), "I2C address clash"
-    e_min = mc.speed_error(G["speeds_m_s"]["min"], "B")
-    watch(e_min <= 0.03, f"WATCH backup sensor B: +-{e:.1f} Pa after zeroing -> +-{e_min*100:.1f} % speed at {G['speeds_m_s']['min']} m/s")
-
-
-def test_speed_sensor_pins():
-    pins = G["electronics"]["pins"]
-    assert "HX711 #3" in pins["A0"] and "HX711 #3" in pins["A1"]
+    assert "A_bell_manometer" not in ss and "tee" not in ss["plumbing"].replace("no tees", ""), "barometers only, straight runs"
+    e_min = mc.speed_error(G["speeds_m_s"]["min"])
+    watch(e_min <= 0.03, f"WATCH barometer pair: +-{e:.1f} Pa after zeroing -> +-{e_min*100:.1f} % speed at {G['speeds_m_s']['min']} m/s")
 
 
 def test_power_supply():

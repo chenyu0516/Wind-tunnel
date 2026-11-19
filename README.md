@@ -4,21 +4,21 @@ A desk-sized, open-return suction wind tunnel for measuring the drag and downfor
 
 ![Side and top view of the mini tunnel, to scale](figures/en/M1-airpath.svg)
 
-**Status (November 2026): design stage.** Nothing is built yet. The fans are chosen (8 × Delta QFR1212GHE), pending a one-fan test, and the car dimensions are estimates until the model car is bought and measured. Every number below is a design target, not a measured result.
+**Status (November 2026): design stage.** Nothing is built yet. The fans are chosen (4 × Delta QFR1212GHE in one layer), pending a one-fan test, and the car dimensions are estimates until the model car is bought and measured. Every number below is a design target, not a measured result.
 
 ## At a glance
 
 | | |
 | --- | --- |
-| Duct length | 1.78 m in three carry-sized modules joined by slip-on sleeves (needs about 3.1 m of straight floor space including inlet and exhaust clearance) |
+| Duct length | 1.74 m in three carry-sized modules joined by slip-on sleeves (needs about 3.0 m of straight floor space including inlet and exhaust clearance) |
 | Test section | 168 × 126 × 336 mm, laser-cut 3 mm clear acrylic, car hatch in the roof |
 | Contraction | 6:1 |
-| Air speed | 5–14 m/s (class demo at 10 m/s; coefficient-grade data from 12 m/s up) |
-| Drive | 8 × 120 mm 12 V fans (2 × 2, two layers deep), closed-loop speed control on measured dynamic pressure |
+| Air speed | 5–14 m/s (class demo at 10 m/s; coefficient-grade data from 12 m/s up; about 14.8 m/s top speed on paper, a thin margin) |
+| Drive | 4 × 120 mm 12 V fans (2 × 2, one layer), closed-loop speed control on measured dynamic pressure |
 | Force balance | 100 g drag and 1 kg vertical load cells bolted in series (no slide), in a sealed box under the test section; about 1 mN (0.1 gf) resolution |
-| Speed sensing | Home-made: (A) a bell manometer on a load cell, primary; (B) a pair of BMP280 barometers, backup |
-| Controller | Arduino Uno + 3 × HX711 |
-| Budget | ≤ NT$5,000 (current estimate NT$4,660–9,750; see the shopping list for the low-cost route) |
+| Speed sensing | Home-made: a pair of BMP280 barometers on the wall pressure taps |
+| Controller | Arduino Uno + 2 × HX711 |
+| Budget | ≤ NT$5,000 (current estimate NT$3,280–7,200; see the shopping list for the low-cost route) |
 
 The geometry is the earlier 1:18 design scaled by 0.42, with three changes: computer fans in place of an industrial fan, fixed V-shaped wheel saddles in place of rollers, and 3 mm panels. Every part is cut on a 3 mm laser cutter or 3D-printed; the CAD has a flat "laser sheets" view for DXF export.
 
@@ -59,14 +59,14 @@ After changing `spec/mini.json` (for example, after measuring the car), run the 
 
 ## Arduino
 
-[arduino/fan_pwm_test/fan_pwm_test.ino](arduino/fan_pwm_test/fan_pwm_test.ino) is a one-fan go/no-go test to run before buying all eight fans. It checks whether a cheap 2-wire fan (Delta QFR1212GHE), switched by a MOSFET from the Uno, can be speed-controlled smoothly from 30 % to 100 %. Wiring, Serial Monitor commands (115200 baud), and pass criteria are in the comment at the top of the sketch. If the test fails, the fallback is 4 × PFC1212DE (4-wire PWM).
+[arduino/fan_pwm_test/fan_pwm_test.ino](arduino/fan_pwm_test/fan_pwm_test.ino) is a one-fan go/no-go test to run before buying all four fans. It checks whether a cheap 2-wire fan (Delta QFR1212GHE), switched by a MOSFET from the Uno, can be speed-controlled smoothly from 30 % to 100 %. Wiring, Serial Monitor commands (115200 baud), and pass criteria are in the comment at the top of the sketch. If the test fails, the fallback is 4 × PFC1212DE (4-wire PWM).
 
 The main control sketch (speed PID, automatic zero/ramp/settle/capture/re-zero sequence, CSV logging over USB, hatch interlock) is not written yet. The pin map is in `spec/mini.json` and figure M5.
 
 ## Safety notes
 
-- The eight fans draw 14.4 A rated and up to 21.6 A at 12 V. Use a supply of at least 25 A, the 30 A fuse and the wire gauges given in the build plan.
-- Fan speed is set by two 4-channel MOSFET boards switching the fans' 12 V, one channel per fan. Their opto-isolated inputs keep the fans off while the Uno resets. Each fan has its own 5 A fuse. A hardware E-stop cuts the 12 V independently of the sketch.
+- The four fans draw 7.2 A rated and up to 10.8 A at 12 V. Use a supply of at least 12 A, the 15 A fuse and the wire gauges given in the build plan.
+- Fan speed is set by one 4-channel MOSFET board switching the fans' 12 V, one channel per fan. Their opto-isolated inputs keep the fans off while the Uno resets. Each fan has its own 5 A fuse. A hardware E-stop cuts the 12 V independently of the sketch.
 - Fit a metal guard on the fan outlet, and do not point the exhaust at people.
 
 ## Repository layout

@@ -40,7 +40,7 @@ python3 tools/make_mini_figures.py  # regenerate figures after any spec change
 - Fans: one shared 25 kHz PWM signal on D9 (Timer1); leave D10 unused. Fan 12 V never comes from the Uno; all grounds common.
 - Hardware E-stop cuts 12 V independently of the sketch; the hatch interlock (D8) also forces PWM to 0 in software.
 - PWM 0 % does NOT stop 4-wire fans (PFC1212DE idles at 1,550 rpm, ~4.8 m/s) and an open PWM line means full speed: stopping must cut the fans' 12 V (pin assignment pending the fan decision).
-- Speed sensors: A (bell manometer, HX711 #3 on A0/A1) is primary; B (2 x BMP280, I2C 0x76/0x77) is teed to the same taps as backup and cross-check; C (buy ABP2) only if both fail. Follow `speed_sensor.fallback_rule`. Zero both with the fans off before every run.
+- Speed sensor: 2 x BMP280 (I2C 0x76 low side, 0x77 high side), one straight tube per side from the wall rings, no tees; C (buy ABP2) only if it fails. Follow `speed_sensor.fallback_rule`. Zero with the fans off before every run.
 - Bell must be a straight cylinder (a tapered cup changes area as the inner liquid level moves); lower pressure goes inside the bell; load cell bracket on the box floor, never the lid.
 - After bench calibration, replace the planning bell area with the measured slope (add `effective_area_m2_measured`).
 

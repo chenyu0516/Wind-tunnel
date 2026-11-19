@@ -2,14 +2,14 @@
 
 **A desk-top suction wind tunnel that measures drag and downforce on a 1:43 model car to about 1 mN (0.1 gram-force) at 12–14 m/s, built for NT$5,000 or less.**
 
-The duct is about 1.8 m long and splits into three modules that one person can carry to a classroom and set up on desks. An Arduino Uno runs everything: eight 12 V computer fans, the force balance, two home-made speed sensors and the data log. It is the full 1:18 design scaled down by 0.42, with the same principles: suction (fan downstream), a 6:1 contraction, a sealed balance, and zeroing before and after every measurement. The balance now uses two load cells bolted in series with no slide (C), and every part is cut on a 3 mm laser cutter or 3D-printed.
+The duct is about 1.8 m long and splits into three modules that one person can carry to a classroom and set up on desks. An Arduino Uno runs everything: four 12 V computer fans, the force balance, a home-made barometer-pair speed sensor and the data log. It is the full 1:18 design scaled down by 0.42, with the same principles: suction (fan downstream), a 6:1 contraction, a sealed balance, and zeroing before and after every measurement. The balance now uses two load cells bolted in series with no slide (C), and every part is cut on a 3 mm laser cutter or 3D-printed.
 
 Related files:
 
 - Full 1:18 design (reference only): [archive/full_1to18/build_plan.md](archive/full_1to18/build_plan.md)
 - Research method (paper format): [model.md](model.md)
 - Parts list and prices: [shopping_list.md](shopping_list.md)
-- Exact numbers: [spec/mini.json](spec/mini.json); recompute with `python3 tools/mini_calc.py`, check with `python3 tools/test_mini.py` (24 checks)
+- Exact numbers: [spec/mini.json](spec/mini.json); recompute with `python3 tools/mini_calc.py`, check with `python3 tools/test_mini.py` (22 checks)
 - 3D model: [cad/mini_tunnel.fs](cad/mini_tunnel.fs) (Onshape FeatureScript)
 - Earlier Traditional Chinese plan (frozen): [build_plan_mini.zh-TW.md](build_plan_mini.zh-TW.md)
 
@@ -38,7 +38,7 @@ The air path runs in a straight line from the inlet bell to the fan box, as figu
 
 ![Mini tunnel overview: side and top views, to scale.](figures/en/M1-airpath.svg)
 
-The duct is 1,782 mm long from the front of the inlet bell to the fan-box outlet. With 0.4 m clear in front of the inlet and 0.8 m behind the exhaust, it needs about 3.1 m of straight space. Never point the exhaust at people. The tunnel splits into three modules (see H).
+The duct is 1,744 mm long from the front of the inlet bell to the fan-box outlet. With 0.4 m clear in front of the inlet and 0.8 m behind the exhaust, it needs about 3.0 m of straight space. Never point the exhaust at people. The tunnel splits into three modules (see H).
 
 Coordinates are the same in this plan, the spec and the CAD: x runs downstream, y to the left looking downstream, z up. x = 0 is the contraction exit and z = 0 is the inside of the test-section floor.
 
@@ -59,7 +59,7 @@ Every CAD part name starts with how the part is made, then this plan's section c
   - Every laser part and every PET flat pattern is laid flat and packed onto bed-sized outlines, one row of beds per material (acrylic, plywood, PET).
   - Select the top faces of one bed and export them as DXF. Leave kerf compensation to the laser software.
   - Enter the real bed size in the feature. Parts bigger than the bed turn red and are set to the right of their row.
-  - Smaller parts are nested inside the openings of the ribs, screen frames and hatch. At the default 600 × 400 mm bed this gives 3 acrylic beds, 14 plywood beds (plus the 4 diffuser panels, which are too long) and 3 PET beds (plus the 2 contraction top/bottom sheets).
+  - Smaller parts are nested inside the openings of the ribs, screen frames and hatch. At the default 600 × 400 mm bed this gives 3 acrylic beds, 16 plywood beds (plus the 4 diffuser panels, which are too long) and 3 PET beds (plus the 2 contraction top/bottom sheets).
 - **Printed parts:** export each 3DP part as STL from the Assembled view.
 
 ## Components
@@ -84,7 +84,10 @@ Build it from four 1 mm PET sheets bent over 7 plywood ribs, held in place by fo
 - **Spines (4, each 2 × 3 mm plywood):** one on top and one underneath standing on the centreline, and one on each side lying flat at axis height. The inner edge follows the outside of the sheet; the outer edge is straight. At every rib, cut a 12.5 mm half-lap slot from the inner edge so spine and rib interlock like an egg crate.
 - **Spine ends:** run the spines 30 mm past the first rib and 8 mm past the last, so the end ribs also sit in closed slots. The upstream extension lies on the settling-chamber wall inside a notch in the joint collar; the downstream one steps out over sleeve 1.
 - **Joint to the settling chamber (joint collar):** rib 0's opening is only slightly smaller than the chamber, so it covers just 1.8 mm of the panels' end grain, which is not a joint. Build a collar of four 3 mm plywood strips (36 mm wide, x −414 to −378) with finger-jointed corners (three fingers each, like the chamber), so the collar is one rigid frame rather than four loose strips. Glue it around the outside of the chamber's outlet end, butting rib 0's upstream face. Each strip has a closed 6 mm notch the spine tab sits in, so each spine is glued on three sides. The strips stop 6 mm short of the static-tap ring at x = −420.
-- **Contraction prop:** both module 1 cradles are under the settling chamber, so without support the contraction and sleeve 1 (about 400 mm) would hang off that joint. A small pad (two 3 mm layers, 40 × 30 mm, T-nut in the lower layer) sits under the bottom spine at x −60 to −30, with two 12 mm cheeks glued to the sides of the spine, on one M6 levelling foot.
+- **Contraction prop:** both module 1 cradles are under the settling chamber, so without support the contraction and sleeve 1 (about 400 mm) would hang off that joint. The prop is held on mechanically, not by glue alone:
+  - **Pad:** two 3 mm plywood layers, 48 × 30 mm, under the bottom spine at x −60 to −30.
+  - **Cheeks:** two 30 × 20 mm plywood pieces, glued to the pad and to both sides of the bottom spine, and clamped through the spine by one M3 × 20 bolt and nut. The 3.2 mm holes in the cheeks and the spine are laser-cut.
+  - **Foot:** a bought M6 levelling foot, the same as the other twelve, screwed into a T-nut pressed into the pad from below (H2). It sits 12 mm to the side of the spine so the T-nut barrel clears it. A printed foot is not worth it: the bought one is adjustable and has a rubber pad.
 - **Why spines:** the ribs drop into slots that are already evenly spaced and square, so nothing has to be aligned by hand.
 - **Assembly:** lay the bottom spine's straight edge on a flat board as the datum and push the ribs into its slots. Fit the side spines, then the top spine. Glue on the four sheets in the order bottom, sides, top, with hot glue along the rib-hole edges and spine edges. Seal the four corners from outside with tape or hot glue.
 - **Saving wood:** the spines are about 116 mm deep near the exit. You can cut large lightening holes in the middle, as long as both edges and all slots stay intact.
@@ -104,27 +107,29 @@ The top and bottom sheets fit between the side sheets. Add 2 × the sheet thickn
 
 The step from the contraction exit into the test section must be **≤ 0.3 mm and backward-facing only**. The downstream wall may sit slightly outward, never into the flow.
 
-**A3. Test section.** The test section is four laser-cut 3 mm clear acrylic panels joined with acrylic solvent cement.
+**A3. Test section.** The test section is four laser-cut 3 mm clear acrylic panels: the floor and the two side walls are finger-jointed and solvent-glued; the roof rests on top and is taped.
 - **Panels:** each side panel is one piece with the balance-box wall below the floor (C). The 1 mm static taps (entrance ring at x = 30 and the side-wall taps) are cut by the laser, square to the wall.
 - **Why acrylic:** polycarbonate cannot be laser-cut cleanly. Acrylic is stiffer, so the roof sags less (under 0.23 mm at 14 m/s), but it is more brittle. Glue it with solvent cement, not superglue, and keep screws away from the edges.
-- **Roof:** it has the car hatch (H4). It is taped, not glued, so it can be hinged at the inlet end and shimmed up 0–6 mm at the outlet end to flatten the streamwise pressure gradient.
-- **Joints:** the inlet end slides 20 mm into sleeve 1 on the contraction; the outlet end slides 20 mm into sleeve 2, which is glued to a 3 mm plywood flange around the diffuser inlet (see H1). The entrance pressure taps (D2) therefore sit at x = 30 mm, just clear of sleeve 1.
+- **Floor to walls: finger joints.** Both long edges of the floor are finger-jointed into the side walls, 17 fingers of about 20 mm per side, with the walls owning the two end fingers. Under the balance box, where a wall continues down, the floor's fingers pass through slots in the wall. The fingers square the panels while you glue, and the inside surface stays flush. Hold the three panels square on a flat board, then run capillary solvent cement (Weld-On 4 type, `壓克力膠水`) along every joint with a needle bottle; it wicks into the fingers. Glue the two balance-box end walls the same way.
+- **Roof: rests on the wall tops.** The walls stop at the inside roof height (z = 126 mm), and the 174 mm wide roof sits on their top edges, flush with their outer faces. It is not glued: it is hinged at the inlet end with tape and can be shimmed up 0–6 mm at the outlet end to flatten the streamwise pressure gradient. Raising it opens only a thin wedge along the top edges, which tape seals; a roof sitting between the walls would leave open slots along both sides. Four 30 mm acrylic locators glued to the outside of the walls (x = 40–70 and 280–310) keep it centred; the outlet pair stands 6 mm higher so it still locates a shimmed roof. The roof carries the car hatch (H4).
+- **Sleeves:** the inlet end slides 20 mm into sleeve 1 on the contraction; the outlet end slides 20 mm into sleeve 2, which is glued to a 3 mm plywood flange around the diffuser inlet (see H1). The entrance pressure taps (D2) therefore sit at x = 30 mm, just clear of sleeve 1.
 
 ![Test section: side and top views with ground plate, car, Pitot tube, pressure taps, survey points, balance box and car hatch.](figures/en/M3-test-section.svg)
 
 **A4. Diffuser.** The diffuser slows the air from 168 × 126 to 240 × 240, exactly the size of the 2 × 2 fan array. It is four flat trapezoid panels, so nothing needs bending. Its equivalent cone half-angle is 4.7°, below the 5° limit where flow starts to separate. A safety mesh with 5–10 mm openings (7 mm in the CAD) is glued to a 3 mm plywood frame between the diffuser and the fan box (x = 986–989). The panels are about 652 mm long, which is longer than a 600 mm laser bed. Either cut them on a bigger bed or cut each in two and join the halves with a glued splice plate on the outside.
 
-**A5. Fans.** The tunnel uses **eight Delta QFR1212GHE fans** (120 × 120 × 38 mm, 12 V, 2-wire), in a 2 × 2 array stacked two deep. The fan box is 240 × 240 inside and 97 mm long (x = 989–1086), made of four finger-jointed 3 mm plywood panels. The first layer sits at x = 998–1036 and the second directly behind it at x = 1036–1074.
+**A5. Fans.** The tunnel uses **four Delta QFR1212GHE fans** (120 × 120 × 38 mm, 12 V, 2-wire) in one 2 × 2 layer. The fan box is 240 × 240 inside and 59 mm long (x = 989–1048), made of four finger-jointed 3 mm plywood panels; the fans sit at x = 998–1036.
 
 - **Datasheet ([Delta QFR1212GHE](https://www.delta-fan.com/Download/Spec/QFR1212GHE.pdf)), per fan:** 357 m³/h at zero pressure, 286 Pa at zero flow, 1.80 A rated (2.70 A max), 6,000 rpm, 64 dBA, 330 g. It starts slowly and reaches full speed after 10 s.
-- **Top speed:** from the datasheet P–Q curve, about **16.0 m/s** at full power (16.4 m/s if the two layers give the ideal double pressure). That is 14% above the 14 m/s the measurements need. One layer of four would give only about 14.8 m/s, which is why both layers are filled.
-- **Why not more:** at this operating point each fan runs near its free-flow end, where stacking adds little; the second layer buys about 1.2–1.6 m/s. The 1.6× stacking gain used for the design value is an assumption, so measure the real curve after building.
-- **Speed control:** the QFR has no PWM wire, so the Uno switches the fans' 12 V on and off with two 4-channel MOSFET boards (YYNMOS-4 type), one board per layer and one channel per fan (see D). The duty needed is about 31% for 5 m/s, 63% for 10 m/s and 88% for 14 m/s.
+- **Top speed:** from the datasheet P–Q curve, about **14.8 m/s** at full power. 12 m/s, the lowest speed for coefficient-grade data, needs about 81% duty, so it has a comfortable margin. 14 m/s needs about 94%.
+- **Design concern: thin margin at 14 m/s.** 14.8 m/s is only 6% above the 14 m/s top target. The system loss (honeycomb, screens, contraction, diffuser) is an estimate; if it is about 15% higher, the top speed drops to about 13.8 m/s. Measure the fan curve in the trial (build phase 5). If 14 m/s is not reached, either accept the measured top speed (12 m/s data are still coefficient-grade) or switch to 4 × PFC1212DE (about 17 m/s on paper, 4-wire PWM) in the same fan box.
+- **Why one layer:** a second stacked layer would add only about 1.2–1.6 m/s for twice the fans, current and weight, and even that gain was an assumption.
+- **Speed control:** the QFR has no PWM wire, so the Uno switches the fans' 12 V on and off with one 4-channel MOSFET board (YYNMOS-4 type), one channel per fan (see D). The duty needed is about 34% for 5 m/s, 67% for 10 m/s and 94% for 14 m/s.
 - **PWM frequency:** the board switches at 1 kHz at most (some listings say 200 Hz), so the choice is 1 kHz, 122 Hz or 30 Hz. The fan's control chip loses power in every off gap (0.7 ms at 1 kHz and 31% duty, 23 ms at 30 Hz). If a gap is too long, the chip resets and the fan falls back to its 10 s slow start. The datasheet says nothing about switched power, so the frequency is chosen by test.
-- **Weight:** the eight fans weigh about 2.6 kg, most of module 3's weight.
-- **Before buying all eight:** buy one fan and one board, and run [arduino/fan_pwm_test](arduino/fan_pwm_test/fan_pwm_test.ino) through that board. It passes if, at 1 kHz, 122 Hz or 30 Hz, the speed rises smoothly from 30% to 100% duty and never drops back to the slow start; 5 m/s needs about 31% of full fan speed. A whine or buzz at the PWM frequency is not a failure. If it fails, see "Why it could fail".
+- **Weight:** the four fans weigh about 1.3 kg.
+- **Before buying all four:** buy one fan and one board, and run [arduino/fan_pwm_test](arduino/fan_pwm_test/fan_pwm_test.ino) through that board. It passes if, at 1 kHz, 122 Hz or 30 Hz, the speed rises smoothly from 30% to 100% duty and never drops back to the slow start; 5 m/s needs about 34% of full fan speed. A whine or buzz at the PWM frequency is not a failure. If it fails, see "Why it could fail".
 
-![Estimated fan curves at different PWM duty and where they meet the tunnel system curve (8 × QFR1212GHE, two layers).](figures/en/M6-fan-curve.svg)
+![Estimated fan curves at different PWM duty and where they meet the tunnel system curve (4 × QFR1212GHE, one layer).](figures/en/M6-fan-curve.svg)
 
 ### B. Ground plate and wheel supports
 
@@ -182,54 +187,42 @@ The CAD draws the 100 g drag cell as a 12.7 × 12.7 × 47 mm placeholder. Resize
 
 The Arduino Uno holds the speed, runs each force measurement, cuts the fans when needed and logs everything to a laptop.
 
-![Arduino Uno wiring: fans, three HX711s, two BMP280s, safety switches and optional outputs.](figures/en/M5-uno-wiring.svg)
+![Arduino Uno wiring: fans, two HX711s, two BMP280s, safety switches and optional outputs.](figures/en/M5-uno-wiring.svg)
 
-- **Constant speed:** the Uno reads the pressure difference from speed sensor A, computes $q$ and $U$, and adjusts the PWM duty with a PID loop to hold the set speed. D9 drives the four inputs of the layer 1 board and D10 those of the layer 2 board. Both pins run on Timer1, so they share one frequency and get the same duty. Two pins are needed because each board input lights an optocoupler LED (about 4–8 mA): eight inputs on one pin would exceed the Uno's 20 mA per pin. Measure one input's current; if four exceed 20 mA, add a transistor buffer. The PWM frequency is the one that passed fan_pwm_test.
+- **Constant speed:** the Uno reads the pressure difference from the barometer pair (D2), computes $q$ and $U$, and adjusts the PWM duty with a PID loop to hold the set speed. D9 (Timer1) drives the four inputs of the MOSFET board. D10 shares Timer1, so leave it free. Each board input lights an optocoupler LED (about 4–8 mA), so four inputs on one pin draw 16–32 mA, which can exceed the Uno's 20 mA per pin. Measure the total current of the four joined inputs; if it is over 20 mA, drive them through a small NPN transistor (for example a 2N2222 with a 1 kΩ base resistor). The PWM frequency is the one that passed fan_pwm_test.
 - **Automatic force run:** one button runs "zero 30 s → ramp up → settle 60 s → record 30 s → stop → re-zero within two minutes". If the zero shifts by more than 1 mN, the run is flagged as invalid.
 - **Safety:** the board inputs are opto-isolated, so a resetting Uno (pins floating) cannot light them and the fans stay off. If a board without optocouplers is used instead, it needs a pull-down on each input. Opening the hatch switch makes the sketch turn the boards off at once. A hardware emergency stop cuts the 12 V directly, without the Uno.
 - **Logging:** every sample goes over USB to a laptop as CSV: time, raw readings, $q$, $U$, drag, vertical force, PWM duty and zero values. Plot it in Excel or Python.
 
 **Sensors:**
 
-- **Speed:** two home-made sensors on the same pressure taps (D2): A, a bell manometer (primary, third HX711 on A0/A1), and B, two BMP280s (backup and cross-check, I²C 0x76/0x77). Both are zeroed before every fan start.
+- **Speed:** one home-made sensor on the wall pressure taps (D2): two BMP280 barometers (I²C 0x76/0x77), zeroed before every fan start.
 - **Force:** two HX711s at 10 samples/s. The 100 g cell measures drag and the 1 kg cell vertical force.
-- **Optional:** an LCD 1602 showing speed and force. B's BMP280s also give room temperature and pressure for the air density, so no separate BME280 is needed.
+- **Optional:** an LCD 1602 showing speed and force. The BMP280s also give room temperature and pressure for the air density, so no separate BME280 is needed.
 
-### D2. Home-made speed sensors (A primary, B backup, C last resort)
+### D2. Speed sensor: two barometers (C as a last resort)
 
-Two cheap home-made sensors on the same pressure taps replace a bought differential-pressure sensor, and check each other.
+A pair of BMP280 barometers on the two wall-tap rings measures the pressure difference that sets the speed. A bought digital differential-pressure sensor (ABP2, SDP810) costs NT$1,100–1,600 with shipping; the pair costs about NT$120–300.
 
-![Home-made speed sensors: bell-manometer cross-section and the two-barometer backup.](figures/en/M7-speed-sensors.svg)
+![Speed sensor: the two barometer canisters on the electronics board and their tubes to the wall rings.](figures/en/M7-speed-sensors.svg)
 
-At 5–14 m/s the dynamic pressure is only 15–118 Pa. A bought digital sensor (ABP2, SDP810) costs NT$1,100–1,600 with shipping. The two home-made sensors together cost about NT$430–800, and A is more accurate than the bought ones at low speed. If one fails, the other takes over.
+At 5–14 m/s the dynamic pressure is only 15–118 Pa. Each BMP280 reads absolute pressure; one sits on the high side, one on the low side, and the Uno subtracts them. From the factory the two differ by about ±12 Pa, so the pair is **zeroed with the fans off before every run** (5 s average, offset subtracted). After zeroing the error is about ±0.7 Pa: noise averaged over 1 s plus a 0.3 K temperature difference between the two. That is ±0.4% in speed at 12 m/s and ±2.5% at 5 m/s.
 
-**A, bell manometer (primary).** An upside-down straight-walled cup (the bell) dips mouth-down into oil and hangs from a 100 g load cell. The inside of the bell connects to the low pressure and the air in the box to the high pressure, so the pressure difference × bell area pulls the bell down. The oil seals the bell's mouth, so there is no friction and no rubber-diaphragm spring.
+How to build it:
 
-| Item | Value |
-| --- | --- |
-| Bell | 3D-printed PETG straight cylinder, 60 mm inside diameter, 80 mm tall, 1.2 mm wall, about 28 g |
-| Liquid | Baby oil, 45 mm deep; bell dips 35 mm, rim 10 mm above the dish floor |
-| Force | 15 Pa ≈ 4.5 g; maximum about 47 g; load cell maximum about 69 g of 100 g |
-| Resolution | 1 mN ÷ bell area ≈ 0.34 Pa → speed error about ±1.1% at 5 m/s, ±0.2% at 12 m/s |
-| Oil inside the bell at maximum pressure | Rises about 19 mm; the vent-tube tip is 35 mm above the oil, so it stays dry |
-| Box | Airtight food container of about 1.5–2 L, at least 12–13 cm tall inside (the CAD shows a larger 200 × 130 × 150 box) |
+1. Use 5 V-capable BMP280 modules (on-board regulator and level shifter). Set SDO to VCC on the high-side module (0x77) and to GND on the low-side one (0x76).
+2. Seal each module in a 35 mm film canister with one tube barb in the lid. Bring the four wires out through a small hole and seal it with hot glue.
+3. Stand the two canisters side by side on the electronics board, touching, and wrap them together in foam so they stay at the same temperature. Keep them away from the Uno's regulator and the 12 V wiring.
+4. Wire both to A4 (SDA), A5 (SCL), 5 V and GND.
 
-How to build A:
+**Tubing (figure M7).** Each side has a ring of four wall taps joined by a loop of silicone tube, and one straight tube runs from each ring to its canister. There are no tees.
 
-1. Print the bell straight-walled, with a hanging loop on top. Never use a tapered cup, because its area changes as the oil rises.
-2. Put the dish (inside diameter ≥ 100 mm) in the middle of the container floor. Glue a rigid bracket to the floor and fix the 100 g load cell to it, with the free end directly above the dish. **Do not mount it on the lid**, which flexes under pressure.
-3. Bend a 4 mm brass tube into a U. One end goes out through the box wall as the low-pressure port. The other goes under the bell's rim and up inside the bell, with its tip 35 mm above the resting oil level.
-4. Make a second port in the box wall as the high-pressure port, open only to the air in the box. Seal all wire and tube holes with hot glue.
-5. Pour baby oil to 45 mm and hang the bell on a thin thread. Check that the bell touches neither the dish nor the vent tube.
-6. Connect HX711 #3 to A0 (DT) and A1 (SCK). Put the box on the desk, not on the tunnel, to keep out fan vibration.
+- **High side (red tube):** four static taps around the settling chamber at x = −420 mm → loop → quick-connect at the board edge → high canister (0x77).
+- **Low side (blue tube):** four static taps around the test-section entrance at x = 30 mm → loop → quick-connect → low canister (0x76).
+- Keep the two tubes about the same length, about 0.5 m from the quick-connects. Equal lengths give equal response times, so the difference does not jump while the speed changes.
+- The quick-connects are unplugged for carrying.
 
-**B, two BMP280s (backup).** Two barometers, one on each side of the taps, give the pressure difference by subtraction. Use 5 V-capable BMP280 modules, each sealed in a film canister or small airtight box with one tube barb. Set SDO to GND for 0x76 (low side) and to VCC for 0x77 (high side). Tape the two canisters together and wrap them in foam so they stay at the same temperature. They differ by about ±12 Pa from the factory; **after zeroing** the error is about ±0.7 Pa, or ±0.4% in speed at 12 m/s and ±2.5% at 5 m/s.
-
-**Tubing.** Each side has a ring of four wall taps joined by a loop of silicone tube, then a tee that feeds both sensors.
-
-- **High side (red tube):** four static taps around the settling chamber at x = −420 mm → loop → tee on the electronics board → the air inside A's box, and B's high-side canister.
-- **Low side (blue tube):** four static taps around the test-section entrance at x = 30 mm → loop → tee → A's low-side port (continuing inside the box as the brass U-tube into the bell), and B's low-side canister.
-- Each line has a quick-connect at the edge of the electronics board, unplugged for carrying. To find the conversion factor $k$ between the wall-tap reading and the true $q$, connect A to the wall rings and B to the Pitot tube and read both at once.
+**Calibrating $k$ (wall rings to true $q$).** With one sensor pair, $k$ is found in two steps at a fixed fan duty: read the pair on the wall rings, then move both tubes at the quick-connects to the Pitot tube's total and static ports and read again. $k = q_\mathrm{Pitot} / \Delta p_\mathrm{rings}$. Repeat at three duties (for example 40%, 70% and 94%) and average. The fans must have settled at each duty, because the two readings are not taken at the same time.
 
 Why it is connected this way:
 
@@ -238,29 +231,27 @@ Why it is connected this way:
 | Wall taps, not the Pitot tube, for speed control | The Pitot tube sits in the flow just in front of the car and disturbs it; wall taps do not. The pressure drop from the settling chamber to the test-section entrance is about 0.97 $q$, because the air speeds up 6×. The Pitot tube is used only to calibrate $k$. |
 | Taps square to the wall | Static pressure must be measured at right angles to the flow; a hole facing the flow reads total pressure. Drill about 1 mm, square to the wall, and deburr the inner edge flush. Put taps only in straight sections, never on curved walls. Any remaining fixed error goes into $k$; recalibrate $k$ after a tap is damaged or cleaned. |
 | Four taps joined in a ring | A single hole can read off because of a burr or local flow; averaging four reduces that error. |
-| High side to the box, low side inside the bell | Lower pressure inside the bell pulls it down, so the reading rises with speed. Swapped, the bell is pushed up; at top speed the push (about 47 g) exceeds its 28 g weight, the thread goes slack and the reading is lost. |
-| Low-side tube enters under the rim, tip 35 mm above the oil | The oil seals the mouth, so the only way in is from below. At top speed the oil inside rises about 19 mm, so the tip stays dry. |
-| A and B on the same taps through tees | Both see the same pressure, so they can be compared directly (agree within 1 Pa or 2%). If one fails, the other takes over without re-plumbing. |
-| Sensors on the desk, not on the tunnel | Keeps fan vibration out of A's load cell. Tube length does not change the steady reading, only the response time: about 1 s per metre of 4 mm tube, because the oil in the bell acts as an air cushion. Keep tubes to about 0.5 m and tune the PID to respond slowly. |
+| One straight tube per side, no tees | Every extra joint is a possible leak, and a leak on one side shifts the reading. |
+| Canisters together in foam | The two sensors drift with temperature (about 1.5 Pa/K); keeping them at the same temperature keeps the difference stable. |
+| Sensors on the electronics board, not on the tunnel | Away from the fan heat and vibration, and the tubes are unplugged in one place for carrying. Tube length does not change the steady reading, only the response time. |
 
-**Bench calibration (fans off, figure M8).** A syringe and a home-made inclined water manometer give known pressures to calibrate both sensors before they go on the tunnel.
+**Bench calibration (fans off, figure M8).** A syringe and a home-made inclined water manometer give known pressures to check the pair before it goes on the tunnel.
 
-![Bench calibration of the speed sensors: syringe, tees and 1:10 inclined water manometer.](figures/en/M8-sensor-calibration.svg)
+![Bench calibration of the speed sensor: syringe, tee and 1:10 inclined water manometer.](figures/en/M8-sensor-calibration.svg)
 
 1. Make a 1:10 inclined water manometer: clear tube fixed to a board ≥ 300 mm long, one end raised to a 1:10 slope, water with food colouring. 1 mm along the tube ≈ 0.98 Pa.
-2. Connect the syringe, the manometer, the inside of A's bell and B's low-side canister with tees. Leave A's box air and B's high-side canister open to the room.
+2. Connect the syringe, the manometer and the low canister with one tee. Leave the high canister open to the room.
 3. **Leak test:** pull the syringe slightly and pinch the tube for 60 s; the reading must change by less than 0.5 Pa.
-4. Step the vertical water height 0 → 2 → 5 → 10 → 15 → 20 mm (0–200 mm along the tube), 10 s per point, recording the manometer, A and B. Step back to 0. Repeat 3 times.
-5. A's slope is its effective area. Write it back to [spec/mini.json](spec/mini.json).
+4. Step the vertical water height 0 → 2 → 5 → 10 → 15 → 20 mm (0–200 mm along the tube), 10 s per point, recording the manometer and the pair. Step back to 0. Repeat 3 times.
+5. The slope is the pair's gain correction (it should be close to 1). Write it back to [spec/mini.json](spec/mini.json).
+6. **Drift check:** zero the pair, leave both canisters open to the room for 2 minutes; the difference must stay within 2 Pa.
 
-**Which sensor to use:**
+**If the pair is not good enough:**
 
 | Situation | Use |
 | --- | --- |
-| A passes bench calibration (linearity ≤ 0.5 Pa or 1%, hysteresis ≤ 0.5 Pa, no leak), and A and B agree in the tunnel within 1 Pa or 2% | **A controls the speed**; B is logged every run as a check |
-| A leaks and cannot be fixed, its hysteresis is too large, or fan vibration makes its noise > 0.5 Pa | **Switch to B** (less accurate at 5 m/s; note it in the report) |
-| B also fails (drifts > 2 Pa within 2 minutes of zeroing) | **C:** buy a Honeywell ABP2MRRN001ND2A3XX (option C in the [shopping list](shopping_list.md)), or calibrate a "PWM → speed" table with the water manometer |
-| A and B disagree beyond the limit | Leak-test first, check for kinked tubes or oil in a tube, then redo the bench calibration |
+| The pair passes bench calibration (linearity ≤ 0.5 Pa or 1%, hysteresis ≤ 0.5 Pa, no leak) and drifts less than 2 Pa within 2 minutes of zeroing | **The pair controls the speed** |
+| It drifts more than 2 Pa in 2 minutes, or is too noisy at 5 m/s | First improve the foam wrap, average longer when zeroing and re-zero more often. If that is not enough, **C:** buy a Honeywell ABP2MRRN001ND2A3XX (option C in the [shopping list](shopping_list.md)), or calibrate a "PWM → speed" table with the water manometer |
 
 ### E. Flow visualization
 
@@ -278,20 +269,20 @@ Tufts show where the flow separates for almost no cost; smoke is an optional ext
 
 ### F. Calibration
 
-Every measured quantity is calibrated against something known: weights for force, the water manometer for the speed sensors, and the Pitot tube for speed.
+Every measured quantity is calibrated against something known: weights for force, the water manometer for the speed sensor, and the Pitot tube for speed.
 
 - **Force:** weigh coins or small nuts on a 0.01 g pocket scale and use them as weights. For vertical force, place them directly at the car position. For drag, pull with a thread over a low-friction pulley, once in each direction, and average. Record both channels every time: the four slopes give the 2 × 2 crosstalk matrix (C).
-- **Speed sensors:** bench-calibrate with the syringe and the 1:10 manometer (D2, figure M8) to get A's effective area and B's conversion.
-- **Speed:** read A on the wall rings and B on the Pitot tube at the same time to find $k$, once with the car and once without.
+- **Speed sensor:** bench-calibrate the barometer pair with the syringe and the 1:10 manometer (D2, figure M8).
+- **Speed:** find $k$ in two steps at fixed duties, wall rings then Pitot tube (D2), once with the car and once without.
 
 ### G. Safety
 
 The main hazards are high current, spinning fans, noise and loose parts blown into the fans.
 
-- **Electrical:** 12 V is low voltage, but the eight fans draw 14.4 A rated and up to 21.6 A (datasheet maximum). Use a supply of at least 25 A, a 30 A fuse at its output, 12 AWG for the main run, 16 AWG to each layer, and an emergency stop rated ≥ 25 A DC (or have it switch a 30 A automotive relay). Put a 1000 µF / 25 V capacitor across 12 V+ and GND on the supply side, after the emergency stop and near the boards; Delta asks for more than 4.7 µF when fans run in parallel. It supplies the quick current pulses so the long supply wires do not have to. Never put it across a fan's own leads: there it would refill through the MOSFET on every pulse, with large current spikes. Mind its polarity (stripe = −).
-- **Per-fan fuses and diodes:** each fan's red lead goes through its own 5 A blade fuse (a 6-way fuse box with negative bus per layer, or inline holders). The 30 A main fuse protects only the thick main wire; a short in one fan's thin 22 AWG lead could carry 15–20 A without blowing it. 5 A sits above the fan's 2.7 A maximum and below what 22 AWG carries. A jammed fan does not blow it (the fan cuts its own current when the rotor locks); it is there for wiring faults. Clamp an SS34 Schottky diode across each fan in the board's output terminal, stripe to the red lead.
+- **Electrical:** 12 V is low voltage, but the four fans draw 7.2 A rated and up to 10.8 A (datasheet maximum). Use a supply of at least 12 A, a 15 A fuse at its output, 14 AWG for the main run, and an emergency stop rated ≥ 15 A DC (or have it switch a 30 A automotive relay). Put a 1000 µF / 25 V capacitor across 12 V+ and GND on the supply side, after the emergency stop and near the boards; Delta asks for more than 4.7 µF when fans run in parallel. It supplies the quick current pulses so the long supply wires do not have to. Never put it across a fan's own leads: there it would refill through the MOSFET on every pulse, with large current spikes. Mind its polarity (stripe = −).
+- **Per-fan fuses and diodes:** each fan's red lead goes through its own 5 A blade fuse (one 6-way fuse box with negative bus, or inline holders). The 15 A main fuse protects only the main wire; a short in one fan's thin 22 AWG lead might not blow it quickly. 5 A sits above the fan's 2.7 A maximum and below what 22 AWG carries. A jammed fan does not blow it (the fan cuts its own current when the rotor locks); it is there for wiring faults. Clamp an SS34 Schottky diode across each fan in the board's output terminal, stripe to the red lead.
 - **Fans:** fit a metal guard at the outlet. Press the emergency stop before reaching into the duct.
-- **Noise:** eight fans at full power give about 73 dBA (64 dBA each). Class demos run at 10 m/s (about 60% duty) for short periods.
+- **Noise:** four fans at full power give about 70 dBA (64 dBA each). Class demos run at 10 m/s (about 67% duty) for short periods.
 - **Loose parts:** before every start, check the test section for tools or bits of the car.
 
 ### H. Carrying and setup (three modules)
@@ -302,7 +293,7 @@ The tunnel splits into three modules that each stand on their own feet, carry by
 | --- | --- | --- | --- |
 | 1 Inlet | −696 → 20 | Inlet bell, settling chamber, honeycomb, screens, contraction, ribs, spines, sleeve 1 | 716 × 502 × 413 (the widest; fits through a door) |
 | 2 Test section | 0 → 336 | Test section, car hatch, ground plate, wheel wells, saddles, balance box with the balance on its tray (transport lock on) | 336 × 190 × 300 |
-| 3 Fan end | 316 → 1086 | Sleeve 2, diffuser, safety mesh, fan box, fans | 770 × 252 × 336 |
+| 3 Fan end | 316 → 1048 | Sleeve 2, diffuser, safety mesh, fan box, fans | 732 × 252 × 336 |
 
 #### H1. Sleeves (the joints)
 
@@ -327,13 +318,15 @@ In use, push the test section 20 mm into each sleeve, then wrap the seam with ma
 
 #### H2. Levelling feet (4 per module plus the contraction prop, 13 in total)
 
-Each module stands on four M6 levelling feet with rubber pads, so it can match desks of slightly different height. Screw the feet into T-nuts pressed into the plywood, or into nuts glued underneath.
+Each module stands on four M6 levelling feet with rubber pads, so it can match desks of slightly different height.
+
+**Mounting.** Every foot screws into an M6 T-nut pressed into the plywood from below, through an 8 mm laser-cut hole. The T-nut's flange bears on the underside, so the foot's load presses it in rather than out. The feet sit beside the cradle webs, never under them, so the T-nut barrel (about 2 mm proud of the top) clears the web. Under the balance tray, cover each barrel inside the box with a dab of hot glue, because the box must stay airtight.
 
 | Module | Feet (x, y in mm) |
 | --- | --- |
-| 1 | Two wooden cradles under the settling chamber (x −600 and −480), feet at y ±165; plus the contraction prop's single foot (x −45, y 0) |
+| 1 | Two wooden cradles under the settling chamber (x −600 and −480), feet at x −573 and −477, y ±165; plus the contraction prop's single foot (x −45, y 12) |
 | 2 | The four corners of the balance tray (x 95 / 265, y ±79), in T-nuts pressed into the plywood tray |
-| 3 | A wedge cradle under the middle of the diffuser (x 615, y ±85) and the fan-box cradle (x 1037, y ±110) |
+| 3 | A wedge cradle under the middle of the diffuser (feet at x 603, y ±85) and the fan-box cradle (feet at x 1018, y ±110) |
 
 Level in this order:
 
@@ -345,7 +338,11 @@ If a sleeve needs force, the heights are wrong; forcing it bends the joint.
 
 #### H3. Balance transport lock
 
-Two M4 thumb screws clamp the frame plate so the load cells cannot be overloaded while module 2 is carried. They pass through the side walls at x = 200 mm, z = −11 mm, one from each side, into nuts or threaded inserts glued to the outside of the wall.
+Two M4 thumb screws clamp the frame plate so the load cells cannot be overloaded while module 2 is carried.
+
+**Why it is needed.** The overload stops (C) limit only downward and fore-aft movement, and they are set for pressing the car in, not for carrying. Nothing stops the frame moving up or sideways, and the 100 g drag cell is weakest sideways. While module 2 is carried, up to 0.6 kg of frame, posts and saddles can swing against the cells: a sideways jolt of about 0.2 g already puts more than 100 g on the drag cell, and repeated knocks on the stops can still shift the zero. The thumb screws clamp the frame to the box walls so none of this reaches the cells. The alternative is to take the balance tray out and carry it in a padded box every time; the lock (about NT$30) saves that step.
+
+The screws pass through the side walls at x = 200 mm, z = −11 mm, one from each side, into nuts or threaded inserts glued to the outside of the wall.
 
 - **Locking:** tighten both evenly and only finger-tight. Tightening one side harder pushes the frame sideways and loads the cells.
 - **Unlocking:** back both screws fully out and look to confirm they touch nothing. Tap the car lightly; the reading must return to zero.
@@ -363,12 +360,11 @@ The car goes in and out through a hatch in the test-section roof: a 180 × 150 m
 
 #### H5. Electronics board
 
-All the electronics travel on one 200 × 140 mm plywood board, and every wire that leaves it ends in a plug. The board carries the Uno on standoffs, 3 × HX711, the two sensor-B canisters, the red and blue tees, a connector strip and two pressure quick-connects at the edge.
+All the electronics travel on one 200 × 140 mm plywood board, and every wire that leaves it ends in a plug. The board carries the Uno on standoffs, 2 × HX711, the two barometer canisters wrapped in foam, a connector strip and two pressure quick-connects at the edge.
 
 | Connection | Plug |
 | --- | --- |
 | Drag and vertical load cells (inside the balance box) | Short leads out through a hot-glued hole, ending in 4-pin plugs |
-| Sensor A load cell | 4-pin plug |
 | Fan MOSFET signal (to the MOSFET module at the fan box) | 2-pin plug |
 | Fan 12 V | XT60, power supply to fan box (not through the board) |
 | Hatch switch | 2-pin plug |
@@ -376,13 +372,9 @@ All the electronics travel on one 200 × 140 mm plywood board, and every wire th
 
 Use different plug sizes or colours and label them so they cannot be swapped. Keep a photo of the board fully plugged in. The red tube loop stays on module 1 and the blue loop on module 2; for carrying, pull them off the quick-connects, coil them and tape them to their modules.
 
-#### H6. Sensor A and smoke parts
+#### H6. Smoke parts
 
-Sensor A and the smoke parts are packed separately because they hold liquid or are fragile.
-
-- **Oil:** pour it back into its bottle through a funnel; it would slosh onto the load cell in transit. Mark a 45 mm line on the dish for quick refilling.
-- **Bell:** carry it separately in something padded; the PETG wall is thin.
-- **Smoke:** remove the wand, plug the roof hole and carry the jar separately.
+The smoke parts are packed separately because they are fragile: remove the wand, plug the roof hole and carry the jar separately.
 
 #### H7. Carrying
 
@@ -405,15 +397,15 @@ Setup puts the modules down from the reference end outward, then frees the balan
 3. Slide module 3's sleeve 2 onto the test section, adjust its feet and tape the seam.
 4. Unlock the balance (H3) and check that it moves freely.
 5. Plug in the electronics board, the 12 V and the two pressure tubes.
-6. Fill oil to the 45 mm line and hang the bell. Put the car on the saddles through the hatch and close it (H4).
+6. Put the car on the saddles through the hatch and close it (H4).
 7. Let the load cells warm up for 15 minutes.
 8. **Check before measuring:**
     - Hang one known weight and check the force reading.
-    - Zero both speed sensors and the balance.
+    - Zero the speed sensor and the balance.
     - Run at 10 m/s holding a tuft next to each taped seam; it must not be pulled in.
     - Do a 1-minute Pitot check at 10 m/s. The joints and taps have been taken apart, so $k$ may have shifted; if it is off by more than 1%, recalibrate $k$.
 
-**Packing up** is the reverse: stop the fans and unplug everything; take out the car through the hatch; lock the balance (H3); remove the tape and pull the modules apart; empty the oil.
+**Packing up** is the reverse: stop the fans and unplug everything; take out the car through the hatch; lock the balance (H3); remove the tape and pull the modules apart.
 
 ## Budget
 
@@ -421,25 +413,24 @@ The low estimate fits NT$5,000 and the high one does not, so the low-cost route 
 
 | Item | Estimate NT$ | Basis |
 | --- | --- | --- |
-| 8 × QFR1212GHE fans | 2,000–3,000 | Placeholder carried over from the 4 × PFC1212DE price; re-price |
-| 2 × 4-channel MOSFET boards (YYNMOS-4 type) + 1 spare | 150–450 | Estimate |
-| Fan fusing: 8 × 5 A blade fuses in inline holders (low) or 2 × 6-way fuse boxes (high), 8 × SS34 | 150–550 | Estimate |
-| Speed sensor A: 100 g load cell + HX711, food container, baby oil, fittings (bell printed at school) | 230–350 | Estimate |
-| Speed sensor B: 2 × BMP280 (5 V modules), film canisters | 120–300 | Estimate |
-| Calibration: inclined-manometer tube and board, 60 mL syringe, tees | 80–150 | Estimate |
-| 12 V ≥ 25 A power supply | 0–900 | Old ATX supply free; retail estimate |
+| 4 × QFR1212GHE fans | 1,000–1,500 | Placeholder carried over from the 4 × PFC1212DE price; re-price |
+| 1 × 4-channel MOSFET board (YYNMOS-4 type) + 1 spare | 75–300 | Estimate |
+| Fan fusing: 4 × 5 A blade fuses in inline holders (low) or one 6-way fuse box (high), 4 × SS34 | 75–300 | Estimate |
+| Speed sensor: 2 × BMP280 (5 V modules), film canisters, foam | 120–300 | Estimate |
+| Calibration: inclined-manometer tube and board, 60 mL syringe, 1 tee | 80–150 | Estimate |
+| 12 V ≥ 12 A power supply | 0–600 | Old ATX supply free; retail estimate |
 | 100 g and 1 kg load cells + 2 × HX711 | 250–400 | Estimate |
-| Pitot tube, brass U-tube for the bell, silicone tubing, tees | 150–300 | Estimate |
+| Pitot tube, silicone tubing | 120–250 | Estimate |
 | 3 mm clear acrylic, laser-cut (about 0.4 m²) | 300–600 | Estimate |
 | 3 mm laser plywood (about 4 m²), 1 mm PET sheet | 600–1,200 | Estimate |
 | Straws or printed honeycomb, screens | 100–200 | Estimate |
 | 1:43 diecast car | 80–450 | Checked: SHEIN Taiwan NT$77–445 |
-| 12/16 AWG wire, main fuse holder, emergency stop, 1000 µF capacitor, connectors, screws, hot glue | 200–400 | Estimate |
-| Hatch magnets, foam tape, microswitch; stop screws, lock nuts, heat-set inserts | 100–200 | Estimate |
-| Portability: 13 × M6 levelling feet, 2 transport-lock thumb screws, 2 pressure quick-connects | 150–300 | Estimate |
-| **Total** | **4,660–9,750** | |
+| 14 AWG wire, main fuse holder, emergency stop, 1000 µF capacitor, connectors, screws, hot glue | 200–400 | Estimate |
+| Hatch magnets, foam tape, microswitch; stop screws, prop bolt, lock nuts, heat-set inserts | 100–200 | Estimate |
+| Portability: 13 × M6 levelling feet + 13 T-nuts, 2 transport-lock thumb screws, 2 pressure quick-connects | 180–350 | Estimate |
+| **Total** | **3,280–7,200** | |
 
-To stay at NT$5,000, use an old PC power supply, a cheap car, and school tools and scrap wherever possible. If the order is still over budget, **cut speed sensor B first**: it saves NT$120–300 but loses the backup and cross-check. Speed sensor A and the calibration manometer cannot be cut.
+To stay at NT$5,000, use an old PC power supply, a cheap car, and school tools and scrap wherever possible. With one fan layer and one speed sensor the low estimate leaves about NT$1,700 for price surprises, but the high estimate is still over the cap. The speed sensor and the calibration manometer cannot be cut.
 
 ## Operating procedure
 
@@ -458,8 +449,9 @@ The tunnel is ready for class data only when it passes every test below.
 | Force drift | No wind, car fitted, record 30 minutes | Successive 30 s means within 1 mN |
 | Force repeatability | Load and unload weights ten times; re-seat the car five times | Within 1 mN; report re-seating separately |
 | Fan interference | Slide module 3 back so sleeve 2 is off, cap the test-section outlet, run the fans at full power | Force noise the same as with fans off |
-| Speed sensor calibration | Bench syringe + 1:10 manometer (figure M8) | A linearity ≤ 0.5 Pa or 1%; hysteresis ≤ 0.5 Pa; leak < 0.5 Pa in 60 s |
-| A vs B | In the tunnel at 5, 10, 14 m/s, A and B on the same taps | Agree within 1 Pa or 2% |
+| Speed sensor calibration | Bench syringe + 1:10 manometer (figure M8) | Linearity ≤ 0.5 Pa or 1%; hysteresis ≤ 0.5 Pa; leak < 0.5 Pa in 60 s |
+| Speed sensor drift | Fans off, both canisters open to the room, 2 minutes after zeroing | Within 2 Pa |
+| Top speed | Full duty, Pitot tube | ≥ 14 m/s; if not, record it and see "Why it could fail" |
 | Speed stability | 30 s means over 10 minutes | Within ±1% |
 | Speed uniformity | Pitot survey at 10 m/s over the 50 points in figure M3 | Within ±2% of the mean; if not, record the actual values |
 | Support tare | Saddles only, wind at each speed | Recorded as a function of $q$ |
@@ -473,22 +465,22 @@ The 1 mN target holds as long as the measured body touches the outside world onl
 | --- | --- | --- | --- |
 | Accidental contact (post rubs a shroud, cable touches the frame, dust closes a stop gap) | Part of the force bypasses the load cells | Force repeatability; return to zero after tapping the car | Find and clear the contact |
 | Zero drift (temperature, creep) | Readings shift by more than 1 mN during a run | Automatic re-zero flag; force drift test | Longer warm-up; discard flagged runs |
-| Fan vibration reaching the balance or sensor A | Noisy force or speed readings | Fan interference test; A's noise at full fan power with no tubes | Softer foam at sleeve 2 and softer pads under module 2's feet; move sensor A; switch speed control to B |
+| Fan vibration reaching the balance | Noisy force readings | Fan interference test | Softer foam at sleeve 2 and softer pads under module 2's feet |
 | Leaks at the taped seams | Room air enters, speed and uniformity change | Tuft check at every seam during setup | Re-tape; tape-wrap a loose test-section end |
-| Bell manometer fails calibration | Speed control is inaccurate | Bench calibration; A vs B test | Switch to B, then C (D2) |
-| QFR fans will not run smoothly at low duty | Low speeds cannot be held | fan_pwm_test on one fan before buying eight | Fall back to 4 × PFC1212DE (4-wire PWM), or run only 10–16 m/s |
-| Fans fall short of the estimate (stacking gain below 1.6×) | 14 m/s not reached | Measured fan curve during the trial | Even one layer reaches about 14.8 m/s on paper; 12 m/s is the minimum for coefficient-grade data |
+| Barometer pair drifts or fails calibration | Speed control is inaccurate | Bench calibration; drift check | Better foam, re-zero more often; then C (D2) |
+| QFR fans will not run smoothly at low duty | Low speeds cannot be held | fan_pwm_test on one fan before buying four | Fall back to 4 × PFC1212DE (4-wire PWM), or run only 10–16 m/s |
+| Fans fall short of the estimate (system loss higher than estimated; only 6% margin at 14 m/s) | 14 m/s not reached | Top-speed acceptance test; measured fan curve during the trial | Accept the measured top speed (12 m/s, the minimum for coefficient-grade data, needs only about 81% duty), or switch to 4 × PFC1212DE (about 17 m/s on paper) |
 | Desk joint under module 2 | Desk movement shifts the balance | Force drift test | Put module 2 on one desk |
 | Carrying damage (overloaded load cell, loosened bracket) | Calibration or crosstalk changes after a move | Weight check in H8 step 8 | Always use the transport lock; recalibrate force (2 × 2) |
 
 ## Build order
 
-The build goes electronics first, because the balance and speed sensors decide whether the tunnel is worth building. Durations are estimates; dates depend on the class deadlines.
+The build goes electronics first, because the balance and the speed sensor decide whether the tunnel is worth building. Durations are estimates; dates depend on the class deadlines.
 
 | Phase | Work | Depends on | Gate before the next phase | Duration |
 | --- | --- | --- | --- | --- |
 | 1. Measure and order | Measure the car (length, wheelbase, track, wheel diameter, ride height, mass) and update [spec/mini.json](spec/mini.json); buy one QFR1212GHE and one 4-channel MOSFET board and run fan_pwm_test through it; order the rest | Car and one fan delivered | Fan test passes (A5) | 1–2 weeks |
-| 2. Electronics on the bench | Wire the Uno, HX711s and load cells; overnight drift test; build speed sensors A and B; bench calibration (figure M8); fan MOSFET control | Phase 1 parts | **Balance reaches 1 mN on the bench**; A passes calibration | 2 weeks |
+| 2. Electronics on the bench | Wire the Uno, HX711s and load cells; overnight drift test; build the barometer speed sensor; bench calibration (figure M8); fan MOSFET control | Phase 1 parts | **Balance reaches 1 mN on the bench**; the speed sensor passes calibration | 2 weeks |
 | 3. Tunnel body | Laser-cut every LC3 part from the CAD laser view and glue the laminated pairs; settling chamber; bell; contraction (ribs and spines first, then sheets, A2); test section; diffuser; fan box; sleeves glued with the test section in place (H1); cradles and levelling feet | Car dimensions (phase 1) | Sleeves slide on freely; no forward-facing steps | 2 weeks (can overlap phase 2) |
 | 4. Balance and balance box | Print the saddles, wells, bracket, spacer, foot, stop pillar and fork; assemble the series balance on the tray; set the stops to 0.3 mm; transport lock; car hatch and interlock; electronics board and quick-connects | Phase 2 gate | Balance unlocks, returns to zero, and passes the 2 × 2 calibration | 1–2 weeks |
 | 5. Trial and calibration | Raise speed slowly; tuft leak check; vibration check; measure the fan curve; calibrate $k$ and force | Phases 3 and 4 | Speed held within ±1% | 1 week |
@@ -500,16 +492,14 @@ The build goes electronics first, because the balance and speed sensors decide w
 
 | Item | Status |
 | --- | --- |
-| Fan price | The budget line still uses the old 4 × PFC1212DE price; re-price 8 × QFR1212GHE. |
-| MOSFET board specs | YYNMOS-4 specs come from listings, not a datasheet. On the board bought, check the PWM limit (1 kHz or 200 Hz), the size of the common DC−/GND terminal (it carries 7.2 A rated, 10.8 A max; if small, use 2 fans per board on 4 boards), whether flyback diodes are fitted, and one input's current. |
-| Stacking gain | The design assumes two stacked fans give 1.6× one fan's pressure (2.0× ideal); measure the fan curve after building. |
+| Fan price | The budget line still uses the old 4 × PFC1212DE price; re-price 4 × QFR1212GHE. |
+| MOSFET board specs | YYNMOS-4 specs come from listings, not a datasheet. On the board bought, check the PWM limit (1 kHz or 200 Hz), the size of the common DC−/GND terminal (it carries 7.2 A rated, 10.8 A max; if small, use 2 boards with 2 fans each, inputs of both on D9), whether flyback diodes are fitted, and the total input current of the four joined inputs (add a transistor if over 20 mA). |
+| Top-speed margin | One layer gives about 14.8 m/s on paper, 6% over the 14 m/s target; measure the fan curve and top speed in the trial (A5). |
 | Load-cell sizes | The CAD draws the 100 g drag cell as a 12.7 × 12.7 × 47 mm placeholder; resize the cells, corner bracket and spacer when they arrive. |
 | Laser bed size | Unknown; the CAD laser view uses 600 × 400 mm until it is set. At that size the four diffuser panels (about 652 mm long) and the two contraction top/bottom PET sheets (393 × 412 mm) do not fit and show red. |
-| 3D printer bed | Unknown; check that the honeycomb tiles (if printed) and sensor A's bell fit. |
+| 3D printer bed | Unknown; check that the honeycomb tiles (if printed) fit. |
 | Survey holes | The flow-survey holes (x = 126 and 231) now fall inside the car hatch; they still have to be added to the hatch plug and cover in the CAD. |
 | Desk size and joint | The model assumes two 900 × 600 mm desks with the joint at x = 185 mm, right under module 2. Taiwanese classroom desks are often only about 60 × 45 cm, so three may be needed. Measure the desks and place module 2 on one desk. |
-| Bell effective area | 0.00294 m² is a design estimate; replace it with the bench-calibration slope. |
-| Vibration on sensor A | Record A at full fan power with no tubes connected; if its noise exceeds 0.5 Pa, move it or switch to B. |
 | Car dimensions | Currently estimates for a typical 1:43 hatchback; measure the purchased car and update. |
 | Module weights | Weigh each module after building (H7). |
 
@@ -517,10 +507,13 @@ The build goes electronics first, because the balance and speed sensors decide w
 
 | Item | Decision |
 | --- | --- |
-| Fan model | 8 × QFR1212GHE, 2 × 2 stacked two deep, one 4-channel MOSFET board per layer and one channel per fan (2.7 A max on a 10 A channel); about 16.0 m/s (16.4 ideal) from the datasheet curve. The 4 × PFC1212DE option (about 17.1 m/s, 4-wire PWM, 19 A) is the fallback if the fan test fails; the 25 A supply covers it too. |
-| Fan box | Holds two layers (x = 998–1074); no change needed. |
+| Fan model | 4 × QFR1212GHE in one 2 × 2 layer, one 4-channel MOSFET board and one channel per fan (2.7 A max on a 10 A channel); about 14.8 m/s from the datasheet curve. The second layer was dropped: it added only 1.2–1.6 m/s for twice the fans. The 4 × PFC1212DE option (about 17.1 m/s, 4-wire PWM) is the fallback if the fan test fails or 14 m/s is not reached; it needs a supply of about 20 A. |
+| Fan box | One layer at x = 998–1036; the box is x = 989–1048. |
+| Speed sensor | The barometer pair only; the home-made bell manometer was dropped. |
+| Transport lock | Kept (H3): the overload stops do not protect against sideways or upward knocks while carrying. |
+| Test-section joints | Floor finger-jointed into the walls and solvent-glued; roof rests on the wall tops, taped and shimmable (A3). |
 | Stopping the fans | Safety never relies on the Uno: the boards' opto-isolated inputs keep the fans off during a reset, and the emergency stop cuts 12 V in hardware. |
-| Power | Supply ≥ 25 A, 30 A fuse, 12 AWG main wire, sized for the 21.6 A datasheet maximum; a 5 A fuse and an SS34 diode on each fan; 1000 µF on the supply side only (G). |
+| Power | Supply ≥ 12 A, 15 A fuse, 14 AWG main wire, sized for the 10.8 A datasheet maximum; a 5 A fuse and an SS34 diode on each fan; 1000 µF on the supply side only (G). |
 | Portability | Three modules joined by two sleeves (H), so the balance travels in its own module, away from the fan vibration. |
 | Balance | Two load cells bolted in series with no slide, laid out like the UPenn build guide (C). Feeler-gauge blades were dropped (fragile, and they carried part of the drag); drawer slides, MGN rails, crossed-roller guides and a 3-ball slide were rejected because their friction (about 1–50 mN) is as large as the drag. |
 | Balance location | Inside module 2, in a sealed box under the test-section floor. The pedestal, ballast, rubber skirt, height adjuster and vent tube are gone. |

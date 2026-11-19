@@ -101,45 +101,22 @@ def drag_stage():
 
 
 def max_sensor_dp():
-    """Largest pressure difference the speed sensors see: q at full fan speed plus contraction loss (wall-ring use)."""
+    """Largest pressure difference the speed sensor sees: q at full fan speed plus contraction loss (wall-ring use)."""
     return ac.q_of(operating_point(1.0)["U"]) * (1 + ac.PLAN_K["contraction"])
 
 
-def bell():
-    """Bell manometer (speed sensor A): geometry, loads and resolution."""
-    A_ = G["electronics"]["speed_sensor"]["A_bell_manometer"]
-    b, liq = A_["bell"], A_["liquid"]
-    ri, t, h = b["inner_d"] / 2, b["wall_t"], b["height"]
-    ro = ri + t
-    area_in = math.pi * ri ** 2 * 1e-6                       # m2
-    area_eff = math.pi * ((ri + ro) / 2) ** 2 * 1e-6         # mid-wall, planning value
-    vol_mm3 = math.pi * (ro ** 2 - ri ** 2) * h + math.pi * ro ** 2 * t
-    mass_g = vol_mm3 / 1000 * b["density_g_cm3"]
-    buoy_g = math.pi * (ro ** 2 - ri ** 2) * A_["immersion"] / 1000 * liq["density_kg_m3"] / 1000
-    dp_max = max_sensor_dp()
-    f_max_g = dp_max * area_eff / G_ACC * 1000
-    dh_max = dp_max / (liq["density_kg_m3"] * G_ACC) * 1000  # mm of liquid
-    res_pa = G["force_resolution_mN"] / 1000 / area_eff
-    return {"area_in_m2": area_in, "area_eff_m2": area_eff, "mass_g": mass_g, "net_g": mass_g - buoy_g,
-            "dp_max": dp_max, "f_max_g": f_max_g, "load_max_g": mass_g - buoy_g + f_max_g,
-            "cap_g": A_["load_cell_kg"] * 1000, "dh_max_mm": dh_max, "res_pa": res_pa,
-            "headroom_mm": b["height"] - A_["immersion"], "tip_mm": A_["snorkel"]["tip_above_rest_level"],
-            "immersion": A_["immersion"], "liquid_depth": liq["depth"], "rim_gap": A_["rim_above_dish_floor"]}
-
-
 def baro_pair_error_pa():
-    """Speed sensor B after zeroing: averaged noise of the difference plus temperature drift between the sensors."""
-    B = G["electronics"]["speed_sensor"]["B_barometer_pair"]
+    """Speed sensor (BMP280 pair) after zeroing: averaged noise of the difference plus temperature drift between the sensors."""
+    B = G["electronics"]["speed_sensor"]["barometer_pair"]
     n = B["samples_per_s"] * B["average_s"]
     noise = math.sqrt(2) * B["noise_pa_per_sample"] / math.sqrt(n)
     drift = math.sqrt(2) * B["tco_pa_per_k"] * B["run_temp_drift_k"]
     return math.hypot(noise, drift)
 
 
-def speed_error(U, sensor="A"):
-    """Fractional speed error at U for sensor A (bell, resolution-limited) or B (barometer pair)."""
-    e = bell()["res_pa"] if sensor == "A" else baro_pair_error_pa()
-    return 0.5 * e / ac.q_of(U)
+def speed_error(U):
+    """Fractional speed error at U from the barometer pair's pressure error (U ~ sqrt(q))."""
+    return 0.5 * baro_pair_error_pa() / ac.q_of(U)
 
 
 def budget():
@@ -169,13 +146,15 @@ def report():
     p(f"- sum K {ac.system_K():.3f}")
     fa = G["fan"]
     p(f"\n## Fan array operating points ({fa['count']} fans: {fa['parallel']} stacks x {fa['layers']} layers; datasheet P-Q curve; speed ~ PWM duty)")
-    p(f"- series factor {series_factor('design')} (design) to {series_factor('ideal')} (ideal)")
+    if fa["layers"] > 1:
+        p(f"- series factor {series_factor('design')} (design) to {series_factor('ideal')} (ideal)")
     for d in (1.0, 0.8, 0.6, 0.4, 0.3):
         op = operating_point(d)
         hi = operating_point(d, "ideal")
         f = forces_mN(op["U"])
         p(f"- duty {d*100:.0f} %: U {op['U']:.1f} m/s (ideal {hi['U']:.1f}), Q {op['Q_m3h']:.0f} m3/h, dp {op['dp']:.0f} Pa, drag {f['drag']:.1f} mN, lift {f['lift']:.1f} mN")
-    p(f"- one layer only ({fa['parallel']} fans): U {operating_point(1.0, layers=1)['U']:.1f} m/s at full power")
+    top = operating_point(1.0)["U"]
+    p(f"- top speed {top:.1f} m/s = {(top / G['speeds_m_s']['max_target'] - 1) * 100:.0f} % over the {G['speeds_m_s']['max_target']} m/s target")
     for U in (5, 10, 12, 14):
         d = duty_for(U)
         p(f"- duty for {U} m/s: {'n/a' if d is None else f'{d*100:.0f} %'}")
@@ -184,13 +163,10 @@ def report():
     for U in (5, 10, 12, 14):
         f = forces_mN(U)
         p(f"- U {U}: drag {f['drag']:.1f} mN ({f['drag']/G_ACC:.2f} gf), {res} mN = {res/f['drag']*100:.1f} % of drag; Re_L {U*G['car']['length']/1000/ac.NU:.1e}")
-    p("\n## Speed sensors (A bell manometer, B BMP280 pair)")
-    bl = bell()
-    p(f"- max sensor dp {bl['dp_max']:.0f} Pa; bell area {bl['area_eff_m2']*1e6:.0f} mm2 (mid-wall), mass {bl['mass_g']:.0f} g, net {bl['net_g']:.0f} g")
-    p(f"- bell load at max {bl['load_max_g']:.0f} g of {bl['cap_g']:.0f} g cell; liquid shift {bl['dh_max_mm']:.0f} mm; resolution {bl['res_pa']:.2f} Pa")
-    p(f"- barometer pair error after zeroing {baro_pair_error_pa():.2f} Pa")
+    p("\n## Speed sensor (BMP280 pair)")
+    p(f"- max sensor dp {max_sensor_dp():.0f} Pa; pair error after zeroing {baro_pair_error_pa():.2f} Pa")
     for U in (5, 7.5, 10, 12, 14):
-        p(f"- U {U}: q {ac.q_of(U):.0f} Pa, bell force {ac.q_of(U)*bl['area_eff_m2']/G_ACC*1000:.1f} g; speed error A +-{speed_error(U,'A')*100:.1f} %, B +-{speed_error(U,'B')*100:.1f} %")
+        p(f"- U {U}: q {ac.q_of(U):.0f} Pa, speed error +-{speed_error(U)*100:.1f} %")
     p("\n## Suction and panels")
     Um = G["speeds_m_s"]["max_target"]
     dep = ac.depression_at_ts(Um)

@@ -101,7 +101,7 @@ def fig_airpath():
     for x, u in ((sc["x0"] + 170, UMAX / cr), (170, UMAX), (760, UMAX / ar)):
         svg.text(top.X(x), top.V(0) + 22, f"{u:.1f} m/s", "d", "middle", True)
     svg.text(side.X(-560), side.V(ax + 154.5) - 10, "吸管蜂巢 + 2 片網", "n", "middle", True)
-    svg.text(side.X(1016), side.V(ax + 120) - 10, f"{G['fan']['count']} × {G['fan']['size']} mm 風扇（兩層）", "n", "middle", True)
+    svg.text(side.X(1016), side.V(ax + 120) - 10, f"{G['fan']['count']} × {G['fan']['size']} mm 風扇（一層）", "n", "middle", True)
     svg.text(side.X(986), side.V(ax - 120) + 18, "安全網", "n", "end", True)
     svg.text(side.X(168), side.V(gp["z_underside"]) + 30, "地面板 + 1:43 車模", "n", "middle", True)
     ca = G["clear_air"]
@@ -362,14 +362,15 @@ def fig_saddle_balance():
 
 # ---------------------------------------------------------------- M5
 def fig_wiring():
-    svg = Svg(1400, 960, "Arduino Uno 接線", "Uno 經 2 塊 4 路 MOS 板控制 8 個 2 線風扇，另接 3 組 HX711（阻力、垂直、鐘罩壓力計）、兩顆 BMP280、安全開關與選配輸出。")
+    fan = G["fan"]
+    svg = Svg(1400, 960, "Arduino Uno 接線", f"Uno 經 1 塊 4 路 MOS 板控制 {fan['count']} 個 2 線風扇，另接 2 組 HX711（阻力、垂直）、兩顆 BMP280（風速）、安全開關與選配輸出。")
     svg.header("圖 M5　Arduino Uno 接線圖", "紅：12 V　黑：GND　藍：訊號　綠：I²C　所有 GND 必須共地；風扇電源不可取自 Uno")
     ux, uy, uw, uh = 600, 150, 240, 600
     svg.rect(ux, uy, uw, uh, "shell", 'rx="10" style="fill:#e0f2fe"')
     svg.text(ux + uw / 2, uy + 30, "Arduino Uno R3", "t", "middle")
-    ly = {"D9": 305, "D10": 495, "D2": 560, "D8": 600}
-    right = ["D4", "D5", "D6", "D7", "A0", "A1", "D11", "D12", "A4", "A5"]
-    ry = {p_: uy + 70 + i * 50 for i, p_ in enumerate(right)}
+    ly = {"D9": 305, "D2": 560, "D8": 600}
+    right = ["D4", "D5", "D6", "D7", "D11", "D12", "A4", "A5"]
+    ry = {p_: uy + 70 + i * 55 for i, p_ in enumerate(right)}
     for p_, y in ly.items():
         svg.text(ux + 12, y + 4, p_, "l")
     for p_, y in ry.items():
@@ -391,38 +392,36 @@ def fig_wiring():
     svg.line(190, 150, 220, 150, "thin", red)
     svg.line(300, 150, 330, 150, "thin", red)
     svg.line(450, 150, 460, 150, "thin", red)
-    fan = G["fan"]
-    for i, fy in enumerate((250, 440)):
-        svg.rect(60, fy, 220, 120, "shell", 'rx="8"')
-        for k in range(fan["parallel"]):
-            svg.circle(87 + k * 55, fy + 35, 22, "thin")
-        svg.text(170, fy + 80, f"第 {i+1} 層：{fan['parallel']} × QFR1212GHE", "l", "middle")
-        svg.text(170, fy + 102, f"紅 → {G['electronics']['fan_fuse_a']} A 保險絲 · 黑 → MOS 板", "n", "middle")
-        svg.line(280, fy + 15, 460, fy + 15, "thin", red)
-        svg.line(280, fy + 60, 320, fy + 60, "thin", blk)
-        svg.rect(320, fy + 40, 110, 50, "shell", 'rx="6" style="fill:#ede9fe"')
-        svg.text(375, fy + 61, f"MOS 板 {i+1}", "n", "middle")
-        svg.text(375, fy + 80, "4 路，每扇一路", "n", "middle")
-        svg.line(320, fy + 82, 300, fy + 82, "thin", blk)
-        svg.line(430, fy + 55, 440, fy + 55, "thin", blu)
-    svg.line(300, 332, 300, 800, "thin", blk)
-    svg.line(460, 150, 460, 455, "thin", red)
+    fy = 250
+    svg.rect(60, fy, 220, 120, "shell", 'rx="8"')
+    for k in range(fan["parallel"]):
+        svg.circle(87 + k * 55, fy + 35, 22, "thin")
+    svg.text(170, fy + 80, f"{fan['parallel']} × QFR1212GHE（一層）", "l", "middle")
+    svg.text(170, fy + 102, f"紅 → {G['electronics']['fan_fuse_a']} A 保險絲 · 黑 → MOS 板", "n", "middle")
+    svg.line(280, fy + 15, 460, fy + 15, "thin", red)
+    svg.line(280, fy + 60, 320, fy + 60, "thin", blk)
+    svg.rect(320, fy + 40, 110, 50, "shell", 'rx="6" style="fill:#ede9fe"')
+    svg.text(375, fy + 61, "MOS 板", "n", "middle")
+    svg.text(375, fy + 80, "4 路，每扇一路", "n", "middle")
+    svg.line(430, fy + 55, 440, fy + 55, "thin", blu)
+    svg.path(f"M320,{fy + 82} L300,{fy + 82} L300,{fy + 135} L40,{fy + 135} L40,800", "thin", blk)
+    svg.line(460, 150, 460, fy + 15, "thin", red)
     svg.text(468, 200, "12 V", "n")
-    for i, p_ in enumerate(("D9", "D10")):
-        svg.line(440, ly[p_], ux, ly[p_], "thin", blu)
-        svg.text(592, ly[p_] - 6, f"PWM → 第 {i+1} 層", "n", "end")
+    svg.line(440, ly["D9"], ux, ly["D9"], "thin", blu)
+    svg.text(592, ly["D9"] - 6, f"PWM → {fan['count']} 個風扇", "n", "end")
     svg.line(480, ly["D2"], ux, ly["D2"], "thin", blu)
     svg.text(592, ly["D2"] - 6, "選配：光學轉速計 → D2", "n", "end")
-    svg.lines(60, 600, ["每個風扇並一顆 SS34（條紋朝紅線）", "1000 µF / 25 V 接在 12 V 電源側", "（板子之前，不可接在風扇兩端）", "光耦輸入：Uno 重開機時風扇不轉"], "n", 20)
+    svg.lines(60, 420, ["每個風扇並一顆 SS34（條紋朝紅線）", "1000 µF / 25 V 接在 12 V 電源側", "（板子之前，不可接在風扇兩端）", "光耦輸入：Uno 重開機時風扇不轉",
+                        "4 個光耦輸入都接 D9：", "先量總電流，超過 20 mA", "就加一顆電晶體"], "n", 20)
     svg.rect(470, 640, 110, 40, "shell", 'rx="6"')
     svg.text(525, 665, "艙蓋安全開關", "n", "middle")
     svg.path(f"M525,640 L525,{ly['D8']} L{ux},{ly['D8']}", "thin", blu)
-    svg.line(60, 800, 860, 800, "thin", blk)
+    svg.line(40, 800, 860, 800, "thin", blk)
     svg.text(70, 790, "GND：12 V 電源 GND、風扇 GND、Uno GND 接在一起（共地）", "n")
     svg.text(70, 822, "急停切斷的是 12 V（硬體），不依賴 Uno 程式", "w")
     # right side devices
     dx = 940
-    for name, sub, a, b in (("HX711（阻力）", "→ 100 g 荷重元", "D4", "D5"), ("HX711（垂直）", "→ 1 kg 荷重元", "D6", "D7"), ("HX711 #3（風速 A）", "→ 鐘罩壓力計 100 g", "A0", "A1")):
+    for name, sub, a, b in (("HX711（阻力）", "→ 100 g 荷重元", "D4", "D5"), ("HX711（垂直）", "→ 1 kg 荷重元", "D6", "D7")):
         svg.rect(dx, ry[a] - 22, 210, 82, "shell", 'rx="6" style="fill:#fef9c3"')
         svg.text(dx + 105, ry[a] + 4, name, "l", "middle")
         svg.text(dx + 105, ry[a] + 24, f"DT={a}  SCK={b}", "n", "middle")
@@ -437,7 +436,7 @@ def fig_wiring():
     svg.path(f"M{ux+uw},{ry['A5']} L{bx_scl},{ry['A5']} L{bx_scl},{ry['A4']+250}", "thin", grn)
     svg.text(bx_sda - 4, ry["A4"] - 6, "SDA", "n", "end")
     svg.text(bx_scl + 4, ry["A5"] - 6, "SCL", "n")
-    for i, (name, sub) in enumerate((("BMP280 × 2（風速 B）", "I²C 0x76 低壓、0x77 高壓"), ("LCD 1602（選配）", "I²C 0x27 · 顯示風速與力"))):
+    for i, (name, sub) in enumerate((("BMP280 × 2（風速感測器）", "I²C 0x76 低壓、0x77 高壓"), ("LCD 1602（選配）", "I²C 0x27 · 顯示風速與力"))):
         y = ry["A5"] + 50 + i * 100
         svg.rect(dx, y, 240, 70, "shell", 'rx="6" style="fill:#dcfce7"')
         svg.text(dx + 120, y + 28, name, "l", "middle")
@@ -446,15 +445,16 @@ def fig_wiring():
         svg.line(bx_scl, y + 46, dx, y + 46, "thin", grn)
     y = ry["A5"] + 50
     svg.lines(dx + 250, y + 10, ["選 5 V 可用的模組", "（板上有穩壓與電平轉換）", "管路見圖 M7", "每次開風扇前先歸零"], "n", 18)
-    svg.text(40, 880, "D9、D10 同屬 Timer1：頻率相同、占空比相同，每個腳位只帶一層；D13 板上狀態燈", "n")
+    svg.text(40, 880, "D9 = Timer1 OC1A；D10 同屬 Timer1，保持空著；D13 板上狀態燈", "n")
     svg.text(40, 906, "程式：讀 q → PID 調 PWM 定速；自動跑「歸零 → 升速 → 穩定 60 s → 擷取 30 s → 停機 → 再歸零」；每筆 CSV 經 USB 傳到筆電", "n")
     svg.save("M5-uno-wiring.svg")
 
 
 # ---------------------------------------------------------------- M6
 def fig_fan_curve():
-    svg = Svg(1240, 640, "風扇曲線與系統曲線", "8 個 120 mm 風扇（4 組兩兩串聯）在不同 PWM 下的估計曲線，與迷你風洞系統曲線的交點。")
-    svg.header("圖 M6　風扇陣列 vs 風洞系統曲線（估計）", "紫線：8 個 QFR1212GHE，原廠 P-Q 曲線，兩層串聯係數 1.6（待量測）　藍線：風洞需要的壓力")
+    n = G["fan"]["count"]
+    svg = Svg(1240, 640, "風扇曲線與系統曲線", f"{n} 個 120 mm 風扇（一層並聯）在不同 PWM 下的估計曲線，與迷你風洞系統曲線的交點。")
+    svg.header("圖 M6　風扇陣列 vs 風洞系統曲線（估計）", f"紫線：{n} 個 QFR1212GHE 並聯，原廠 P-Q 曲線　藍線：風洞需要的壓力")
     x0, y0, w, h = 90, 560, 700, 440
     qmax, pmax = 1800, 360
     X = lambda q: x0 + q / qmax * w
@@ -477,7 +477,6 @@ def fig_fan_curve():
         if dp <= pmax:
             pts.append((X(Q), Y(dp)))
     svg.poly(pts, "c1")
-    f = G["fan"]
     for d in (1.0, 0.8, 0.6, 0.4):
         curve = []
         for i in range(0, 121):
@@ -490,116 +489,88 @@ def fig_fan_curve():
         op = mc.operating_point(d)
         svg.circle(X(op["Q_m3h"]), Y(op["dp"]), 5, "shell", 'style="fill:#187c91"')
         svg.text(X(op["Q_m3h"]) + 8, Y(op["dp"]) - 8, f"PWM {d*100:.0f}% → {op['U']:.1f} m/s", "d", "start", True)
+    margin = (mc.operating_point(1.0)["U"] / UMAX - 1) * 100
     rx = 850
     svg.text(rx, 130, "怎麼讀", "l")
     svg.lines(rx, 156, ["紫線：風扇能給的壓力（轉速越低越往左下）", "藍線：風洞在各流量下需要的壓力", "交點：實際會跑到的風速",
                         "", f"5 m/s 約需 PWM {mc.duty_for(5)*100:.0f}%", f"10 m/s 約需 PWM {mc.duty_for(10)*100:.0f}%（課堂展示）",
                         f"{UMAX} m/s 約需 PWM {mc.duty_for(UMAX)*100:.0f}%", "", "PWM 只是起點：Arduino 會讀壓差、",
-                        "用 PID 自動調到目標風速", "", "兩層串聯的增益是假設，真實曲線可能較低；", "裝好後用 PWM 掃描實測一次"], "d", 21)
+                        "用 PID 自動調到目標風速", "", "系統損失是估計值：", f"最高風速只比 {UMAX} m/s 高約 {margin:.0f}%；",
+                        "不夠時改用 4 × PFC1212DE；", "裝好後用 PWM 掃描實測一次"], "d", 21)
     svg.save("M6-fan-curve.svg")
 
 
 # ---------------------------------------------------------------- M7
 def fig_speed_sensors():
     ss = G["electronics"]["speed_sensor"]
-    A_, B_ = ss["A_bell_manometer"], ss["B_barometer_pair"]
-    b, liq = A_["bell"], A_["liquid"]
-    bl = mc.bell()
-    svg = Svg(1400, 980, "自製風速感測器", "主感測器 A：鐘罩壓力計吊在 100 g 荷重元下；備援 B：兩顆 BMP280 氣壓計；兩者用三通接同一組量測孔。")
-    svg.header("圖 M7　自製風速感測器：A 鐘罩壓力計（主）＋ B 兩顆氣壓計（備援）",
-               "剖面依比例（mm）；低壓接鐘罩內部，高壓接盒內空氣 → 壓差把鐘罩往下拉，荷重元讀數隨 q 增加")
-    s_ = 2.9
-    vw = View(300, 840, s_)                      # x = mm from box inner left wall, v = mm above box floor
-    box_w, box_h = 170, 175
-    dish_d, dish_h, dish_x0, dish_z0 = A_["dish_inner_d_min"], liq["depth"] + 12, 20, 8
-    cx = dish_x0 + dish_d / 2
-    lz = dish_z0 + liq["depth"]                  # liquid rest level
-    rim = dish_z0 + A_["rim_above_dish_floor"]
-    top = rim + b["height"]
-    ri, ro = b["inner_d"] / 2, b["inner_d"] / 2 + b["wall_t"]
-    svg.rect(vw.X(0), vw.V(box_h), box_w * s_, box_h * s_, "shell0", 'rx="10" style="stroke-width:3"')
-    svg.text(vw.X(box_w) - 8, vw.V(box_h) + 20, "密封保鮮盒（≥ 1.5 L）", "l", "end")
-    svg.text(vw.X(box_w) - 8, vw.V(box_h) + 38, "電線出口用熱熔膠封死", "n", "end")
-    svg.rect(vw.X(dish_x0), vw.V(dish_z0 + dish_h), dish_d * s_, dish_h * s_, "shell0")
-    svg.rect(vw.X(dish_x0), vw.V(lz), dish_d * s_, liq["depth"] * s_, "pc", 'style="fill:#fde68a;stroke:none;opacity:0.7"')
-    svg.rect(vw.X(dish_x0 - 6), vw.V(dish_z0), (dish_d + 12) * s_, 3 * s_, "solid")
-    for x_ in (cx - ro, cx + ri):
-        svg.rect(vw.X(x_), vw.V(top), b["wall_t"] * s_, b["height"] * s_, "dark")
-    svg.rect(vw.X(cx - ro), vw.V(top), 2 * ro * s_, b["wall_t"] * s_, "dark")
-    svg.line(vw.X(cx - ri), vw.V(lz + bl["dh_max_mm"]), vw.X(cx + ri), vw.V(lz + bl["dh_max_mm"]), "tbd")
-    svg.text(vw.X(cx + ri) - 6, vw.V(lz + bl["dh_max_mm"]) - 6, "最大時液面", "w", "end", halo=True)
-    tip = lz + A_["snorkel"]["tip_above_rest_level"]
-    sx_out, sx_in, sz_low = cx - ro - 8, cx - ri + 8, dish_z0 + 4
-    svg.poly([vw.P(0, 120), vw.P(sx_out, 120), vw.P(sx_out, sz_low), vw.P(sx_in, sz_low), vw.P(sx_in, tip)], "c2")
-    svg.circle(*vw.P(sx_in, tip), 3, "c2")
-    svg.text(vw.X(sx_in) + 8, vw.V(tip) - 4, "通氣管口", "n", halo=True)
-    svg.vdim(vw.X(sx_in) + 18, vw.V(tip), vw.V(lz), f"{A_['snorkel']['tip_above_rest_level']}")
-    lc_z = top + 30
-    br_x = cx + 75
-    svg.rect(vw.X(br_x), vw.V(lc_z), 10 * s_, (lc_z - dish_z0) * s_, "solid")
-    svg.rect(vw.X(cx - 10), vw.V(lc_z + 12.7), (br_x + 10 - (cx - 10)) * s_, 12.7 * s_, "pc", 'style="fill:#e5e7eb"')
-    svg.text(vw.X((cx + br_x) / 2), vw.V(lc_z + 12.7) - 8, "100 g 荷重元 → HX711 #3（A0/A1）", "l", "middle", halo=True)
-    svg.line(vw.X(cx), vw.V(lc_z), vw.X(cx), vw.V(top), "thin", 'style="stroke-width:1.5"')
-    svg.text(vw.X(cx) + 6, vw.V(lc_z) + 18, "細線吊掛", "n", halo=True)
-    svg.lines(vw.X(br_x) - 6, vw.V(dish_z0 + dish_h + 30), ["硬支架", "黏盒底", "不黏盒蓋"], "n", 16, "end")
-    svg.rect(vw.X(-8), vw.V(122), 8 * s_, 4 * s_, "solid")
-    svg.lines(vw.X(-30), vw.V(120) - 4, ["低壓", "皮托管靜壓／入口環", "→ 鐘罩內"], "w", 16, "end")
-    svg.rect(vw.X(-8), vw.V(160), 8 * s_, 4 * s_, "solid")
-    svg.lines(vw.X(-30), vw.V(158) - 4, ["高壓", "皮托管總壓／穩定段環", "→ 盒內空氣"], "w", 16, "end")
-    svg.hdim(vw.X(cx - ri), vw.X(cx + ri), vw.V(top) - 22, f"內徑 {b['inner_d']}")
-    svg.vdim(vw.X(cx + ro) + 22, vw.V(top), vw.V(rim), f"高 {b['height']}")
-    svg.vdim(vw.X(cx - ro) - 16, vw.V(lz), vw.V(rim), f"浸入 {A_['immersion']}", left=True)
-    svg.vdim(vw.X(dish_x0 + dish_d) + 10, vw.V(lz), vw.V(dish_z0), f"油深 {liq['depth']}")
-    svg.vdim(vw.X(cx + ri) - 12, vw.V(rim), vw.V(dish_z0), f"{A_['rim_above_dish_floor']}", left=True)
-    svg.hdim(vw.X(dish_x0), vw.X(dish_x0 + dish_d), vw.V(dish_z0) + 30, f"碗內徑 ≥ {dish_d}", below=True)
-    svg.lines(40, 900, [f"鐘罩：3D 列印 PETG 直筒（不要用錐形杯），壁厚 {b['wall_t']} mm，約 {bl['mass_g']:.0f} g；液體：嬰兒油（不易蒸發、不導電）；通氣管：4 mm 黃銅管彎 U 形，從鐘罩口下方繞進去",
-                        f"有效面積約 {bl['area_eff_m2']*1e6:.0f} mm²（校正後以實測為準）：15 Pa ≈ {15*bl['area_eff_m2']/mc.G_ACC*1000:.1f} g，最大 {bl['dp_max']:.0f} Pa ≈ {bl['f_max_g']:.0f} g；荷重元最大負載約 {bl['load_max_g']:.0f} g / {bl['cap_g']:.0f} g；最大時鐘罩內液面升高約 {bl['dh_max_mm']:.0f} mm",
-                        f"解析度：天平 1 mN ÷ 面積 ≈ {bl['res_pa']:.2f} Pa → 5 m/s 風速誤差約 ±{mc.speed_error(5,'A')*100:.1f}%"], "n", 18)
-    # right: backup B
-    rx = 820
-    svg.text(rx, 130, "B　備援：兩顆 BMP280（I²C 0x76、0x77）", "l")
-    for i, (lab, addr) in enumerate((("B 高壓", "0x77"), ("B 低壓", "0x76"))):
-        x_ = rx + 20 + i * 150
-        svg.rect(x_, 170, 110, 120, "shell", 'rx="14"')
-        svg.rect(x_ + 30, 215, 50, 30, "solid")
-        svg.text(x_ + 55, 235, "BMP280", "n", "middle")
-        svg.text(x_ + 55, 160, f"{lab}（{addr}）", "n", "middle")
-        svg.rect(x_ + 48, 290, 14, 22, "solid")
-        svg.text(x_ + 55, 330, "接管嘴", "n", "middle")
-    svg.rect(rx + 8, 180, 285, 100, "tbd", 'rx="6" style="fill:none"')
-    svg.lines(rx + 320, 190, ["底片盒或小密封盒", "各裝一顆、只留一個管嘴", "兩盒膠帶綁在一起、包泡棉", "→ 溫度相同，漂移較小", "電線孔用熱熔膠封"], "n", 18)
-    svg.lines(rx, 370, [f"歸零後誤差約 ±{mc.baro_pair_error_pa():.1f} Pa（雜訊平均 1 s ＋ 兩顆溫差 {B_['run_temp_drift_k']} K）",
-                        f"→ 12 m/s 風速誤差 ±{mc.speed_error(12,'B')*100:.1f}%，5 m/s 約 ±{mc.speed_error(5,'B')*100:.1f}%",
-                        "兩顆出廠差約 ±12 Pa：每次開風扇前一定要歸零", "另外提供室內氣壓與溫度（算空氣密度）"], "n", 18)
-    # plumbing
-    py = 520
-    svg.text(rx, py, "管路：A、B 用三通接在同一組量測孔", "l")
-    svg.rect(rx, py + 30, 150, 60, "shell", 'rx="6"')
-    svg.lines(rx + 75, py + 55, ["皮托管", "或壁面靜壓環"], "n", 18, "middle")
-    for lab, col, yy, ya, yb in (("高壓（總壓）", "c1", py + 45, py + 15, py + 90), ("低壓（靜壓）", "c2", py + 80, py + 35, py + 110)):
-        svg.line(rx + 150, yy, rx + 300, yy, col)
-        svg.text(rx + 158, yy - 6, lab, "n")
-        svg.circle(rx + 300, yy, 6, col)
-        svg.line(rx + 300, yy, rx + 380, ya, col)
-        svg.line(rx + 300, yy, rx + 380, yb, col)
-    svg.rect(rx + 380, py + 0, 160, 50, "shell", 'rx="6" style="fill:#fef9c3"')
-    svg.text(rx + 460, py + 30, "A 鐘罩壓力計", "l", "middle")
-    svg.rect(rx + 380, py + 75, 160, 50, "shell", 'rx="6" style="fill:#dcfce7"')
-    svg.text(rx + 460, py + 105, "B 氣壓計對", "l", "middle")
-    svg.lines(rx, py + 170, ["高壓 → A 的盒內空氣、B 高壓盒；低壓 → A 的鐘罩內、B 低壓盒",
-                             "平時接壁面靜壓環（穩定段 − 測試段入口）控制風速；",
-                             "校正 k 時：A 接壁面環、B 接皮托管，同時量 → 不用換管",
-                             "A、B 讀數差 > 1 Pa 或 2% → 先查漏氣，再決定用哪一個（見計畫書）"], "n", 18)
+    B_ = ss["barometer_pair"]
+    e = mc.baro_pair_error_pa()
+    red = 'style="stroke:#dc2626;stroke-width:3;fill:none"'
+    blu = 'style="stroke:#2563eb;stroke-width:3;fill:none"'
+    grn = 'style="stroke:#16a34a;stroke-width:2.5;fill:none"'
+    svg = Svg(1400, 900, "風速感測器（氣壓計）", "兩顆 BMP280 各封在底片盒裡、包泡棉放在電子板上；紅管接穩定段靜壓環、藍管接測試段入口靜壓環，不用三通。")
+    svg.header("圖 M7　風速感測器：兩顆 BMP280 氣壓計（不用三通）",
+               "紅管：穩定段靜壓環 → 高壓盒（0x77）　藍管：測試段入口靜壓環 → 低壓盒（0x76）　兩條直管、等長、不用三通")
+    # tunnel (schematic)
+    svg.rect(60, 170, 200, 150, "shell")
+    svg.text(160, 250, "穩定段", "l", "middle")
+    svg.line(260, 170, 330, 210, "shell0")
+    svg.line(260, 320, 330, 280, "shell0")
+    svg.rect(330, 210, 170, 70, "pc")
+    svg.text(415, 250, "測試段", "l", "middle")
+    for x_ in (130, 190):
+        svg.circle(x_, 320, 5, "shell", 'style="fill:#dc2626"')
+    svg.text(160, 160, "靜壓環 ×4（x = −420）", "n", "middle")
+    for x_ in (360, 390):
+        svg.circle(x_, 280, 5, "shell", 'style="fill:#2563eb"')
+    svg.text(415, 200, "靜壓環 ×4（x = 30）", "n", "middle")
+    svg.path("M160,320 L160,440 L560,440", "thin", red)
+    svg.path("M375,280 L375,500 L560,500", "thin", blu)
+    # electronics board
+    svg.rect(540, 380, 470, 220, "shell", 'rx="8" style="fill:#f5efe3"')
+    svg.text(560, 404, "電子板（H5）", "l")
+    for yy in (440, 500):
+        svg.rect(556, yy - 8, 24, 16, "solid")
+    svg.text(556, 625, "快接頭（搬運時拔開）", "n")
+    svg.path("M580,440 L700,440 L700,460", "thin", red)
+    svg.path("M580,500 L640,500 L640,420 L790,420 L790,460", "thin", blu)
+    svg.rect(660, 450, 190, 130, "tbdf", 'rx="10"')
+    svg.text(755, 596, "泡棉包住兩盒 → 溫度相同", "n", "middle")
+    for cx_, lab in ((700, "高壓 0x77"), (790, "低壓 0x76")):
+        svg.rect(cx_ - 32, 468, 64, 96, "shell", 'rx="10"')
+        svg.rect(cx_ - 20, 500, 40, 24, "solid")
+        svg.text(cx_, 545, lab, "n", "middle")
+    svg.rect(900, 450, 90, 60, "shell", 'rx="6" style="fill:#e0f2fe"')
+    svg.text(945, 485, "Uno", "l", "middle")
+    svg.path("M822,530 L870,530 L870,480 L900,480", "thin", grn)
+    svg.text(945, 530, "I²C（A4/A5）", "n", "middle")
+    # one canister, section
+    rx = 1010
+    svg.text(rx, 140, "一個壓力盒（剖面）", "l")
+    svg.rect(rx + 30, 190, 110, 150, "shell", 'rx="12"')
+    svg.rect(rx + 55, 255, 60, 30, "solid")
+    svg.text(rx + 85, 275, "BMP280", "n", "middle")
+    svg.rect(rx + 78, 168, 14, 22, "solid")
+    svg.text(rx + 100, 182, "接管嘴", "n")
+    svg.line(rx + 85, 340, rx + 85, 380, "thin", 'style="stroke:#111827;stroke-width:2"')
+    svg.circle(rx + 85, 343, 6, "dark")
+    svg.lines(rx + 150, 210, ["底片盒（35 mm）", "只留一個管嘴", "BMP280 模組（5 V 可用）", "電線孔用熱熔膠封"], "n", 18)
+    svg.lines(60, 660, [f"歸零後誤差約 ±{e:.1f} Pa（雜訊平均 {B_['average_s']:.0f} s ＋ 兩顆溫差 {B_['run_temp_drift_k']} K）",
+                        f"→ 12 m/s 風速誤差 ±{mc.speed_error(12)*100:.1f}%，5 m/s 約 ±{mc.speed_error(5)*100:.1f}%",
+                        f"兩顆出廠差約 ±{B_['offset_between_sensors_pa']} Pa：每次開風扇前一定要歸零", "另外提供室內氣壓與溫度（算空氣密度）"], "n", 20)
+    svg.lines(720, 660, ["管線約 0.5 m、兩條等長；平時接壁面靜壓環控制風速",
+                         "校正 k：同一 PWM 先讀壁面環，再把兩條管換接皮托管讀一次；",
+                         "k = q 皮托 ÷ Δp 壁面環；做 3 個 PWM",
+                         "歸零 2 分鐘內漂移 > 2 Pa → 改用 C（買 ABP2 差壓計）"], "n", 20)
     svg.save("M7-speed-sensors.svg")
 
 
 # ---------------------------------------------------------------- M8
 def fig_sensor_calibration():
     cal = G["electronics"]["speed_sensor"]["calibration"]
-    svg = Svg(1400, 760, "風速感測器校正", "用針筒產生壓差，以 1:10 傾斜水柱計為標準，校正鐘罩壓力計與氣壓計對。")
+    svg = Svg(1400, 760, "風速感測器校正", "用針筒產生壓差，以 1:10 傾斜水柱計為標準，校正氣壓計對。")
     svg.header("圖 M8　風速感測器桌上校正（不用開風扇）",
-               "針筒慢慢抽氣 → 傾斜水柱計讀數 L → Δp = ρ g L / 10 ≈ 0.98 Pa/mm；同時記錄 A、B 讀數")
-    # syringe
+               "針筒慢慢抽氣 → 傾斜水柱計讀數 L → Δp = ρ g L / 10 ≈ 0.98 Pa/mm；同時記錄氣壓計讀數")
     svg.rect(60, 250, 200, 50, "shell", 'rx="6"')
     svg.rect(260, 265, 40, 20, "solid")
     svg.rect(20, 262, 60, 26, "solid")
@@ -607,18 +578,13 @@ def fig_sensor_calibration():
     svg.circle(380, 275, 7, "c2")
     svg.line(300, 275, 373, 275, "c2")
     svg.text(380, 255, "三通", "n", "middle")
-    # to manometer and to sensors low sides
     svg.path("M380,282 L380,420 L470,420", "c2")
-    svg.path("M387,275 L700,275", "c2")
-    svg.circle(700, 275, 7, "c2")
-    svg.path("M700,268 L700,170 L900,170", "c2")
-    svg.path("M707,275 L900,275", "c2")
-    svg.rect(900, 140, 220, 60, "shell", 'rx="6" style="fill:#fef9c3"')
-    svg.text(1010, 176, "A 鐘罩內（低壓口）", "l", "middle")
+    svg.path("M387,275 L900,275", "c2")
     svg.rect(900, 245, 220, 60, "shell", 'rx="6" style="fill:#dcfce7"')
-    svg.text(1010, 281, "B 低壓盒", "l", "middle")
-    svg.lines(1140, 165, ["A 的盒內空氣、B 高壓盒：", "開著通室內（高壓口不接）"], "n", 18)
-    # inclined manometer
+    svg.text(1010, 281, "低壓盒（0x76）", "l", "middle")
+    svg.rect(900, 140, 220, 60, "shell", 'rx="6" style="fill:#fee2e2"')
+    svg.text(1010, 176, "高壓盒（0x77）", "l", "middle")
+    svg.lines(1140, 165, ["開著通室內", "（高壓口不接）"], "n", 18)
     x0, y0, L = 470, 600, 560
     import math as _m
     ang = _m.atan(0.1)
@@ -636,9 +602,9 @@ def fig_sensor_calibration():
     svg.text(x0 + L / 2, y0 + 48, "1:10 傾斜水柱計（透明管＋尺，加食用色素）", "l", "middle")
     svg.text(x0 + L / 2, y0 + 68, f"讀數精度 ±{cal['read_mm_along_tube']} mm（沿管）→ ±{cal['read_mm_along_tube']*0.98:.1f} Pa", "n", "middle")
     svg.lines(900, 380, ["步驟", "1. 全部接好，捏住針筒管 60 s：讀數變化須 < " + f"{cal['accept_leak_pa_per_60s']} Pa（漏氣測試）",
-                        "2. 垂直水柱 0 → 2 → 5 → 10 → 15 → 20 mm（沿管 0–200 mm）", "   每點停 10 s，記錄 L、A、B；再反向回到 0",
-                        "3. 重複 3 次；A 的斜率 = 有效面積（寫回 spec）", "4. 合格：直線誤差 ≤ " + f"{cal['accept_linearity_pa_or_pct'][0]} Pa 或 {cal['accept_linearity_pa_or_pct'][1]}%",
-                        f"   遲滯 ≤ {cal['accept_hysteresis_pa']} Pa；A、B 相差 ≤ {cal['accept_A_vs_B_pa_or_pct'][0]} Pa 或 {cal['accept_A_vs_B_pa_or_pct'][1]}%"], "n", 19)
+                        "2. 垂直水柱 0 → 2 → 5 → 10 → 15 → 20 mm（沿管 0–200 mm）", "   每點停 10 s，記錄 L 與氣壓計；再反向回到 0",
+                        "3. 重複 3 次；斜率 = 增益修正（寫回 spec）", "4. 合格：直線誤差 ≤ " + f"{cal['accept_linearity_pa_or_pct'][0]} Pa 或 {cal['accept_linearity_pa_or_pct'][1]}%",
+                        f"   遲滯 ≤ {cal['accept_hysteresis_pa']} Pa；歸零後 2 分鐘漂移 ≤ {cal['accept_drift_pa_per_2min']} Pa"], "n", 19)
     svg.save("M8-sensor-calibration.svg")
 
 

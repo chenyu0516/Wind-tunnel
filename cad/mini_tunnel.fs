@@ -534,6 +534,18 @@ function layFlat(context is Context, id is Id, items is array, bedX is number, b
     return report;
 }
 
+// M6 T-nut pressed in from below: its 8 mm barrel cuts the hole through the plywood layers above it
+// (laser-cut hole), the 19 mm flange sits under the bottom face. Returns the T-nut body.
+function tNut(context is Context, id is Id, x is number, y is number, zBot is number, ply is Query) returns Query
+{
+    cyl(context, id + "b", [x, y, zBot - 1.5], [x, y, zBot + 8], 8);
+    cut(context, id + "c", ply, bodies(id + "b"), true);
+    cyl(context, id + "f", [x, y, zBot - 1.5], [x, y, zBot], 19);
+    const q = qUnion([bodies(id + "b"), bodies(id + "f")]);
+    fuse(context, id + "u", q);
+    return q;
+}
+
 // M6 levelling foot: rubber pad on the desk plus bolt up into the part above (top z).
 function levelFoot(context is Context, id is Id, x is number, y is number, zTop is number)
 {
@@ -859,12 +871,55 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         // ---------- A3 test section 168 x 126 x 336: flat 3 mm clear acrylic panels (laser-cut, solvent-glued) ----------
         // The side panels run down past the floor at x 87..273 and form the side walls of the balance box (C),
         // so the test section and the balance are one module with no separate plenum.
-        blk(context, id + "tsF", [0, -84, -3], [336, 84, 0]);
-        const sideProfile = [[0, -3], [87, -3], [87, -86], [273, -86], [273, -3], [336, -3], [336, 129], [0, 129]];
+        // Floor and walls are finger-jointed along both bottom corners (17 fingers of ~20 mm; the walls own the end ones),
+        // so the panels square themselves while the capillary solvent cement is run in. Where a wall continues down into
+        // the balance box, the floor's fingers pass through slots in the wall.
+        blk(context, id + "tsF", [0, -87, -3], [336, 87, 0]);
+        const sideProfile = [[0, -3], [87, -3], [87, -86], [273, -86], [273, -3], [336, -3], [336, 126], [0, 126]];
         sideExtrude(context, id + "tsL", sideProfile, 84, 87);
         sideExtrude(context, id + "tsR", sideProfile, -87, -84);
-        // roof with the car hatch opening (x 120..300, y -75..75) and four magnet holes
-        blk(context, id + "tsT", [0, -84, 126], [336, 84, 129]);
+        const nTs = 17;
+        for (var sd = 0; sd < 2; sd += 1)
+        {
+            const y0 = sd == 0 ? 84 : -87;
+            var toFloor = [];
+            var toWall = [];
+            for (var k = 0; k < nTs; k += 1)
+            {
+                const xa = k == 0 ? -0.5 : 336 * k / nTs;
+                const xb = k == nTs - 1 ? 336.5 : 336 * (k + 1) / nTs;
+                const jid = id + ("tsJ" ~ sd) + ("k" ~ k);
+                if (k % 2 == 0)
+                {
+                    // wall finger: notch the floor
+                    blk(context, jid, [xa, sd == 0 ? y0 : y0 - 0.5, -3.5], [xb, sd == 0 ? y0 + 3.5 : y0 + 3, 0.5]);
+                    toWall = append(toWall, bodies(jid));
+                }
+                else
+                {
+                    // floor finger: slot or notch in the wall
+                    blk(context, jid, [xa, sd == 0 ? y0 - 0.5 : y0, -3], [xb, sd == 0 ? y0 + 3 : y0 + 3.5, 0]);
+                    toFloor = append(toFloor, bodies(jid));
+                }
+            }
+            cut(context, id + ("tsJf" ~ sd), bodies(id + "tsF"), qUnion(toWall), false);
+            cut(context, id + ("tsJw" ~ sd), bodies(id + (sd == 0 ? "tsL" : "tsR")), qUnion(toFloor), false);
+        }
+        // Roof: rests ON the wall tops (wider than the passage) so it can be hinged at the inlet with tape and shimmed
+        // up 0-6 mm at the outlet without opening side slots; tape seals the top edges. Four acrylic locators glued to the
+        // outside of the walls keep it central (the outlet pair stands 6 mm higher to keep locating it when shimmed).
+        // Car hatch opening (x 120..300, y -75..75) and four magnet holes.
+        blk(context, id + "tsT", [0, -87, 126], [336, 87, 129]);
+        const locs = [[40, 70, 129], [280, 310, 135]];
+        for (var i = 0; i < 2; i += 1)
+        {
+            for (var sd = 0; sd < 2; sd += 1)
+            {
+                const lid = id + ("tsLoc" ~ i ~ sd);
+                blk(context, lid, [locs[i][0], sd == 0 ? 87 : -90, 106], [locs[i][1], sd == 0 ? 90 : -87, locs[i][2]]);
+                L = append(L, lc(context, bodies(lid), "ACR", "A3 Roof locator " ~ (i == 0 ? "inlet " : "outlet ") ~ (sd == 0 ? "left" : "right") ~ " (glued to the wall outside)", PC));
+            }
+        }
         blk(context, id + "tsTo", [120, -75, 125], [300, 75, 130]);
         const magPos = [[112, 80], [112, -80], [308, 80], [308, -80]];
         var magHoles = [bodies(id + "tsTo")];
@@ -1090,13 +1145,16 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         }
         tagQ(context, qUnion(lockQ), "BUY | H3 Transport lock M4 thumb screws (shown locked; back out before measuring)", BRASS);
 
-        // module 2 feet under the tray corners (no pedestal, no ballast)
+        // module 2 feet under the tray corners (no pedestal, no ballast); T-nuts pressed in from below,
+        // barrel tops sealed inside the box with a dab of hot glue (the box must stay airtight)
+        var tnQ = [];
         var feet2 = [];
         const pf = [[95, -79], [95, 79], [265, -79], [265, 79]];
         for (var i = 0; i < 4; i += 1)
         {
             levelFoot(context, id + ("pft" ~ i), pf[i][0], pf[i][1], -86);
             feet2 = append(feet2, bodies(id + ("pft" ~ i)));
+            tnQ = append(tnQ, tNut(context, id + ("tn2" ~ i), pf[i][0], pf[i][1], -92, bodies(id + "bxF")));
         }
         tagQ(context, qUnion(feet2), "BUY | H2 Module 2 levelling feet M6 x4 (T-nuts in the tray)", DARK);
 
@@ -1139,8 +1197,8 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         fuse(context, id + "meshf", qUnion(mesh));
         tagQ(context, qUnion(mesh), "BUY | A4 Safety mesh (7 mm opening)", STEEL);
 
-        // ---------- A5 fan box (finger-jointed plywood): two 2 x 2 layers stacked (x 998-1036 and 1036-1074) ----------
-        boxPanels(context, id + "fm", 989, 1086, 240, 240, ZC);
+        // ---------- A5 fan box (finger-jointed plywood): one 2 x 2 layer of fans (x 998-1036) ----------
+        boxPanels(context, id + "fm", 989, 1048, 240, 240, ZC);
         for (var j = 0; j < 4; j += 1)
         {
             L = append(L, lc(context, bodies(id + "fm" + wallNames[j]), "PLY", "A5 Fan box panel " ~ wallLabels[j], WOOD));
@@ -1148,17 +1206,16 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         const fp = [[-60, ZC - 60], [60, ZC - 60], [-60, ZC + 60], [60, ZC + 60]];
         for (var i = 0; i < 4; i += 1)
         {
-            fan(context, id + ("fan" ~ i), 998, fp[i][0], fp[i][1], "layer 1 #" ~ (i + 1), BLACK, DARK);
-            fan(context, id + ("fanB" ~ i), 1036, fp[i][0], fp[i][1], "layer 2 #" ~ (i + 1), BLACK, DARK);
+            fan(context, id + ("fan" ~ i), 998, fp[i][0], fp[i][1], "#" ~ (i + 1), BLACK, DARK);
         }
 
         // ---------- H2 cradles: base plate + upright web, each two 3 mm plywood layers; M6 levelling feet ----------
         // [base corner a, base corner b, [web x0 ...], top z of webs, label, web half-width]
         const cradles = [
-                [[-600, -180], [-570, 180], [-588], ZC - 157.5, "H2 Module 1 cradle (settling chamber, inlet end)", 180],
-                [[-480, -180], [-450, 180], [-468], ZC - 157.5, "H2 Module 1 cradle (settling chamber, outlet end)", 180],
-                [[600, -100], [630, 100], [612], -28, "H2 Module 3 cradle under the diffuser (fill the 0.3-0.8 mm slope with glue)", 95],
-                [[992, -126], [1082, 126], [995, 1073], ZC - 123, "H2 Module 3 cradle under the fan box", 126]
+                [[-600, -180], [-562, 180], [-588], ZC - 157.5, "H2 Module 1 cradle (settling chamber, inlet end)", 180],
+                [[-486, -180], [-450, 180], [-468], ZC - 157.5, "H2 Module 1 cradle (settling chamber, outlet end)", 180],
+                [[594, -100], [630, 100], [612], -28, "H2 Module 3 cradle under the diffuser (fill the 0.3-0.8 mm slope with glue)", 95],
+                [[992, -126], [1045, 126], [995, 1036], ZC - 123, "H2 Module 3 cradle under the fan box", 126]
             ];
         for (var i = 0; i < size(cradles); i += 1)
         {
@@ -1179,28 +1236,44 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         }
         var feet1 = [];
         var feet3 = [];
-        const feet1Pos = [[-585, -165], [-585, 165], [-465, -165], [-465, 165]];
-        const feet3Pos = [[615, -85], [615, 85], [1037, -110], [1037, 110]];
+        // feet sit beside the webs (not under them) so each T-nut barrel clears the web above
+        const feet1Pos = [[-573, -165], [-573, 165], [-477, -165], [-477, 165]];
+        const feet3Pos = [[603, -85], [603, 85], [1018, -110], [1018, 110]];
+        const feet1Cr = [0, 0, 1, 1];
+        const feet3Cr = [2, 2, 3, 3];
         for (var i = 0; i < 4; i += 1)
         {
             levelFoot(context, id + ("f1t" ~ i), feet1Pos[i][0], feet1Pos[i][1], DESK + 21);
             feet1 = append(feet1, bodies(id + ("f1t" ~ i)));
             levelFoot(context, id + ("f3t" ~ i), feet3Pos[i][0], feet3Pos[i][1], DESK + 21);
             feet3 = append(feet3, bodies(id + ("f3t" ~ i)));
+            tnQ = append(tnQ, tNut(context, id + ("tn1" ~ i), feet1Pos[i][0], feet1Pos[i][1], DESK + 15, bodies(id + ("cr" ~ feet1Cr[i]) + "base")));
+            tnQ = append(tnQ, tNut(context, id + ("tn3" ~ i), feet3Pos[i][0], feet3Pos[i][1], DESK + 15, bodies(id + ("cr" ~ feet3Cr[i]) + "base")));
         }
         tagQ(context, qUnion(feet1), "BUY | H2 Module 1 levelling feet M6 x4", DARK);
         // Contraction prop: both module 1 cradles are under the settling chamber, so without this the contraction and
         // sleeve 1 hang off the chamber joint. Pad (two layers, T-nut in layer 1) with two cheeks glued to the sides of
         // the bottom spine; its M6 foot is screwed down to just touch the desk after module 1 is levelled on its 4 feet.
-        lam(context, id + "prop" + "pad", [-60, -20, ZC - 186.5], [-30, 20, ZC - 180.5], 2);
-        blk(context, id + "prop" + "cl", [-60, 3, ZC - 180.5], [-30, 6, ZC - 168.5]);
-        blk(context, id + "prop" + "cr", [-60, -6, ZC - 180.5], [-30, -3, ZC - 168.5]);
+        // The cheeks are glued to the spine AND bolted through it (M3), so the prop does not rely on glue alone.
+        // The foot sits 12 mm off the spine so the T-nut barrel clears the spine edge.
+        lam(context, id + "prop" + "pad", [-60, -24, ZC - 186.5], [-30, 24, ZC - 180.5], 2);
+        blk(context, id + "prop" + "cl", [-60, 3, ZC - 180.5], [-30, 6, ZC - 160.5]);
+        blk(context, id + "prop" + "cr", [-60, -6, ZC - 180.5], [-30, -3, ZC - 160.5]);
+        cyl(context, id + "propH", [-45, -7, ZC - 170.5], [-45, 7, ZC - 170.5], 3.2);
+        cut(context, id + "propHc", qUnion([bodies(id + "prop" + "cl"), bodies(id + "prop" + "cr"), bodies(id + "spB")]), bodies(id + "propH"), false);
+        cyl(context, id + "propS" + "s", [-45, -9, ZC - 170.5], [-45, 8.5, ZC - 170.5], 3);
+        cyl(context, id + "propS" + "h", [-45, 6, ZC - 170.5], [-45, 8.5, ZC - 170.5], 5.5);
+        cyl(context, id + "propS" + "n", [-45, -8.4, ZC - 170.5], [-45, -6, ZC - 170.5], 6.2);
+        fuse(context, id + "propSu", bodies(id + "propS"));
+        tag(context, id + "propS", "BUY | H2 Prop bolt M3 x 20 + nut (through both cheeks and the bottom spine)", STEEL);
         L = append(L, lc(context, bodies(id + "prop" + "pad" + "a"), "PLY", "H2 Module 1 contraction prop pad layer 1 of 2 (T-nut for foot)", WOOD));
         L = append(L, lc(context, bodies(id + "prop" + "pad" + "b"), "PLY", "H2 Module 1 contraction prop pad layer 2 of 2", WOOD));
         L = append(L, lc(context, bodies(id + "prop" + "cl"), "PLY", "H2 Module 1 contraction prop cheek left (glued to bottom spine)", WOOD));
         L = append(L, lc(context, bodies(id + "prop" + "cr"), "PLY", "H2 Module 1 contraction prop cheek right (glued to bottom spine)", WOOD));
-        levelFoot(context, id + "f1p", -45, 0, ZC - 183.5);
+        levelFoot(context, id + "f1p", -45, 12, ZC - 180.5);
         tag(context, id + "f1p", "BUY | H2 Module 1 prop foot M6 (set after levelling)", DARK);
+        tnQ = append(tnQ, tNut(context, id + "tnP", -45, 12, ZC - 186.5, bodies(id + "prop" + "pad")));
+        tagQ(context, qUnion(tnQ), "BUY | H2 M6 T-nuts for the levelling feet (pressed in from below)", STEEL);
         tagQ(context, qUnion(feet3), "BUY | H2 Module 3 levelling feet M6 x4", DARK);
 
         const desks = [[-715, 185], [185, 1085]];
@@ -1217,11 +1290,11 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             tag(context, did, "REF | Desk " ~ (i + 1), DESKC);
         }
 
-        // ---------- D electronics and speed sensors (on desk 2) ----------
+        // ---------- D electronics and speed sensor (two barometers, on desk 2) ----------
         // electronics board: everything that plugs together lives on one plywood board, carried as one piece
         const BZ = DESK + 3;
         blk(context, id + "eboard", [190, -295, DESK], [390, -155, BZ]);
-        L = append(L, lc(context, bodies(id + "eboard"), "PLY", "H5 Electronics board (Uno, 3 HX711, sensor B, tees, connectors)", WOOD));
+        L = append(L, lc(context, bodies(id + "eboard"), "PLY", "H5 Electronics board (Uno, 2 HX711, barometer pair, connectors)", WOOD));
         blk(context, id + "uno", [215, -209, BZ + 6], [283.6, -155.6, BZ + 7.6]);
         tag(context, id + "uno", "BUY | D Arduino Uno", color(0.0, 0.45, 0.65));
         var standoffs = [];
@@ -1232,80 +1305,46 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             standoffs = append(standoffs, bodies(id + ("so" ~ i)));
         }
         tagQ(context, qUnion(standoffs), "BUY | H5 Uno standoffs", BRASS);
-        for (var i = 0; i < 3; i += 1)
+        for (var i = 0; i < 2; i += 1)
         {
             blk(context, id + ("hx" ~ i), [200 + 24 * i, -292, BZ], [221 + 24 * i, -258, BZ + 3]);
             tag(context, id + ("hx" ~ i), "BUY | D HX711 #" ~ (i + 1), color(0.1, 0.5, 0.2));
         }
         blk(context, id + "conn", [350, -172, BZ], [388, -160, BZ + 10]);
-        tag(context, id + "conn", "BUY | H5 Connector strip (3 load cells, fan PWM/tach, hatch switch, USB)", BLACK);
+        tag(context, id + "conn", "BUY | H5 Connector strip (2 load cells, fan PWM, hatch switch, USB)", BLACK);
         cyl(context, id + "qcH", [192, -215, BZ + 3.5], [206, -215, BZ + 3.5], 7);
         cyl(context, id + "qcL", [192, -245, BZ + 3.5], [206, -245, BZ + 3.5], 7);
         tagQ(context, qUnion([bodies(id + "qcH"), bodies(id + "qcL")]), "BUY | H5 Pressure quick-connects (unplug to carry)", BRASS);
         blk(context, id + "psu", [700, 170, DESK], [850, 290, DESK + 86]);
-        tag(context, id + "psu", "BUY | G 12 V 20 A+ power supply (old ATX)", DARK);
+        tag(context, id + "psu", "BUY | G 12 V 10 A+ power supply (old ATX)", DARK);
 
-        shellBox(context, id + "sabox", [400, -295, DESK], [600, -165, DESK + 150], [402, -293, DESK + 2], [598, -167, DESK + 148]);
-        tag(context, id + "sabox", "BUY | D2 Speed sensor A airtight box (food container)", color(0.9, 0.95, 1.0, 0.22));
-        pipe(context, id + "dish", [510, -230, DESK + 2], [510, -230, DESK + 52], 106, 100);
-        cyl(context, id + "dishf", [510, -230, DESK + 2], [510, -230, DESK + 5], 106);
-        const dish = qUnion([bodies(id + "dish"), bodies(id + "dishf")]);
-        fuse(context, id + "dishu", dish);
-        tagQ(context, dish, "BUY | D2 A Oil dish ID 100", WHITE);
-        cyl(context, id + "oil", [510, -230, DESK + 5], [510, -230, DESK + 50], 100);
-        cyl(context, id + "bellA", [510, -230, DESK + 15], [510, -230, DESK + 95], 62.4);
-        cyl(context, id + "bellB", [510, -230, DESK + 14], [510, -230, DESK + 93.8], 60);
-        cut(context, id + "bellc", bodies(id + "bellA"), bodies(id + "bellB"), false);
-        cut(context, id + "oilc", bodies(id + "oil"), bodies(id + "bellA"), true);
-        tag(context, id + "oil", "BUY | D2 A Baby oil 45 deep", color(1.0, 0.85, 0.35, 0.5));
-        tag(context, id + "bellA", "3DP | D2 A Bell ID 60", PRINT);
-        cyl(context, id + "thread", [510, -230, DESK + 95], [510, -230, DESK + 120], 1);
-        tag(context, id + "thread", "BUY | D2 A Thread", WHITE);
-        blk(context, id + "sacell", [466, -236, DESK + 120], [513, -224, DESK + 126]);
-        tag(context, id + "sacell", "BUY | D2 A 100 g load cell", CELLC);
-        blk(context, id + "saarm", [405, -238, DESK + 126], [470, -222, DESK + 136]);
-        blk(context, id + "sapil", [405, -240, DESK + 2], [425, -220, DESK + 126]);
-        const bracket = qUnion([bodies(id + "saarm"), bodies(id + "sapil")]);
-        fuse(context, id + "sabr", bracket);
-        tagQ(context, bracket, "BUY | D2 A Rigid bracket (aluminium, glued to box floor)", ALU);
-        // ports on the tunnel-side wall of the box (x = 400)
-        cyl(context, id + "portH", [392, -190, DESK + 60], [402, -190, DESK + 60], 4);
-        tag(context, id + "portH", "BUY | D2 A High port (box air only)", BRASS);
-        // low side: brass U-snorkel from the port, over the dish rim, down, under the bell rim, up inside the bell
-        tubePath(context, id + "snork", [[392, -270, DESK + 60], [510, -270, DESK + 60], [510, -270, DESK + 10],
-                    [510, -245, DESK + 10], [510, -245, DESK + 85]], 4);
-        cut(context, id + "snorkc", bodies(id + "oil"), bodies(id + "snork"), true);
-        tag(context, id + "snork", "BUY | D2 A Low port + brass U-tube (tip 35 above oil)", BRASS);
-
-        // speed sensor B: two film canisters taped together, one barb each on top
+        // speed sensor: two BMP280s, each sealed in a film canister with one barb on top; the canisters touch and are
+        // wrapped together in foam so they stay at the same temperature. Red line -> high (0x77), blue -> low (0x76).
         cyl(context, id + "bmp1", [330, -207, BZ], [330, -207, BZ + 50], 35);
         cyl(context, id + "bmp2", [330, -243, BZ], [330, -243, BZ + 50], 35);
-        tag(context, id + "bmp1", "BUY | D2 B High canister BMP280 0x77", BLACK);
-        tag(context, id + "bmp2", "BUY | D2 B Low canister BMP280 0x76", BLACK);
+        tag(context, id + "bmp1", "BUY | D2 High-side canister, BMP280 0x77 (red line)", BLACK);
+        tag(context, id + "bmp2", "BUY | D2 Low-side canister, BMP280 0x76 (blue line)", BLACK);
         cyl(context, id + "bnub1", [330, -207, BZ + 50], [330, -207, BZ + 56], 4);
         cyl(context, id + "bnub2", [330, -243, BZ + 50], [330, -243, BZ + 56], 4);
-        tagQ(context, qUnion([bodies(id + "bnub1"), bodies(id + "bnub2")]), "BUY | D2 B Barbs", BRASS);
+        tagQ(context, qUnion([bodies(id + "bnub1"), bodies(id + "bnub2")]), "BUY | D2 Canister barbs", BRASS);
+        shellBox(context, id + "bfoam", [302, -271, BZ], [358, -179, BZ + 46], [312, -261, BZ - 1], [348, -189, BZ + 47]);
+        tag(context, id + "bfoam", "BUY | D2 Foam wrap around both canisters (same temperature)", color(0.85, 0.85, 0.6, 0.5));
 
-        // ---------- D pressure lines: wall static rings -> tees -> sensors A and B ----------
+        // ---------- D pressure lines: wall static rings -> quick-connects -> barometer canisters (no tees) ----------
         // high side: settling-chamber ring (4 taps at x = -420, joined by a loop)
         tubePath(context, id + "H" + "ring", [[-420, 215, ZC], [-420, 215, ZC + 163.5], [-420, -215, ZC + 163.5],
                     [-420, -215, ZC - 163.5], [-420, 215, ZC - 163.5], [-420, 215, ZC]], 4);
         tubePath(context, id + "H" + "lead", [[-420, -215, ZC - 163.5], [-420, -215, DESK + 3], [186, -215, DESK + 3], [186, -215, BZ + 3], [300, -215, BZ + 3]], 4);
-        tubePath(context, id + "H" + "toA", [[300, -215, BZ + 3], [300, -190, BZ + 3], [300, -190, DESK + 60], [392, -190, DESK + 60]], 4);
         tubePath(context, id + "H" + "toB", [[300, -215, BZ + 3], [300, -215, DESK + 70], [330, -207, DESK + 70], [330, -207, BZ + 56]], 4);
         fuse(context, id + "Hu", bodies(id + "H"));
-        tag(context, id + "H", "BUY | D High-side line (red): settling ring > tee > A box air, B high", HIGHP);
+        tag(context, id + "H", "BUY | D High-side line (red): settling ring > high canister", HIGHP);
         // low side: test-section entrance ring (4 taps at x = 30, clear of sleeve 1)
         tubePath(context, id + "L" + "ring", [[30, 93, ZC], [30, 93, ZC + 72], [30, -93, ZC + 72],
                     [30, -93, ZC - 72], [30, 93, ZC - 72], [30, 93, ZC]], 4);
         tubePath(context, id + "L" + "lead", [[30, -93, ZC - 72], [30, -245, ZC - 72], [30, -245, DESK + 3], [186, -245, DESK + 3], [186, -245, BZ + 3], [300, -245, BZ + 3]], 4);
-        tubePath(context, id + "L" + "toA", [[300, -245, BZ + 3], [300, -270, BZ + 3], [300, -270, DESK + 60], [392, -270, DESK + 60]], 4);
         tubePath(context, id + "L" + "toB", [[300, -245, BZ + 3], [300, -245, DESK + 75], [330, -243, DESK + 75], [330, -243, BZ + 56]], 4);
         fuse(context, id + "Lu", bodies(id + "L"));
-        tag(context, id + "L", "BUY | D Low-side line (blue): entrance ring > tee > inside A bell, B low", LOWP);
-        blk(context, id + "teeH", [296, -219, BZ], [304, -211, BZ + 7]);
-        blk(context, id + "teeL", [296, -249, BZ], [304, -241, BZ + 7]);
-        tagQ(context, qUnion([bodies(id + "teeH"), bodies(id + "teeL")]), "BUY | D Tees", BRASS);
+        tag(context, id + "L", "BUY | D Low-side line (blue): entrance ring > low canister", LOWP);
 
         // ---------- E smoke: removable wand through a roof grommet, jar source sucked by the tunnel ----------
         tubePath(context, id + "wand", [[100, 0, 215], [100, 0, 47], [114, 0, 47]], 4);

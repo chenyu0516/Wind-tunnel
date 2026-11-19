@@ -346,7 +346,7 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         // The side panels run down past the floor at x 87..273 and form the side walls of the balance box (C),
         // so the test section and the balance are one module with no separate plenum.
         blk(context, id + "tsF", [0, -84, -3], [336, 84, 0]);
-        const sideProfile = [[0, -3], [87, -3], [87, -60], [273, -60], [273, -3], [336, -3], [336, 129], [0, 129]];
+        const sideProfile = [[0, -3], [87, -3], [87, -86], [273, -86], [273, -3], [336, -3], [336, 129], [0, 129]];
         sideExtrude(context, id + "tsL", sideProfile, 84, 87);
         sideExtrude(context, id + "tsR", sideProfile, -87, -84);
         // roof with the car hatch opening (x 120..300, y -75..75) and four magnet holes
@@ -483,48 +483,43 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         // ---------- C balance box: part of module 2, directly under the test-section floor ----------
         // Walls: the two side panels (tsL/tsR) plus two end walls; floor = removable tray that carries the balance.
         // The box is sealed except through the wheel wells, so its pressure matches the air at the car.
-        blk(context, id + "bxF", [87, -87, -66], [273, 87, -60]);
+        blk(context, id + "bxF", [87, -87, -92], [273, 87, -86]);
         tag(context, id + "bxF", "C Balance tray / box floor (LC 3 mm ply x2; balance bolts on, comes out with it)", WOOD);
-        blk(context, id + "bxE1", [87, -84, -60], [90, 84, -3]);
-        blk(context, id + "bxE2", [270, -84, -60], [273, 84, -3]);
+        blk(context, id + "bxE1", [87, -84, -86], [90, 84, -3]);
+        blk(context, id + "bxE2", [270, -84, -86], [273, 84, -3]);
         tagQ(context, qUnion([bodies(id + "bxE1"), bodies(id + "bxE2")]), "C Balance box end walls (LC 3 mm acrylic)", PC);
 
-        // Balance with NO slide (after Weakly et al., ASEE 2024): two load cells bolted in series.
-        // tray -> base plate -> 1 kg vertical cell -> bracket plate -> 100 g drag cell -> frame -> posts -> saddles -> car.
-        // Nothing slides, so there is no friction; the only links to the outside are the two load cells.
-        // measured body below the floor: frame plate (posts screw into it), drag tab and stop lug
+        // Balance with NO slide, laid out like the UPenn build guide (Weakly et al., ASEE 2024):
+        // the drag cell STANDS UP from the base, a corner bracket on its top end joins it to the
+        // vertical (lift) cell, which lies flat and carries the frame on its free end.
+        // Load path: car -> saddles -> posts -> frame -> 1 kg vertical cell -> corner bracket -> 100 g drag cell -> foot -> base.
+        // The weight runs along the drag cell's length, so it does not bend the drag cell sideways.
         blk(context, id + "frm", [140, -37, -14], [217, 37, -8]);
         tag(context, id + "frm", "C Common frame plate (LC 3 mm ply x2; four posts screw in)", WOOD);
-        blk(context, id + "ftab", [167, 13.5, -27], [175, 23.5, -14]);
-        blk(context, id + "flug", [205, -5, -26], [210, 5, -14]);
-        tagQ(context, qUnion([bodies(id + "ftab"), bodies(id + "flug")]), "C Frame drag tab (bolted to drag cell free end) + stop lug (3DP PETG)", PRINT);
-
-        // bracket plate on the vertical cell's free end; carries the drag cell's fixed end
-        blk(context, id + "stg", [130, -40, -36], [232, 40, -30]);
-        tag(context, id + "stg", "C Bracket plate on vertical cell (LC 3 mm ply x2)", WOOD);
-        blk(context, id + "dfix", [181, -23.5, -30], [189, -13.5, -16]);
-        tag(context, id + "dfix", "C Drag cell fixed-end block (3DP PETG, bolted to bracket)", PRINT);
-        blk(context, id + "dcell", [175, -23.5, -28], [181, 23.5, -16]);
-        tag(context, id + "dcell", "C 100 g drag load cell (senses fore-aft; fixed end on bracket, free end bolted to frame tab)", CELLC);
-
-        // overload stops: fork around the frame lug (fore-aft) and a down-stop under the frame, 0.3 mm gaps
-        blk(context, id + "skA", [198, -8, -30], [204.7, 8, -22]);
-        blk(context, id + "skB", [210.3, -8, -30], [217, 8, -22]);
-        cyl(context, id + "zstop", [150, 0, -30], [150, 0, -14.3], 4);
-        tagQ(context, qUnion([bodies(id + "skA"), bodies(id + "skB"), bodies(id + "zstop")]),
-                "C Drag-cell overload stops (fork 0.3 mm each side of lug; down-stop 0.3 mm under frame)", BRASS);
-        const sides = [1, -1];
-
-        blk(context, id + "vsp1", [140, -6.35, -38.3], [158, 6.35, -36]);
-        tag(context, id + "vsp1", "C Load cell upper spacer", PRINT);
-        blk(context, id + "vcell", [140, -6.35, -51], [220, 6.35, -38.3]);
-        tag(context, id + "vcell", "C 1 kg vertical load cell", CELLC);
-        blk(context, id + "vsp2", [202, -6.35, -54], [220, 6.35, -51]);
-        tag(context, id + "vsp2", "C Load cell lower spacer", PRINT);
-        cyl(context, id + "vstop", [226, 0, -54], [226, 0, -36.3], 4);
-        tag(context, id + "vstop", "C Vertical overload stop (M4 screw, 0.3 mm under bracket plate)", BRASS);
-        blk(context, id + "bbase", [120, -45, -60], [240, 45, -54]);
+        blk(context, id + "flug", [160, 22, -26], [165, 30, -14]);
+        tag(context, id + "flug", "C Frame stop lug (3DP PETG)", PRINT);
+        blk(context, id + "vsp1", [154.7, -6.35, -16.3], [172.7, 6.35, -14]);
+        tag(context, id + "vsp1", "C Spacer: vertical cell free end to frame (3DP PETG)", PRINT);
+        blk(context, id + "vcell", [154.7, -6.35, -29], [234.7, 6.35, -16.3]);
+        tag(context, id + "vcell", "C 1 kg vertical load cell (lies flat; free end carries the frame)", CELLC);
+        blk(context, id + "brkH", [214, -10, -32], [240, 10, -29]);
+        blk(context, id + "brkV", [234.7, -10, -46], [240, 10, -32]);
+        fuse(context, id + "brkF", qUnion([bodies(id + "brkH"), bodies(id + "brkV")]));
+        tagQ(context, qUnion([bodies(id + "brkH"), bodies(id + "brkV")]), "C Corner bracket joining the two load cells (3DP PETG or aluminium)", PRINT);
+        blk(context, id + "dcell", [222, -6.35, -79], [234.7, 6.35, -32]);
+        tag(context, id + "dcell", "C 100 g drag load cell (stands up; senses fore-aft; top end in corner bracket)", CELLC);
+        blk(context, id + "dfoot", [209.3, -10, -80], [222, 10, -66]);
+        tag(context, id + "dfoot", "C Drag cell foot (3DP PETG, bolted to base plate)", PRINT);
+        blk(context, id + "bbase", [120, -45, -86], [245, 45, -80]);
         tag(context, id + "bbase", "C Balance base plate (LC 3 mm ply x2, bolted to tray)", WOOD);
+
+        // overload stops fixed to the base, 0.3 mm gaps: fork around the frame lug (fore-aft) and a down-stop under the frame
+        blk(context, id + "skA", [153, 20, -80], [159.7, 32, -22]);
+        blk(context, id + "skB", [165.3, 20, -80], [172, 32, -22]);
+        cyl(context, id + "zstop", [145, 0, -80], [145, 0, -14.3], 4);
+        tagQ(context, qUnion([bodies(id + "skA"), bodies(id + "skB"), bodies(id + "zstop")]),
+                "C Overload stops on base (fork 0.3 mm each side of lug; down-stop 0.3 mm under frame)", BRASS);
+        const sides = [1, -1];
 
         // transport lock: one thumb screw per side through the box wall, clamping the frame plate
         var lockQ = [];
@@ -550,7 +545,7 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         const pf = [[95, -79], [95, 79], [265, -79], [265, 79]];
         for (var i = 0; i < 4; i += 1)
         {
-            levelFoot(context, id + ("pft" ~ i), pf[i][0], pf[i][1], -66);
+            levelFoot(context, id + ("pft" ~ i), pf[i][0], pf[i][1], -92);
             feet2 = append(feet2, bodies(id + ("pft" ~ i)));
         }
         tagQ(context, qUnion(feet2), "H2 Module 2 levelling feet M6 x4", DARK);

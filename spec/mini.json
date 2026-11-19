@@ -13,8 +13,10 @@
   "speeds_m_s": { "min": 5, "demo": 10, "max_target": 14, "coefficient_grade_min": 12 },
   "force_resolution_mN": 1.0,
 
-  "inlet_bell":   { "x0": -696, "length": 63, "lip_radius_min": 42 },
-  "settling":     { "x0": -633, "length": 255, "width": 412, "height": 309 },
+  "inlet_bell":   { "x0": -696, "length": 63, "lip_radius_min": 42,
+    "make": "4 x 1 mm PET sheets (each cut from its flat pattern) on 8 laser-cut 3 mm plywood gussets, 4 plywood lip strips at x -699..-696" },
+  "settling":     { "x0": -633, "length": 255, "width": 412, "height": 309,
+    "make": "4 finger-jointed 3 mm plywood panels (laser-cut); screens in pull-out frames (2 x 3 mm plywood each) through slots in the roof panel" },
   "conditioning": {
     "honeycomb": { "cell": 6, "depth": 40, "x_upstream_face": -616, "make": "drinking straws (6 mm) or 3D-printed hex tiles" },
     "screens_x": [-513, -450],
@@ -29,28 +31,29 @@
     "inlet": [412, 309], "exit": [168, 126],
     "profile": "h(s) = hi - (hi - he) * (6 t^5 - 15 t^4 + 10 t^3), t = s / L, same law for width and height",
     "plan_table_s": [0, 76, 151, 189, 227, 302, 378],
-    "wall_sheet": "0.5-1 mm PET or PC sheet over laser-cut or hand-cut plywood/MDF ribs",
+    "wall_sheet": "1 mm PET sheet over laser-cut plywood ribs; four separate walls, each cut from its flat pattern (CAD laser view)",
     "exit_step_max": 0.3,
     "exit_step_rule": "any residual step must be backward-facing (downstream wall recessed outward)",
-    "rib_hole_rule": "plan_table sizes are the air passage; each rib is a 6 mm plywood frame whose hole = plan size + 2 x sheet thickness, border 25 mm",
+    "rib_hole_rule": "plan_table sizes are the air passage; each rib is two glued 3 mm plywood layers (6 mm) whose hole = plan size + 2 x sheet thickness, border 25 mm",
     "spines": { "count": 4, "t": 6, "x": [-393, 8], "slot_depth": 12.5,
-      "note": "plywood boards at top/bottom (y = 0) and left/right (z = axis); inner edge follows the sheet outer surface, outer edge straight; half-lap slots with the ribs; extend 15 mm upstream and 8 mm downstream so the end ribs sit in closed slots; the bottom spine's straight edge is the assembly datum" }
+      "note": "each two glued 3 mm plywood layers (laser max 3 mm); boards at top/bottom (y = 0) and left/right (z = axis); inner edge follows the sheet outer surface, outer edge straight; half-lap slots with the ribs; extend 15 mm upstream and 8 mm downstream so the end ribs sit in closed slots; the bottom spine's straight edge is the assembly datum" }
   },
   "test_section": {
     "x0": 0, "length": 336, "width": 168, "height": 126,
     "side_wall_t": 3, "roof_t_min": 3, "floor_t": 3,
-    "material": "clear polycarbonate (solid, not twin-wall)",
+    "material": "clear acrylic (PMMA) 3 mm, laser-cut, solvent-glued; side panels run down to form the balance box walls",
+    "hatch": { "x": [120, 300], "y": [-75, 75], "make": "3 mm acrylic plug glued under a 3 mm acrylic cover; foam-tape gasket; 4 x 6x3 magnets locate it (suction holds it shut)", "interlock": "cover tab presses a microswitch (D8); fans off when lifted" },
     "roof_hinge_x": 0, "roof_shim_at_exit": [0, 6]
   },
   "diffuser": {
     "x0": 336, "length": 650, "inlet": [168, 126], "outlet": [240, 240],
     "make": "four flat trapezoid panels (rectangle to square)",
-    "safety_mesh_aperture": [5, 10], "safety_mesh_x": 986
+    "safety_mesh_aperture": [5, 10], "safety_mesh_x": 989, "safety_mesh_frame": "3 mm plywood frame at x 986-989, mesh glued to its downstream face"
   },
   "fan": {
     "x0": 986, "length": 100,
     "layers_max": 2,
-    "layout_note": "fan box (x 988-1086) holds two stacked 2x2 layers (x 998-1036 and 1036-1074), both filled: 8 x QFR1212GHE, each front fan with one directly behind it (4 parallel stacks of 2 in series)",
+    "layout_note": "fan box (x 989-1086, finger-jointed 3 mm plywood) holds two stacked 2x2 layers (x 998-1036 and 1036-1074), both filled: 8 x QFR1212GHE, each front fan with one directly behind it (4 parallel stacks of 2 in series)",
     "model": "8 x Delta QFR1212GHE (120x120x38, 12 V, 2-wire, no PWM or tach wire), 2x2 array, two layers",
     "datasheet": "https://www.delta-fan.com/Download/Spec/QFR1212GHE.pdf (sample rev 00, 2006-11-02)",
     "count": 8, "parallel": 4, "layers": 2, "size": 120, "depth": 38,
@@ -77,7 +80,7 @@
   "portable": {
     "modules": [
       { "name": "1 inlet", "x": [-696, 20], "contents": "bell, settling chamber, honeycomb, screens, contraction, ribs, spines" },
-      { "name": "2 test section", "x": [0, 336], "contents": "test section, ground plate, wells, plenum, balance (transport-locked)" },
+      { "name": "2 test section", "x": [0, 336], "contents": "test section, ground plate, wells, balance box with the balance on its tray (transport-locked)" },
       { "name": "3 fan end", "x": [316, 1086], "contents": "sleeve 2, diffuser, safety mesh, fan box, fans" }
     ],
     "sleeves": [
@@ -86,8 +89,7 @@
     ],
     "sleeve_t": 3, "sleeve_clearance": 0.3, "sleeve_seal": "tape the seam after assembly (tunnel runs below room pressure)",
     "levelling_feet": { "per_module": 4, "thread": "M6", "pad_d": 18 },
-    "transport_lock": { "x": 200, "screws": 4, "clamps": ["common frame (z -37.5)", "balance base (z -88)"], "rule": "tighten for transport; back out fully and check clearance before measuring" },
-    "pedestal": "column unbolts from the balance base; pedestal and ballast stay in the classroom",
+    "transport_lock": { "x": 200, "screws": 2, "clamps": ["common frame (z -11), one M4 thumb screw from each side"], "rule": "tighten for transport; back out fully and check clearance before measuring" },
     "electronics_board": { "x": [190, 390], "y": [-295, -155], "holds": "Uno, 3 x HX711, sensor B canisters, tees, connector strip, 2 pressure quick-connects" },
     "sensor_A_transport": "pour the oil back into its bottle; carry the bell separately; refill to the 45 mm mark"
   },
@@ -109,8 +111,7 @@
   "pressure_taps": {
     "settling_ring": { "x": -420, "count": 4 },
     "entrance_ring": { "x": 30, "count": 4, "_note": "moved from 13 so the slip-joint sleeve (x 0-20) does not cover it" },
-    "side_wall_taps": { "x": [42, 126, 210, 294], "d": 1, "z": 75, "side": "-y" },
-    "plenum_vent_tap": { "x": 178, "z": 75, "side": "-y" }
+    "side_wall_taps": { "x": [42, 126, 210, 294], "d": 1, "z": 75, "side": "-y" }
   },
   "survey": {
     "stations_x": [126, 231],
@@ -140,16 +141,18 @@
   },
   "balance": {
     "moving_mass_max_kg": 0.6,
-    "drag_blades": { "count": 4, "t": 0.1, "w": 10, "free_len": 20, "material": "feeler-gauge spring steel" },
+    "layout": "no slide: frame -> 1 kg vertical cell (lies flat) -> corner bracket -> 100 g drag cell (stands up) -> base, bolted in series (UPenn build guide, Weakly et al. ASEE 2024)",
+    "crosstalk_calibration": "2 x 2: vertical weights read on the drag channel, fore-aft pulls read on the vertical channel",
     "drag_cell": { "capacity_kg": 0.1, "rated_defl_mm_assumed": 0.2 },
     "vertical_cell": { "capacity_kg": 1.0 },
     "adc": "2 x HX711 (10 samples/s)",
-    "stops": { "drag_N": 0.6, "vertical_kg": 0.9 }
+    "stops": { "drag_N": 0.6, "vertical_kg": 0.9, "gap_mm": 0.3, "down": "M4 pan-head screw, head up, in a printed pillar", "fore_aft": "two M3 screws in a printed fork around the frame lug" }
   },
-  "plenum": {
-    "x": [90, 270], "y": [-80, 80], "depth": 130,
-    "vent_line_d": 4, "pedestal_added_mass_kg": 5,
-    "skirt": "thin rubber (glove latex or balloon) between plenum floor and pedestal"
+  "balance_box": {
+    "x": [90, 270], "y": [-84, 84], "depth": 86,
+    "walls": "the test-section side panels run down to z -86; two 3 mm acrylic end walls",
+    "floor": "removable tray (2 x 3 mm plywood) carrying the whole balance; 4 M6 levelling feet",
+    "pressure": "sealed except through the wheel wells, so it matches the air at the car; no vent line"
   },
   "probes": {
     "pitot_nose": { "x": 55, "y": 55, "z_above_plate": 63, "tube_d": 4 },
@@ -241,13 +244,13 @@
       { "item": "12 V >= 25 A power supply", "low": 0, "high": 900, "basis": "free if an old ATX PSU is available; open-frame 12 V 20 A ~US$17 wholesale, retail estimate NT$500-900 (buy >= 25 A)" },
       { "item": "100 g + 1 kg load cells, 2 x HX711", "low": 250, "high": 400, "basis": "estimate" },
       { "item": "Pitot tube 4 mm, brass U-tube for the bell snorkel, silicone tubing, tees", "low": 150, "high": 300, "basis": "estimate" },
-      { "item": "3 mm clear PC panels (test section + plenum, about 3.7 cai)", "low": 300, "high": 500, "basis": "NT$60-75 per cai in Yahoo listings, plus cutting fee" },
-      { "item": "plywood/MDF ribs, 0.5-1 mm PET sheet, diffuser panels", "low": 300, "high": 600, "basis": "estimate" },
+      { "item": "3 mm clear acrylic, laser-cut (test section, balance box walls, hatch, ground plate; about 0.4 m2)", "low": 300, "high": 600, "basis": "estimate" },
+      { "item": "3 mm plywood for laser cutting (about 2.5 m2: ribs and spines as 2 layers, panels, cradles), 1 mm PET sheet", "low": 450, "high": 900, "basis": "estimate" },
       { "item": "straws or printed honeycomb, voile screens", "low": 100, "high": 200, "basis": "estimate" },
       { "item": "1:43 diecast car", "low": 80, "high": 450, "basis": "SHEIN Taiwan NT$77-445" },
       { "item": "12/16 AWG wire, main fuse holder, E-stop, 1000 uF capacitor, connectors, screws, glue", "low": 200, "high": 400, "basis": "estimate" },
-      { "item": "feeler gauge (blades), rubber skirt, misc", "low": 100, "high": 200, "basis": "estimate" },
-      { "item": "portable: 12 x M6 levelling feet, 4 thumb screws (transport lock), 2 pressure quick-connects", "low": 150, "high": 300, "basis": "estimate" }
+      { "item": "hatch magnets, foam tape, microswitch; stop screws (M4, M3), lock nuts, heat-set inserts", "low": 100, "high": 200, "basis": "estimate" },
+      { "item": "portable: 12 x M6 levelling feet, 2 thumb screws (transport lock), 2 pressure quick-connects", "low": 150, "high": 300, "basis": "estimate" }
     ],
     "first_cut_if_over": "skip speed sensor B (saves NT$120-300); then the cheapest fans and a free ATX PSU"
   }

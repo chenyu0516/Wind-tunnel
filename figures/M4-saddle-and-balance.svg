@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1180" viewBox="0 0 1400 1180" role="img" aria-labelledby="title desc">
 <title id="title">車輪托座與天平</title>
-<desc id="desc">上：單一車輪 V 形托座剖面（依比例）；下：密封靜壓箱與天平堆疊（示意）。</desc>
+<desc id="desc">上：單一車輪 V 形托座剖面（依比例）；下：天平箱與串聯雙荷重元天平（示意）。</desc>
 <defs>
 <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" fill="#6b7280"/></marker>
 <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#187c91"/></marker>
@@ -77,38 +77,43 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <text x="860.0" y="328.0" class="w" text-anchor="start" >量測時記錄實際車高即可</text>
 <line x1="40.0" y1="686.0" x2="1360.0" y2="686.0" class="guide" />
 <text x="40.0" y="706.0" class="w" text-anchor="start" >以下為示意，未依比例：測試段地板下方</text>
-<path d="M380,1040 L140,1040 L140,740 L720,740 L720,1040 L480,1040" class="shell0" style="stroke-width:4"/>
-<text x="148.0" y="762.0" class="l" text-anchor="start" >密封靜壓箱 180×160×130（3 mm PC 或壓克力）</text>
-<rect x="716.0" y="830.0" width="8.0" height="100.0" class="solid" style="fill:#187c91"/>
-<text x="732.0" y="880.0" class="n" text-anchor="start" >檢修蓋（泡棉膠條密封）</text>
-<circle cx="720.0" cy="970.0" r="6.0" class="shell" />
-<text x="732.0" y="974.0" class="n" text-anchor="start" >線材孔（熱熔膠封）→ HX711 ×2 在箱外</text>
-<line x1="720.0" y1="780.0" x2="800.0" y2="780.0" class="scr" />
-<text x="806.0" y="784.0" class="n" text-anchor="start" >Ø4 平衡管 → 側壁平衡孔（x = 178）</text>
-<line x1="260.0" y1="710.0" x2="260.0" y2="810.0" class="dark" style="stroke-width:5;stroke:#94a3b8"/>
-<line x1="600.0" y1="710.0" x2="600.0" y2="810.0" class="dark" style="stroke-width:5;stroke:#94a3b8"/>
-<text x="608.0" y="722.0" class="n" text-anchor="start" >支柱 ×4</text>
-<rect x="230.0" y="810.0" width="400.0" height="14.0" class="solid" />
-<text x="640.0" y="822.0" class="n" text-anchor="start" >共用框架（鋁條或 3 mm 板）</text>
-<rect x="330.0" y="840.0" width="200.0" height="12.0" class="solid" />
-<line x1="340.0" y1="852.0" x2="340.0" y2="900.0" class="shell0" style="stroke-width:2;stroke:#7c3aed"/>
-<line x1="520.0" y1="852.0" x2="520.0" y2="900.0" class="shell0" style="stroke-width:2;stroke:#7c3aed"/>
-<text x="540.0" y="880.0" class="n" text-anchor="start" >厚薄規鋼片 ×4（0.1 × 10 × 20）</text>
-<rect x="330.0" y="900.0" width="200.0" height="12.0" class="solid" />
-<rect x="390.0" y="868.0" width="60.0" height="18.0" class="shell" style="fill:#fde68a"/>
-<text x="380.0" y="881.0" class="n" text-anchor="end" >阻力荷重元 100 g（水平）</text>
-<rect x="360.0" y="930.0" width="140.0" height="22.0" class="shell" style="fill:#fde68a"/>
-<text x="350.0" y="945.0" class="n" text-anchor="end" >垂直荷重元 1 kg</text>
-<line x1="430.0" y1="912.0" x2="430.0" y2="930.0" class="shell0" style="stroke-width:4"/>
-<rect x="405.0" y="952.0" width="50.0" height="128.0" class="solid" />
-<path d="M380,1040 q4,8 12,10 q8,4 13,12 M480,1040 q-4,8 -12,10 q-8,4 -13,12" class="shell0" style="stroke:#7c3aed;stroke-width:2"/>
-<text x="490.0" y="1066.0" class="n" text-anchor="start" >薄橡膠裙邊（手套或氣球膜）</text>
-<rect x="340.0" y="1080.0" width="180.0" height="30.0" class="solid" style="fill:#9ca3af"/>
-<text x="530.0" y="1100.0" class="n" text-anchor="start" >底座 + 配重約 5 kg（磚塊或書）</text>
-<rect x="60.0" y="1110.0" width="1280.0" height="12.0" class="solid" style="fill:url(#hatch)"/>
-<text x="70.0" y="1106.0" class="n" text-anchor="start" >桌面或地板（不要放在風洞框架上）</text>
-<text x="960.0" y="950.0" class="n" text-anchor="start" >限位：阻力 0.6 N、垂直 0.9 kg</text>
-<text x="960.0" y="968.0" class="n" text-anchor="start" >活動質量 ≤ 0.6 kg</text>
-<text x="960.0" y="986.0" class="n" text-anchor="start" >阻力方向自然頻率約 16 Hz</text>
-<text x="960.0" y="1004.0" class="n" text-anchor="start" >荷重元承受約 83% 阻力（校正扣除）</text>
+<path d="M140,740 L140,1040 L720,1040 L720,740" class="shell0" style="stroke-width:4"/>
+<rect x="136.0" y="734.0" width="588.0" height="6.0" class="solid" />
+<text x="732.0" y="758.0" class="l" text-anchor="start" >天平箱 180×168×86（側壁即測試段側板，3 mm 壓克力）</text>
+<text x="732.0" y="780.0" class="n" text-anchor="start" >只經輪井與測試段相通，不需平衡管</text>
+<rect x="140.0" y="1028.0" width="580.0" height="12.0" class="solid" style="fill:#d6c3a1"/>
+<text x="732.0" y="1038.0" class="n" text-anchor="start" >底板 = 可抽出托盤，整組天平鎖在上面</text>
+<circle cx="720.0" cy="890.0" r="6.0" class="shell" />
+<text x="732.0" y="894.0" class="n" text-anchor="start" >線材孔（熱熔膠封）→ HX711 ×2 在箱外</text>
+<rect x="164.0" y="1040.0" width="12.0" height="22.0" class="dark" />
+<rect x="684.0" y="1040.0" width="12.0" height="22.0" class="dark" />
+<text x="700.0" y="1092.0" class="n" text-anchor="start" >M6 調整腳 ×4（裝在托盤）</text>
+<line x1="330.0" y1="710.0" x2="330.0" y2="810.0" class="dark" style="stroke-width:5;stroke:#94a3b8"/>
+<line x1="560.0" y1="710.0" x2="560.0" y2="810.0" class="dark" style="stroke-width:5;stroke:#94a3b8"/>
+<text x="568.0" y="722.0" class="n" text-anchor="start" >支柱 ×4</text>
+<rect x="250.0" y="810.0" width="380.0" height="14.0" class="solid" style="fill:#d6c3a1"/>
+<text x="732.0" y="822.0" class="n" text-anchor="start" >共用框架（2 × 3 mm 合板）</text>
+<rect x="300.0" y="824.0" width="40.0" height="12.0" class="shell" style="fill:#f59e0b"/>
+<rect x="300.0" y="836.0" width="300.0" height="20.0" class="shell" style="fill:#fde68a"/>
+<text x="450.0" y="851.0" class="n" text-anchor="middle" >垂直荷重元 1 kg（平放）</text>
+<path d="M540,856 L620,856 L620,890 L600,890 L600,868 L540,868 Z" class="shell" style="fill:#f59e0b"/>
+<text x="535.0" y="886.0" class="n" text-anchor="end" >角架（3D 列印）</text>
+<rect x="580.0" y="890.0" width="20.0" height="110.0" class="shell" style="fill:#fde68a"/>
+<text x="572.0" y="940.0" class="n" text-anchor="end" >阻力荷重元 100 g（直立）</text>
+<text x="572.0" y="958.0" class="n" text-anchor="end" >感測前後方向</text>
+<rect x="552.0" y="986.0" width="28.0" height="18.0" class="shell" style="fill:#f59e0b"/>
+<rect x="220.0" y="1014.0" width="440.0" height="14.0" class="solid" style="fill:#d6c3a1"/>
+<text x="400.0" y="1010.0" class="n" text-anchor="start" >天平底板</text>
+<rect x="262.0" y="840.0" width="22.0" height="174.0" class="shell" style="fill:#f59e0b"/>
+<rect x="259.0" y="828.0" width="28.0" height="6.0" class="dark" />
+<text x="256.0" y="880.0" class="n" text-anchor="end" >下限位 M4 螺絲（間隙 0.3 mm）</text>
+<text x="148.0" y="1120.0" class="n" text-anchor="start" >受力路徑：車 → 托座 → 支柱 → 框架 → 垂直荷重元 → 角架 → 阻力荷重元 → 底座 → 托盤</text>
+<rect x="60.0" y="1062.0" width="1280.0" height="12.0" class="solid" style="fill:url(#hatch)"/>
+<text x="70.0" y="1058.0" class="n" text-anchor="start" >桌面</text>
+<text x="960.0" y="926.0" class="n" text-anchor="start" >限位：阻力 0.6 N、垂直 0.9 kg</text>
+<text x="960.0" y="944.0" class="n" text-anchor="start" >活動質量 ≤ 0.6 kg</text>
+<text x="960.0" y="962.0" class="n" text-anchor="start" >阻力方向自然頻率約 14 Hz</text>
+<text x="960.0" y="980.0" class="n" text-anchor="start" >阻力荷重元承受全部阻力（無滑軌）</text>
+<text x="960.0" y="998.0" class="n" text-anchor="start" >需 2 × 2 交叉校正</text>
+<text x="960.0" y="1016.0" class="n" text-anchor="start" >前後限位：叉座 + 2 支 M3 螺絲（間隙 0.3 mm）</text>
 </svg>

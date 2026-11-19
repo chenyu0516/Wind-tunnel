@@ -2,14 +2,14 @@
 
 **A desk-top suction wind tunnel that measures drag and downforce on a 1:43 model car to about 1 mN (0.1 gram-force) at 12–14 m/s, built for NT$5,000 or less.**
 
-The duct is about 1.8 m long and splits into three modules that one person can carry to a classroom and set up on desks. An Arduino Uno runs everything: eight 12 V computer fans, the force balance, two home-made speed sensors and the data log. It is the full 1:18 design scaled down by 0.42, with the same principles: suction (fan downstream), a 6:1 contraction, a sealed balance with a drag stage, and zeroing before and after every measurement.
+The duct is about 1.8 m long and splits into three modules that one person can carry to a classroom and set up on desks. An Arduino Uno runs everything: eight 12 V computer fans, the force balance, two home-made speed sensors and the data log. It is the full 1:18 design scaled down by 0.42, with the same principles: suction (fan downstream), a 6:1 contraction, a sealed balance, and zeroing before and after every measurement. The balance now uses two load cells bolted in series with no slide (C), and every part is cut on a 3 mm laser cutter or 3D-printed.
 
 Related files:
 
 - Full 1:18 design (reference only): [archive/full_1to18/build_plan.md](archive/full_1to18/build_plan.md)
 - Research method (paper format): [model.md](model.md)
 - Parts list and prices: [shopping_list.md](shopping_list.md)
-- Exact numbers: [spec/mini.json](spec/mini.json); recompute with `python3 tools/mini_calc.py`, check with `python3 tools/test_mini.py` (23 checks)
+- Exact numbers: [spec/mini.json](spec/mini.json); recompute with `python3 tools/mini_calc.py`, check with `python3 tools/test_mini.py` (24 checks)
 - 3D model: [cad/mini_tunnel.fs](cad/mini_tunnel.fs) (Onshape FeatureScript)
 - Earlier Traditional Chinese plan (frozen): [build_plan_mini.zh-TW.md](build_plan_mini.zh-TW.md)
 
@@ -40,7 +40,26 @@ The air path runs in a straight line from the inlet bell to the fan box, as figu
 
 The duct is 1,782 mm long from the front of the inlet bell to the fan-box outlet. With 0.4 m clear in front of the inlet and 0.8 m behind the exhaust, it needs about 3.1 m of straight space. Never point the exhaust at people. The tunnel splits into three modules (see H).
 
-Coordinates are the same in this plan, the spec and the CAD: x runs downstream, y to the left looking downstream, z up. x = 0 is the contraction exit and z = 0 is the inside of the test-section floor. Every CAD part is named with this plan's section code (for example "A2 Spine top"), so the Onshape parts list maps directly onto this document.
+Coordinates are the same in this plan, the spec and the CAD: x runs downstream, y to the left looking downstream, z up. x = 0 is the contraction exit and z = 0 is the inside of the test-section floor.
+
+Every CAD part name starts with how the part is made, then this plan's section code, so the Onshape parts list doubles as a cutting and buying list. For example, "LC3-PLY | A2 Spine top layer 1 of 2" is a laser-cut plywood part described in A2.
+
+| Code | Made by |
+| --- | --- |
+| LC3-PLY | Laser-cut 3 mm plywood |
+| LC3-ACR | Laser-cut 3 mm clear acrylic |
+| PET | Cut from 1 mm PET sheet using its flat pattern |
+| 3DP | 3D-printed (PETG) |
+| BUY | Bought; shown for reference only |
+| REF | Not part of the tunnel (the desks) |
+
+**Making the parts.** The laser cutter cuts 3 mm at most.
+- **Every laser part is 3 mm plywood or 3 mm clear acrylic.** Anything thicker is two 3 mm layers glued together: the contraction ribs and spines, the balance frame, base plate and tray, and the cradles. Each layer is its own part.
+- **Laser parts:** in Onshape, set the MiniWindTunnel feature's **View** to "Laser sheets".
+  - Every laser part and every PET flat pattern is laid flat and packed onto bed-sized outlines, one row of beds per material (acrylic, plywood, PET).
+  - Select the top faces of one bed and export them as DXF. Leave kerf compensation to the laser software.
+  - Enter the real bed size in the feature. Parts bigger than the bed turn red and are set to the right of their row.
+- **Printed parts:** export each 3DP part as STL from the Assembled view.
 
 ## Components
 
@@ -48,22 +67,26 @@ Coordinates are the same in this plan, the spec and the CAD: x runs downstream, 
 
 The air path straightens the incoming air, speeds it up 6×, passes it over the car, slows it down again and exhausts it through the fans.
 
-**A1. Flow conditioning.** A honeycomb and two screens remove swirl and even out the air before the contraction. The honeycomb can be 6 mm drinking straws cut to 40 mm and glued side by side into one panel (about 4,000 straws), or hexagonal cells printed in tiles on the school 3D printer. The two screens are polyester voile or stainless mesh with 60–70% open area. Mount them in pull-out frames with foam-tape seals.
+**A1. Inlet and flow conditioning.** A honeycomb and two screens remove swirl and even out the air before the contraction.
+- **Honeycomb:** 6 mm drinking straws cut to 40 mm and glued side by side into one panel (about 4,000 straws), or hexagonal cells printed in tiles on the school 3D printer. Glue it into the chamber.
+- **Screens:** polyester voile or stainless mesh with 60–70% open area. Each is glued between two laser-cut 3 mm plywood frames. The frame pair slides down through a slot in the chamber roof, so the screen can be pulled out for cleaning. Seal the slot with tape.
+- **Settling chamber:** four 3 mm plywood panels with finger-jointed corners. The four high-side static taps at x = −420 are 1 mm holes cut by the laser.
+- **Inlet bell:** four 1 mm PET sheets on eight laser-cut plywood gussets, with four plywood lip strips across the front. The gussets' inner edges follow the lip curve. Each sheet bends one way only, so it is cut flat from its pattern in the laser view. The gussets' tails are glued onto the chamber.
 
 **A2. Contraction.** The contraction uses the full version's curve, scaled down. The widths and heights in figure M2 are the **inside** (air passage) dimensions at each station.
 
 ![Contraction wall curves, to scale, with the passage size at each station.](figures/en/M2-contraction.svg)
 
-Build it from a 0.5–1 mm PET sheet bent over 7 plywood ribs, held in place by four plywood spines.
+Build it from four 1 mm PET sheets bent over 7 plywood ribs, held in place by four plywood spines. Ribs and spines are 6 mm thick, made as two laser-cut 3 mm layers glued together.
 
-- **Ribs:** 6 mm plywood frames at s = 0, 76, 151, 189, 227, 302 and 378 mm, where s is measured from the contraction inlet. Make each **rib hole the figure-M2 size plus 2 × the sheet thickness**, with a 25 mm border. In the middle of each side, cut a half-lap slot 6 mm wide and 12.5 mm deep from the outer edge.
-- **Spines (4, 6 mm plywood):** one on top and one underneath standing on the centreline, and one on each side lying flat at axis height. The inner edge follows the outside of the sheet; the outer edge is straight. At every rib, cut a 12.5 mm half-lap slot from the inner edge so spine and rib interlock like an egg crate.
+- **Ribs:** 6 mm frames (2 × 3 mm plywood) at s = 0, 76, 151, 189, 227, 302 and 378 mm, where s is measured from the contraction inlet. Make each **rib hole the figure-M2 size plus 2 × the sheet thickness**, with a 25 mm border. In the middle of each side, cut a half-lap slot 6 mm wide and 12.5 mm deep from the outer edge.
+- **Spines (4, each 2 × 3 mm plywood):** one on top and one underneath standing on the centreline, and one on each side lying flat at axis height. The inner edge follows the outside of the sheet; the outer edge is straight. At every rib, cut a 12.5 mm half-lap slot from the inner edge so spine and rib interlock like an egg crate.
 - **Spine ends:** run the spines 15 mm past the first rib and 8 mm past the last, so the end ribs also sit in closed slots. The upstream extension steps out over the settling-chamber wall; the downstream one steps out over sleeve 1.
 - **Why spines:** the ribs drop into slots that are already evenly spaced and square, so nothing has to be aligned by hand.
 - **Assembly:** lay the bottom spine's straight edge on a flat board as the datum and push the ribs into its slots. Fit the side spines, then the top spine. Glue on the four sheets in the order bottom, sides, top, with hot glue along the rib-hole edges and spine edges. Seal the four corners from outside with tape or hot glue.
 - **Saving wood:** the spines are about 116 mm deep near the exit. You can cut large lightening holes in the middle, as long as both edges and all slots stay intact.
 
-Cut each wall from a flat sheet, because each wall bends in only one direction. Along the bend the sheet is longer than 378 mm, so leave 10 mm extra and trim at the end.
+Cut each wall from a flat sheet, because each wall bends in only one direction. The laser view of the CAD draws the exact flat patterns: laser-cut them, or print them 1:1 as templates and cut with a knife. The table below gives the same shapes for checking. Along the bend the sheet is longer than 378 mm.
 
 | x from contraction inlet (mm) | Top/bottom sheet: distance along sheet | Top/bottom sheet: width | Side sheet: distance along sheet | Side sheet: height |
 | --- | --- | --- | --- | --- |
@@ -78,13 +101,17 @@ The top and bottom sheets fit between the side sheets. Add 2 × the sheet thickn
 
 The step from the contraction exit into the test section must be **≤ 0.3 mm and backward-facing only**. The downstream wall may sit slightly outward, never into the flow.
 
-**A3. Test section.** The test section is a 3 mm solid clear polycarbonate box (not twin-wall), CNC-cut by the seller; do not laser-cut it. The roof is hinged or taped at the inlet end and can be shimmed up 0–6 mm at the outlet end to flatten the streamwise pressure gradient. The inlet end slides 20 mm into sleeve 1 on the contraction; the outlet end slides 20 mm into sleeve 2 on the diffuser (see H1). The entrance pressure taps (D2) therefore sit at x = 30 mm, just clear of sleeve 1.
+**A3. Test section.** The test section is four laser-cut 3 mm clear acrylic panels joined with acrylic solvent cement.
+- **Panels:** each side panel is one piece with the balance-box wall below the floor (C). The 1 mm static taps (entrance ring at x = 30 and the side-wall taps) are cut by the laser, square to the wall.
+- **Why acrylic:** polycarbonate cannot be laser-cut cleanly. Acrylic is stiffer, so the roof sags less (under 0.23 mm at 14 m/s), but it is more brittle. Glue it with solvent cement, not superglue, and keep screws away from the edges.
+- **Roof:** it has the car hatch (H4). It is taped, not glued, so it can be hinged at the inlet end and shimmed up 0–6 mm at the outlet end to flatten the streamwise pressure gradient.
+- **Joints:** the inlet end slides 20 mm into sleeve 1 on the contraction; the outlet end slides 20 mm into sleeve 2 on the diffuser (see H1). The entrance pressure taps (D2) therefore sit at x = 30 mm, just clear of sleeve 1.
 
-![Test section: side and top views with ground plate, car, Pitot tube, pressure taps, survey points and plenum.](figures/en/M3-test-section.svg)
+![Test section: side and top views with ground plate, car, Pitot tube, pressure taps, survey points, balance box and car hatch.](figures/en/M3-test-section.svg)
 
-**A4. Diffuser.** The diffuser slows the air from 168 × 126 to 240 × 240, exactly the size of the 2 × 2 fan array. It is four flat trapezoid panels, so nothing needs bending. Its equivalent cone half-angle is 4.7°, below the 5° limit where flow starts to separate. A safety mesh with 5–10 mm openings sits at the exit (7 mm in the CAD).
+**A4. Diffuser.** The diffuser slows the air from 168 × 126 to 240 × 240, exactly the size of the 2 × 2 fan array. It is four flat trapezoid panels, so nothing needs bending. Its equivalent cone half-angle is 4.7°, below the 5° limit where flow starts to separate. A safety mesh with 5–10 mm openings (7 mm in the CAD) is glued to a 3 mm plywood frame between the diffuser and the fan box (x = 986–989). The panels are about 652 mm long, which is longer than a 600 mm laser bed. Either cut them on a bigger bed or cut each in two and join the halves with a glued splice plate on the outside.
 
-**A5. Fans.** The tunnel uses **eight Delta QFR1212GHE fans** (120 × 120 × 38 mm, 12 V, 2-wire), in a 2 × 2 array stacked two deep. The fan box is 240 × 240 inside and 98 mm long. The first layer sits at x = 998–1036 and the second directly behind it at x = 1036–1074.
+**A5. Fans.** The tunnel uses **eight Delta QFR1212GHE fans** (120 × 120 × 38 mm, 12 V, 2-wire), in a 2 × 2 array stacked two deep. The fan box is 240 × 240 inside and 97 mm long (x = 989–1086), made of four finger-jointed 3 mm plywood panels. The first layer sits at x = 998–1036 and the second directly behind it at x = 1036–1074.
 
 - **Datasheet ([Delta QFR1212GHE](https://www.delta-fan.com/Download/Spec/QFR1212GHE.pdf)), per fan:** 357 m³/h at zero pressure, 286 Pa at zero flow, 1.80 A rated (2.70 A max), 6,000 rpm, 64 dBA, 330 g. It starts slowly and reaches full speed after 10 s.
 - **Top speed:** from the datasheet P–Q curve, about **16.0 m/s** at full power (16.4 m/s if the two layers give the ideal double pressure). That is 14% above the 14 m/s the measurements need. One layer of four would give only about 14.8 m/s, which is why both layers are filled.
@@ -100,34 +127,53 @@ The step from the contraction exit into the test section must be **≤ 0.3 mm an
 
 The car stands on a flat ground plate, with each wheel resting in a saddle on a post that passes through the plate to the balance.
 
-- **Ground plate:** 3 mm sheet with the leading edge sanded to a 4:1 ellipse and an adjustable flap at the trailing edge. It must be flat to within 0.15 mm under the car.
-- **Wheel wells and shrouds:** a small closed-bottom box hangs under each wheel opening. Each post passes through a thin tube fixed to the tunnel, so the air under the plate cannot blow on the posts.
+- **Ground plate:** laser-cut 3 mm acrylic (flatter than plywood) with the leading edge sanded to a 4:1 ellipse and an adjustable flap at the trailing edge. It must be flat to within 0.15 mm under the car.
+- **Wheel wells and shrouds:** a small closed-bottom box (3D-printed) hangs under each wheel opening. Each post passes through a thin tube fixed to the tunnel, so the air under the plate cannot blow on the posts.
 - **V-saddles:** the wheels sit directly in V grooves; rollers are too small at this scale. Pushing a wheel out takes a horizontal force of 0.38 × the car's weight, far more than the drag. The saddles can be 3D-printed.
 
 ![V-saddle cross-section (to scale) and the balance stack below (schematic).](figures/en/M4-saddle-and-balance.svg)
 
 ### C. Balance
 
-The balance splits the force on the car into a drag reading and a vertical reading, using the same load path as the full version (its [figure A6](archive/full_1to18/figures/zh-TW/A6-drag-path.svg), with V-saddles in place of rollers).
+The balance splits the force on the car into a drag reading and a vertical reading with two load cells bolted in series. Nothing slides. The layout copies the University of Pennsylvania two-axis balance build guide ([build guide](https://sung.engineering.upenn.edu/?p=1379), [Weakly et al., ASEE 2024](https://dx.doi.org/10.18260/1-2--46453)). It uses the same Arduino Uno, HX711 boards and laser-cut and printed parts, and it measured 1.1–2.5% mean error under known loads. Our target, 1 mN on about 40 mN of drag, needs about 2.5%.
 
-1. The four saddles are fixed to a common frame, so the whole frame moves together.
-2. The frame sits on the drag stage. Four feeler-gauge steel blades (0.1 × 10 × 20 mm) let the upper plate move only fore and aft, so all fore-aft force goes to the 100 g drag load cell.
-3. The drag stage sits on the 1 kg vertical load cell, which reads weight plus downforce.
-4. Everything sits inside a sealed plenum. A thin tube joins the plenum to a side-wall tap at mid-car (x = 178 mm), so the plenum pressure matches the test section.
-5. The balance base stands on a pedestal on the desk, weighed down with about 5 kg of bricks or books. It never stands on the tunnel, so fan vibration cannot reach it (setup in H4).
+**Load path, from the car down:**
 
-Keep the moving mass (car, saddles, frame and drag stage) under 0.6 kg. The blades (1,000 N/m) and the drag cell (4,905 N/m) act as springs side by side, so the cell always carries about 83% of the drag. The force calibration after assembly takes this fixed share out.
+1. **Car and frame.** The four saddles stand on four posts screwed into a common frame plate (two glued 3 mm plywood layers), so the car, saddles, posts and frame move as one rigid body.
+2. **1 kg vertical load cell.** The frame rests on a printed spacer on the free end of this cell. It lies flat and reads weight plus downforce.
+3. **Corner bracket.** The vertical cell's other end is bolted into a printed corner bracket.
+4. **100 g drag load cell.** The bracket sits on the top end of this cell, which stands upright. The car's weight runs along its length, while drag bends it fore and aft, its sensing direction.
+5. **Base and tray.** The drag cell's lower end is bolted through a printed foot to the balance base plate. The base plate bolts to the removable tray, which is the box floor.
 
-**Why the many contacts do not spoil the reading.** The car, the four saddles, the four posts and the common frame form **one rigid body**, the "measured body". Its parts are glued or bolted together, so forces between them cancel, like a bag held in your hand while you stand on a bathroom scale. The tyre-to-saddle contacts are inside this body, so they do not matter as long as the car does not slide. Only two things connect the measured body to the outside:
+**Balance box.**
+- **Walls:** the test-section side panels continue 86 mm below the floor (x = 87–273) and form the box's side walls. Two acrylic end walls close it.
+- **Floor:** a removable tray (two 3 mm plywood layers) carries the whole balance, so the balance comes out in one piece for setting the stops and for servicing. Seal the tray with foam tape.
+- **Pressure:** the box is sealed except through the wheel wells, so the air inside matches the air around the car. No vent line is needed.
+- **Vibration:** fan vibration can reach the balance through the tunnel. Wrap the joint at sleeve 2 in foam tape so it never touches rigidly, stand module 2 on its rubber-padded feet, and use the 30 s averaged recording. The fan-interference acceptance test checks whether this is enough.
+
+**Crosstalk (2 × 2 calibration).** In series, each cell reacts slightly to the other force: load cells are not perfectly blind off-axis, and the bracket is not perfectly rigid. So the two channels are calibrated together (F):
+- Place known weights at the car position and record both channels.
+- Pull fore and aft with known weights on a thread over a pulley, in both directions, and record both channels.
+- The four slopes form a 2 × 2 matrix. The Arduino sketch inverts it to give drag and vertical force. The UPenn guide's `Read_2x_load_cell.ino` is a starting point.
+
+**Overload stops.** Pressing the car into its saddles through the hatch can easily overload a load cell; the 100 g drag cell takes only about 1 N. Three adjustable stops protect them. Set each gap to 0.3 mm on the bench, with the tray out:
+- **Down-stop:** an M4 pan-head screw, head up, threaded into a heat-set insert on top of a printed pillar under the frame. Screw it up until the head just touches the frame, back it off half a turn (0.35 mm), and lock the nut. A sheet of paper (0.1 mm) must slide through the gap.
+- **Fore-aft stops:** a printed fork around a lug under the frame, with an M3 screw from each side. Set each tip 0.3 mm from the lug the same way and lock the nuts.
+- **Why adjustable:** a printed post cannot hit 0.3 mm reliably, because print tolerance is ±0.1–0.2 mm.
+- **During measurement the stops touch nothing.** At maximum drag the frame moves only about 10 µm, because the drag cell's stiffness is about 4,900 N/m.
+
+Keep the moving mass (car, saddles, posts and frame) under 0.6 kg.
+
+**Why the many contacts do not spoil the reading.** The car, the four saddles, the four posts and the common frame form **one rigid body**, the "measured body". Its parts are glued or bolted together, so forces between them cancel, like a bag held in your hand while you stand on a bathroom scale. The tyre-to-saddle contacts are inside this body, so they do not matter as long as the car does not slide. Only one path connects the measured body to the outside:
 
 | Connection | Why it is acceptable |
 | --- | --- |
-| 4 feeler-gauge blades (0.1 mm) | They **bend** rather than slide, so there is no friction or stick-slip. They are stiff up/down and sideways, holding the frame in place, but soft fore-aft. |
-| Drag load cell | Measures the fore-aft force. It must be **bolted** to the frame's push tab, not just touching it, so it works in both directions and cannot rock or open a gap. |
+| Vertical cell → corner bracket → drag cell → base | Every joint is bolted, and nothing slides or rubs, so there is no friction or stick-slip. Each cell is stiff in the directions it does not measure; the 2 × 2 calibration removes the small crosstalk that remains. |
+| Overload stops | 0.3 mm clear; they touch only when overloaded. |
 
-At maximum drag the frame moves only about 8 µm, too little to change the 83% share. Calibrating with weights on a thread over a pulley measures the whole chain, blades included.
+**The real risk is an accidental contact.** The posts pass through the floor and wheel wells inside shroud tubes with about 0.75 mm clearance on each side. If a post rubs a tube, a cable touches the frame, or dust closes a stop gap, part of the force bypasses the load cells. The acceptance tests (load and unload weights, return to zero, drift) catch this.
 
-**The real risk is an accidental contact.** The posts pass through the floor and wheel wells inside shroud tubes with about 0.75 mm clearance on each side. If a post rubs a tube, a cable or the vent hose touches the frame, or dust jams a gap, part of the force bypasses the load cell. The acceptance tests (load and unload weights, return to zero, drift) catch this.
+The CAD draws the 100 g drag cell as a 12.7 × 12.7 × 47 mm placeholder. Resize the cell, bracket and spacer once the real cells arrive.
 
 ### D. Arduino control and measurement
 
@@ -231,7 +277,7 @@ Tufts show where the flow separates for almost no cost; smoke is an optional ext
 
 Every measured quantity is calibrated against something known: weights for force, the water manometer for the speed sensors, and the Pitot tube for speed.
 
-- **Force:** weigh coins or small nuts on a 0.01 g pocket scale and use them as weights. For vertical force, place them directly at the car position. For drag, pull with a thread over a low-friction pulley, once in each direction, and average.
+- **Force:** weigh coins or small nuts on a 0.01 g pocket scale and use them as weights. For vertical force, place them directly at the car position. For drag, pull with a thread over a low-friction pulley, once in each direction, and average. Record both channels every time: the four slopes give the 2 × 2 crosstalk matrix (C).
 - **Speed sensors:** bench-calibrate with the syringe and the 1:10 manometer (D2, figure M8) to get A's effective area and B's conversion.
 - **Speed:** read A on the wall rings and B on the Pitot tube at the same time to find $k$, once with the car and once without.
 
@@ -252,7 +298,7 @@ The tunnel splits into three modules that each stand on their own feet, carry by
 | Module | From → to (x, mm) | Contents | Size L × W × H (mm, incl. feet) |
 | --- | --- | --- | --- |
 | 1 Inlet | −696 → 20 | Inlet bell, settling chamber, honeycomb, screens, contraction, ribs, spines, sleeve 1 | 716 × 502 × 413 (the widest; fits through a door) |
-| 2 Test section | 0 → 336 | Test section, ground plate, wheel wells, saddles, plenum, balance (transport lock on) | 336 × 190 × 300 |
+| 2 Test section | 0 → 336 | Test section, car hatch, ground plate, wheel wells, saddles, balance box with the balance on its tray (transport lock on) | 336 × 190 × 300 |
 | 3 Fan end | 316 → 1086 | Sleeve 2, diffuser, safety mesh, fan box, fans | 770 × 252 × 336 |
 
 #### H1. Sleeves (the joints)
@@ -283,7 +329,7 @@ Each module stands on four M6 levelling feet with rubber pads, so it can match d
 | Module | Feet (x, y in mm) |
 | --- | --- |
 | 1 | Two wooden cradles under the settling chamber (x −600 and −480), feet at y ±165 |
-| 2 | The four corners of the plenum floor (x 93 / 267, y ±75); the floor is PC, so use a nut and washer inside |
+| 2 | The four corners of the balance tray (x 95 / 265, y ±79), in T-nuts pressed into the plywood tray |
 | 3 | A wedge cradle under the middle of the diffuser (x 615, y ±85) and the fan-box cradle (x 1037, y ±110) |
 
 Level in this order:
@@ -296,23 +342,21 @@ If a sleeve needs force, the heights are wrong; forcing it bends the joint.
 
 #### H3. Balance transport lock
 
-Four M4 thumb screws clamp the balance so the 0.1 mm blades and the load cells cannot move while module 2 is carried. The screws pass through the plenum walls at x = 200 mm, two on each side, into nuts or threaded inserts glued to the outside of the wall.
+Two M4 thumb screws clamp the frame plate so the load cells cannot be overloaded while module 2 is carried. They pass through the side walls at x = 200 mm, z = −11 mm, one from each side, into nuts or threaded inserts glued to the outside of the wall.
 
-- **Upper pair (z = −37.5 mm):** press on both sides of the common frame.
-- **Lower pair (z = −88 mm):** press on both sides of the balance base plate.
-- **Locking:** lower pair first, then upper pair. Tighten each pair evenly and finger-tight only; tightening one side harder pushes the frame sideways and bends the blades.
-- **Unlocking:** upper pair first, then lower pair. Back all four screws fully out and look to confirm they touch nothing. Tap the car lightly; the reading must return to zero.
+- **Locking:** tighten both evenly and only finger-tight. Tightening one side harder pushes the frame sideways and loads the cells.
+- **Unlocking:** back both screws fully out and look to confirm they touch nothing. Tap the car lightly; the reading must return to zero.
 
 The CAD shows the screws tightened (transport position).
 
-#### H4. Pedestal (stays in the classroom)
+#### H4. Car hatch
 
-The pedestal that carries the balance stays in the classroom, because it must stand on the desk and not on the tunnel. It is the base plate on the desk, a column up through the plenum floor, and the ballast.
+The car goes in and out through a hatch in the test-section roof: a 180 × 150 mm opening at x = 120–300.
 
-- **Column:** bolts to the underside of the balance base; unbolt it before moving module 2.
-- **Base plate and ballast:** can stay in the classroom. The ballast (books or bricks) sits on the base plate outside the plenum's footprint.
-- **Rubber skirt:** seals the gap between the column and the plenum floor; refit it each time with a rubber band.
-- **Height adjuster:** the column top must meet the balance base at exactly the right height each time, or bolting it would lift or press on the balance. Put an M8 bolt with a lock nut at the top of the column. With the transport lock still on, screw it up until it just touches the base, lock the nut, then bolt through the plenum's access cover.
+- **Plug and cover:** an acrylic plug fills the opening and sits 0.5 mm up inside it, a slight recess and never a step into the flow. An acrylic cover glued on top rests on a foam-tape gasket. The tunnel runs below room pressure, so suction holds the hatch shut; four 6 × 3 mm magnets in the roof only locate it.
+- **Interlock:** a tab on the cover presses a microswitch (D8). Lifting the hatch stops the fans at once (D).
+- **Placing the car:** lift the hatch, set the car on the saddles, press it down gently and close the hatch. The overload stops (C) protect the load cells from the press.
+- **Flow survey:** the survey stations (x = 126 and 231, figure M3) now fall inside the hatch, so the survey holes go through the plug and cover. Tape them over for force runs.
 
 #### H5. Electronics board
 
@@ -320,7 +364,7 @@ All the electronics travel on one 200 × 140 mm plywood board, and every wire th
 
 | Connection | Plug |
 | --- | --- |
-| Drag and vertical load cells (inside the plenum) | Short leads out through a hot-glued hole, ending in 4-pin plugs |
+| Drag and vertical load cells (inside the balance box) | Short leads out through a hot-glued hole, ending in 4-pin plugs |
 | Sensor A load cell | 4-pin plug |
 | Fan MOSFET signal (to the MOSFET module at the fan box) | 2-pin plug |
 | Fan 12 V | XT60, power supply to fan box (not through the board) |
@@ -344,7 +388,7 @@ Hold each module by its sturdy parts and cover its open ends.
 | Module | Hold by | Never hold by | Protect |
 | --- | --- | --- | --- |
 | 1 | Settling chamber and cradles | The thin PET contraction sheet | Cardboard over both open ends (screens, sleeve) |
-| 2 | The plenum, kept upright and level | The clear walls or the Pitot tube | Remove the car (padded box); wrap the PC walls against scratches |
+| 2 | The balance box, kept upright and level, with the transport lock on | The clear walls, the hatch or the Pitot tube | Remove the car (padded box); wrap the acrylic walls against scratches and knocks |
 | 3 | Fan box and cradles | Diffuser panels near the mesh | Cardboard over the mesh |
 
 Weigh each module after building and note it here.
@@ -353,22 +397,20 @@ Weigh each module after building and note it here.
 
 Setup puts the modules down from the reference end outward, then frees the balance, then checks it before any measurement.
 
-1. Put the pedestal base plate and ballast on the desk.
-2. Place module 1 and level it.
-3. Lower module 2 into place with the column through the plenum-floor hole. Push the test section into sleeve 1, adjust the feet and tape the seam.
-4. Slide module 3's sleeve 2 onto the test section, adjust its feet and tape the seam.
-5. Raise the column adjuster until it touches the base, lock the nut, bolt it and fit the skirt.
-6. Unlock the balance (H3) and check that it moves freely.
-7. Plug in the electronics board, the 12 V and the two pressure tubes.
-8. Fill oil to the 45 mm line, hang the bell and seat the car on the saddles.
-9. Let the load cells warm up for 15 minutes.
-10. **Check before measuring:**
+1. Place module 1 and level it.
+2. Place module 2 on one desk. Push the test section into sleeve 1, adjust the feet and tape the seam.
+3. Slide module 3's sleeve 2 onto the test section, adjust its feet and tape the seam.
+4. Unlock the balance (H3) and check that it moves freely.
+5. Plug in the electronics board, the 12 V and the two pressure tubes.
+6. Fill oil to the 45 mm line and hang the bell. Put the car on the saddles through the hatch and close it (H4).
+7. Let the load cells warm up for 15 minutes.
+8. **Check before measuring:**
     - Hang one known weight and check the force reading.
     - Zero both speed sensors and the balance.
     - Run at 10 m/s holding a tuft next to each taped seam; it must not be pulled in.
     - Do a 1-minute Pitot check at 10 m/s. The joints and taps have been taken apart, so $k$ may have shifted; if it is off by more than 1%, recalibrate $k$.
 
-**Packing up** is the reverse: stop the fans and unplug everything; lock the balance (lower pair, then upper pair); unbolt the column; remove the tape and pull the modules apart; empty the oil and take out the car.
+**Packing up** is the reverse: stop the fans and unplug everything; take out the car through the hatch; lock the balance (H3); remove the tape and pull the modules apart; empty the oil.
 
 ## Budget
 
@@ -385,14 +427,14 @@ The low estimate fits NT$5,000 and the high one does not, so the low-cost route 
 | 12 V ≥ 25 A power supply | 0–900 | Old ATX supply free; retail estimate |
 | 100 g and 1 kg load cells + 2 × HX711 | 250–400 | Estimate |
 | Pitot tube, brass U-tube for the bell, silicone tubing, tees | 150–300 | Estimate |
-| 3 mm clear PC sheet (about 3.7 cai) | 300–500 | Checked: NT$60–75 per cai + cutting fee |
-| Plywood/MDF ribs and spines, PET sheet, diffuser panels | 300–600 | Estimate |
+| 3 mm clear acrylic, laser-cut (about 0.4 m²) | 300–600 | Estimate |
+| 3 mm laser plywood (about 2.5 m²), 1 mm PET sheet | 450–900 | Estimate |
 | Straws or printed honeycomb, screens | 100–200 | Estimate |
 | 1:43 diecast car | 80–450 | Checked: SHEIN Taiwan NT$77–445 |
 | 12/16 AWG wire, main fuse holder, emergency stop, 1000 µF capacitor, connectors, screws, hot glue | 200–400 | Estimate |
-| Feeler gauge, rubber skirt, misc. | 100–200 | Estimate |
-| Portability: 12 × M6 levelling feet, 4 transport-lock thumb screws, 2 pressure quick-connects (sleeves and spines from plywood offcuts) | 150–300 | Estimate |
-| **Total** | **4,360–9,050** | |
+| Hatch magnets, foam tape, microswitch; stop screws, lock nuts, heat-set inserts | 100–200 | Estimate |
+| Portability: 12 × M6 levelling feet, 2 transport-lock thumb screws, 2 pressure quick-connects | 150–300 | Estimate |
+| **Total** | **4,510–9,450** | |
 
 To stay at NT$5,000, use an old PC power supply, a cheap car, and school tools and scrap wherever possible. If the order is still over budget, **cut speed sensor B first**: it saves NT$120–300 but loses the backup and cross-check. Speed sensor A and the calibration manometer cannot be cut.
 
@@ -422,19 +464,19 @@ The tunnel is ready for class data only when it passes every test below.
 
 ## Why it works, and why it could fail
 
-The 1 mN target holds as long as the measured body touches the outside world only through the four blades and the drag load cell, and the zero is checked around every run. The physics in C shows that contacts inside the measured body cancel and that the 83% drag share is fixed. The automatic zero-record-re-zero run catches slow drift. What remains are practical failure modes, each with a test that catches it:
+The 1 mN target holds as long as the measured body touches the outside world only through the two load cells in series, and the zero is checked around every run. C shows that contacts inside the measured body cancel and that the 2 × 2 calibration removes the crosstalk between the two cells. The automatic zero-record-re-zero run catches slow drift. What remains are practical failure modes, each with a test that catches it:
 
 | Failure mode | What happens | Caught by | Response |
 | --- | --- | --- | --- |
-| Accidental contact (post rubs a shroud, cable or hose touches the frame, dust) | Part of the force bypasses the load cell | Force repeatability; return to zero after tapping the car | Find and clear the contact |
+| Accidental contact (post rubs a shroud, cable touches the frame, dust closes a stop gap) | Part of the force bypasses the load cells | Force repeatability; return to zero after tapping the car | Find and clear the contact |
 | Zero drift (temperature, creep) | Readings shift by more than 1 mN during a run | Automatic re-zero flag; force drift test | Longer warm-up; discard flagged runs |
-| Fan vibration reaching the balance or sensor A | Noisy force or speed readings | Fan interference test; A's noise at full fan power with no tubes | Move the pedestal or sensor A; switch speed control to B |
+| Fan vibration reaching the balance or sensor A | Noisy force or speed readings | Fan interference test; A's noise at full fan power with no tubes | Softer foam at sleeve 2 and softer pads under module 2's feet; move sensor A; switch speed control to B |
 | Leaks at the taped seams | Room air enters, speed and uniformity change | Tuft check at every seam during setup | Re-tape; tape-wrap a loose test-section end |
 | Bell manometer fails calibration | Speed control is inaccurate | Bench calibration; A vs B test | Switch to B, then C (D2) |
 | QFR fans will not run smoothly at low duty | Low speeds cannot be held | fan_pwm_test on one fan before buying eight | Fall back to 4 × PFC1212DE (4-wire PWM), or run only 10–16 m/s |
 | Fans fall short of the estimate (stacking gain below 1.6×) | 14 m/s not reached | Measured fan curve during the trial | Even one layer reaches about 14.8 m/s on paper; 12 m/s is the minimum for coefficient-grade data |
-| Desk joint under the balance | Desk movement shifts the balance | Force drift test | Put the pedestal and module 2 on one desk |
-| Carrying damage (bent blades, overloaded drag cell) | Calibration changes after a move | Weight check in H8 step 10 | Always use the transport lock; recalibrate force |
+| Desk joint under module 2 | Desk movement shifts the balance | Force drift test | Put module 2 on one desk |
+| Carrying damage (overloaded load cell, loosened bracket) | Calibration or crosstalk changes after a move | Weight check in H8 step 8 | Always use the transport lock; recalibrate force (2 × 2) |
 
 ## Build order
 
@@ -444,8 +486,8 @@ The build goes electronics first, because the balance and speed sensors decide w
 | --- | --- | --- | --- | --- |
 | 1. Measure and order | Measure the car (length, wheelbase, track, wheel diameter, ride height, mass) and update [spec/mini.json](spec/mini.json); buy one QFR1212GHE and one 4-channel MOSFET board and run fan_pwm_test through it; order the rest | Car and one fan delivered | Fan test passes (A5) | 1–2 weeks |
 | 2. Electronics on the bench | Wire the Uno, HX711s and load cells; overnight drift test; build speed sensors A and B; bench calibration (figure M8); fan MOSFET control | Phase 1 parts | **Balance reaches 1 mN on the bench**; A passes calibration | 2 weeks |
-| 3. Tunnel body | Settling chamber; contraction (ribs and spines first, then sheets, A2); test section; diffuser; fan box; sleeves glued with the test section in place (H1); cradles and levelling feet | Car dimensions (phase 1) | Sleeves slide on freely; no forward-facing steps | 2 weeks (can overlap phase 2) |
-| 4. Balance and plenum | Saddles, frame, drag stage, plenum with transport-lock holes and access cover, height-adjustable column; electronics board and quick-connects | Phase 2 gate | Balance unlocks and returns to zero | 1–2 weeks |
+| 3. Tunnel body | Laser-cut every LC3 part from the CAD laser view and glue the laminated pairs; settling chamber; bell; contraction (ribs and spines first, then sheets, A2); test section; diffuser; fan box; sleeves glued with the test section in place (H1); cradles and levelling feet | Car dimensions (phase 1) | Sleeves slide on freely; no forward-facing steps | 2 weeks (can overlap phase 2) |
+| 4. Balance and balance box | Print the saddles, wells, bracket, spacer, foot, stop pillar and fork; assemble the series balance on the tray; set the stops to 0.3 mm; transport lock; car hatch and interlock; electronics board and quick-connects | Phase 2 gate | Balance unlocks, returns to zero, and passes the 2 × 2 calibration | 1–2 weeks |
 | 5. Trial and calibration | Raise speed slowly; tuft leak check; vibration check; measure the fan curve; calibrate $k$ and force | Phases 3 and 4 | Speed held within ±1% | 1 week |
 | 6. Acceptance and demo | Acceptance tests; one full pack-up, carry and setup rehearsal; prepare the class demo | Phase 5 | All acceptance tests pass | 1 week |
 
@@ -458,8 +500,11 @@ The build goes electronics first, because the balance and speed sensors decide w
 | Fan price | The budget line still uses the old 4 × PFC1212DE price; re-price 8 × QFR1212GHE. |
 | MOSFET board specs | YYNMOS-4 specs come from listings, not a datasheet. On the board bought, check the PWM limit (1 kHz or 200 Hz), the size of the common DC−/GND terminal (it carries 7.2 A rated, 10.8 A max; if small, use 2 fans per board on 4 boards), whether flyback diodes are fitted, and one input's current. |
 | Stacking gain | The design assumes two stacked fans give 1.6× one fan's pressure (2.0× ideal); measure the fan curve after building. |
-| CAD | The CAD shows the drag push tab only touching the load cell (it must be bolted, see C) and does not show the column height adjuster (H4). |
-| Desk size and joint | The model assumes two 900 × 600 mm desks with the joint at x = 185 mm, right under the plenum and pedestal. Taiwanese classroom desks are often only about 60 × 45 cm, so three may be needed. Measure the desks and place the pedestal and module 2 on one desk. |
+| Load-cell sizes | The CAD draws the 100 g drag cell as a 12.7 × 12.7 × 47 mm placeholder; resize the cells, corner bracket and spacer when they arrive. |
+| Laser bed size | Unknown; the CAD laser view uses 600 × 400 mm until it is set. At that size the four diffuser panels (about 652 mm long) and the two contraction top/bottom PET sheets (393 × 412 mm) do not fit and show red. |
+| 3D printer bed | Unknown; check that the honeycomb tiles (if printed) and sensor A's bell fit. |
+| Survey holes | The flow-survey holes (x = 126 and 231) now fall inside the car hatch; they still have to be added to the hatch plug and cover in the CAD. |
+| Desk size and joint | The model assumes two 900 × 600 mm desks with the joint at x = 185 mm, right under module 2. Taiwanese classroom desks are often only about 60 × 45 cm, so three may be needed. Measure the desks and place module 2 on one desk. |
 | Bell effective area | 0.00294 m² is a design estimate; replace it with the bench-calibration slope. |
 | Vibration on sensor A | Record A at full fan power with no tubes connected; if its noise exceeds 0.5 Pa, move it or switch to B. |
 | Car dimensions | Currently estimates for a typical 1:43 hatchback; measure the purchased car and update. |
@@ -474,4 +519,8 @@ The build goes electronics first, because the balance and speed sensors decide w
 | Stopping the fans | Safety never relies on the Uno: the boards' opto-isolated inputs keep the fans off during a reset, and the emergency stop cuts 12 V in hardware. |
 | Power | Supply ≥ 25 A, 30 A fuse, 12 AWG main wire, sized for the 21.6 A datasheet maximum; a 5 A fuse and an SS34 diode on each fan; 1000 µF on the supply side only (G). |
 | Portability | Three modules joined by two sleeves (H), so the balance travels in its own module, away from the fan vibration. |
+| Balance | Two load cells bolted in series with no slide, laid out like the UPenn build guide (C). Feeler-gauge blades were dropped (fragile, and they carried part of the drag); drawer slides, MGN rails, crossed-roller guides and a 3-ball slide were rejected because their friction (about 1–50 mN) is as large as the drag. |
+| Balance location | Inside module 2, in a sealed box under the test-section floor. The pedestal, ballast, rubber skirt, height adjuster and vent tube are gone. |
+| Car access | Roof hatch with a gasket, magnets and a fan interlock (H4). |
+| Fabrication | Laser cutter takes 3 mm at most: test section in laser-cut acrylic (not seller-cut polycarbonate); thicker parts are glued 3 mm pairs; the CAD has a laser view for DXF export. |
 | Ride height | Each V-saddle holds its tyre at two side points, so the bottom of the tyre sits about 0.53 mm below those contacts. That costs about 18% of a typical 3 mm ride height; record the actual ride height in every report. |

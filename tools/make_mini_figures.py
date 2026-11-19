@@ -144,7 +144,7 @@ def fig_contraction():
 
 # ---------------------------------------------------------------- M3
 def fig_test_section():
-    svg = Svg(1400, 1240, "迷你測試段配置", "迷你測試段側視與俯視：地面板、車模、皮托管、靜壓孔、量測點、靜壓箱。")
+    svg = Svg(1400, 1240, "迷你測試段配置", "迷你測試段側視與俯視：地面板、車模、皮托管、靜壓孔、量測點、天平箱、車輛艙蓋。")
     svg.header("圖 M3　測試段配置（依比例）", "上：側視（從 −y 側看）　下：俯視（+y 在上）　x 自收縮段出口起算；z 自測試段地板起算；單位 mm")
     s = 2.6
     side = View(90, 150 + 140 * s, s, -25, 0)
@@ -152,7 +152,7 @@ def fig_test_section():
     ts, gp, car, pr = G["test_section"], G["ground_plate"], G["car"], G["probes"]
     zt = gp["z_underside"] + gp["thickness"]
     ticks = sorted({0, G["pressure_taps"]["entrance_ring"]["x"], gp["x_le"], pr["pitot_nose"]["x"], pr["fog_outlet"]["x_approx"],
-                    car["x_nose"], G["pressure_taps"]["plenum_vent_tap"]["x"], car["x_tail"], gp["x_te"], ts["length"]})
+                    car["x_nose"], car["x_tail"], gp["x_te"], ts["length"]} | set(ts["hatch"]["x"]))
     ry = 118
     svg.line(side.X(0), ry, side.X(ts["length"]), ry, "axis")
     for i, x in enumerate(ticks):
@@ -189,9 +189,12 @@ def fig_test_section():
         rect_mm(svg, side, a - 13, a + 13, gp["z_underside"], zf, "shell")
         rect_mm(svg, side, a - post["shroud_tube_d"] / 2, a + post["shroud_tube_d"] / 2, zf, 0, "shell")
         svg.line(side.X(a), side.V(zf + 3), side.X(a), side.V(-40), "dark", 'style="stroke-width:3;stroke:#4b5563"')
-    pl = G["plenum"]
-    rect_mm(svg, side, pl["x"][0], pl["x"][1], -ts["floor_t"], -40, "pc", 'style="fill:#eef6f9"')
-    svg.text(side.X(sum(pl["x"]) / 2), side.V(-26), f"密封靜壓箱 {pl['x'][1]-pl['x'][0]}×{pl['y'][1]-pl['y'][0]}×{pl['depth']}（見圖 M4）", "l", "middle", True)
+    bb = G["balance_box"]
+    rect_mm(svg, side, bb["x"][0], bb["x"][1], -ts["floor_t"], -40, "pc", 'style="fill:#eef6f9"')
+    svg.text(side.X(sum(bb["x"]) / 2), side.V(-26), f"天平箱 {bb['x'][1]-bb['x'][0]}×{bb['y'][1]-bb['y'][0]}×{bb['depth']}（見圖 M4）", "l", "middle", True)
+    hx = ts["hatch"]["x"]
+    rect_mm(svg, side, hx[0] - 12, hx[1] + 12, ts["height"] + 6.5, ts["height"] + 3.5, "pc", 'style="fill:#dbeafe"')
+    svg.text(side.X(sum(hx) / 2), side.V(ts["height"] + 6.5) - 8, f"車輛艙蓋 x {hx[0]}–{hx[1]}（磁鐵定位，掀開即停風扇）", "n", "middle", True)
     # car
     rect_mm(svg, side, car["x_nose"], car["x_tail"], zt + 3.3 + 30, zt + 3.3, "car", 'rx="12"')
     R = car["tyre_d_planning"] / 2
@@ -207,11 +210,7 @@ def fig_test_section():
     taps = G["pressure_taps"]
     for x in taps["side_wall_taps"]["x"]:
         svg.circle(side.X(x), side.V(taps["side_wall_taps"]["z"]), 4, "shell")
-    vx = taps["plenum_vent_tap"]["x"]
-    svg.circle(side.X(vx), side.V(taps["plenum_vent_tap"]["z"]), 5, "shell", 'style="fill:#187c91"')
     svg.text(side.X(taps["side_wall_taps"]["x"][-1]) + 8, side.V(taps["side_wall_taps"]["z"]) + 4, "側壁靜壓孔 Ø1（−y 側）", "n", "start", True)
-    svg.path(f"M{side.X(vx):.1f},{side.V(taps['plenum_vent_tap']['z']):.1f} L{side.X(vx):.1f},{side.V(taps['plenum_vent_tap']['z']) - 0:.1f}", "thin")
-    svg.text(side.X(vx), side.V(taps["plenum_vent_tap"]["z"]) - 10, f"平衡孔 → Ø{pl['vent_line_d']} 管通靜壓箱", "n", "middle", True)
     xd = side.X(ts["length"]) + 70
     svg.vdim(xd, side.V(0), side.V(gp["z_underside"]), f"板下 {gp['z_underside']}")
     svg.vdim(xd, side.V(zt), side.V(zp), f"{p['z_above_plate']}（皮托管高於地面板）")
@@ -245,18 +244,17 @@ def fig_test_section():
     svg.text(top.X(G["survey"]["stations_x"][1]) + 8, top.V(G["survey"]["holes_y"][-1]) - 6, "量測頂板孔 ×5／站（間隔 21）", "n", "start", True)
     for x in taps["side_wall_taps"]["x"]:
         svg.circle(top.X(x), top.V(-hw), 4, "shell")
-    svg.circle(top.X(vx), top.V(-hw), 5, "shell", 'style="fill:#187c91"')
     svg.vdim(top.X(ts["length"]) + 70, top.V(hw), top.V(-hw), f"{ts['width']}")
     svg.text(top.X(-24), top.V(hw) - 10, "+y（順流向看的左側）", "n")
     sh = G["survey"]["heights_above_plate"]
-    svg.text(32, 1196, f"面板：{ts['side_wall_t']} mm 實心透明 PC（{UMAX} m/s 時頂板撓度約 {ac.strip_deflection_mm(ac.depression_at_ts(UMAX), ts['width'], ts['roof_t_min']):.2f} mm）", "n")
+    svg.text(32, 1196, f"面板：{ts['side_wall_t']} mm 透明壓克力，雷射切割（{UMAX} m/s 時頂板撓度小於 {ac.strip_deflection_mm(ac.depression_at_ts(UMAX), ts['width'], ts['roof_t_min']):.2f} mm）", "n")
     svg.text(32, 1216, f"流場量測：移除車模，於 x = {G['survey']['stations_x'][0]} 與 {G['survey']['stations_x'][1]}、地面板上方 z = {', '.join(map(str, sh))} 各點（共 50 點）", "n")
     svg.save("M3-test-section.svg")
 
 
 # ---------------------------------------------------------------- M4
 def fig_saddle_balance():
-    svg = Svg(1400, 1180, "車輪托座與天平", "上：單一車輪 V 形托座剖面（依比例）；下：密封靜壓箱與天平堆疊（示意）。")
+    svg = Svg(1400, 1180, "車輪托座與天平", "上：單一車輪 V 形托座剖面（依比例）；下：天平箱與串聯雙荷重元天平（示意）。")
     svg.header("圖 M4　車輪 V 形托座與天平（剖面）", "上半依比例（單一車輪，側視）；下半為示意、未依比例　單位 mm")
     s = 11.0
     vw = View(80, 110 + 46 * s, s, -26, 0)
@@ -316,42 +314,49 @@ def fig_saddle_balance():
     svg.line(40, y0 - 14, 1360, y0 - 14, "guide")
     svg.text(40, y0 + 6, "以下為示意，未依比例：測試段地板下方", "w")
     bx0, bx1, by0, by1 = 140, 720, y0 + 40, y0 + 340
-    svg.path(f"M380,{by1} L{bx0},{by1} L{bx0},{by0} L{bx1},{by0} L{bx1},{by1} L480,{by1}", "shell0", 'style="stroke-width:4"')
-    pl = G["plenum"]
-    svg.text(bx0 + 8, by0 + 22, f"密封靜壓箱 {pl['x'][1]-pl['x'][0]}×{pl['y'][1]-pl['y'][0]}×{pl['depth']}（3 mm PC 或壓克力）", "l")
-    svg.rect(bx1 - 4, by0 + 90, 8, 100, "solid", 'style="fill:#187c91"')
-    svg.text(bx1 + 12, by0 + 140, "檢修蓋（泡棉膠條密封）", "n")
-    svg.circle(bx1, by0 + 230, 6, "shell")
-    svg.text(bx1 + 12, by0 + 234, "線材孔（熱熔膠封）→ HX711 ×2 在箱外", "n")
-    svg.line(bx1, by0 + 40, bx1 + 80, by0 + 40, "scr")
-    svg.text(bx1 + 86, by0 + 44, f"Ø{pl['vent_line_d']} 平衡管 → 側壁平衡孔（x = {G['pressure_taps']['plenum_vent_tap']['x']}）", "n")
-    for px in (260, 600):
+    bb, bal = G["balance_box"], G["balance"]
+    svg.path(f"M{bx0},{by0} L{bx0},{by1} L{bx1},{by1} L{bx1},{by0}", "shell0", 'style="stroke-width:4"')
+    svg.rect(bx0 - 4, by0 - 6, bx1 - bx0 + 8, 6, "solid")
+    svg.text(bx1 + 12, by0 + 18, f"天平箱 {bb['x'][1]-bb['x'][0]}×{bb['y'][1]-bb['y'][0]}×{bb['depth']}（側壁即測試段側板，{G['test_section']['side_wall_t']} mm 壓克力）", "l")
+    svg.text(bx1 + 12, by0 + 40, "只經輪井與測試段相通，不需平衡管", "n")
+    svg.rect(bx0, by1 - 12, bx1 - bx0, 12, "solid", 'style="fill:#d6c3a1"')
+    svg.text(bx1 + 12, by1 - 2, "底板 = 可抽出托盤，整組天平鎖在上面", "n")
+    svg.circle(bx1, by0 + 150, 6, "shell")
+    svg.text(bx1 + 12, by0 + 154, "線材孔（熱熔膠封）→ HX711 ×2 在箱外", "n")
+    for fx in (bx0 + 30, bx1 - 30):
+        svg.rect(fx - 6, by1, 12, 22, "dark")
+    svg.text(bx1 - 20, by1 + 52, "M6 調整腳 ×4（裝在托盤）", "n")
+    # posts and frame
+    for px in (330, 560):
         svg.line(px, by0 - 30, px, by0 + 70, "dark", 'style="stroke-width:5;stroke:#94a3b8"')
-    svg.text(608, by0 - 18, "支柱 ×4", "n")
-    svg.rect(230, by0 + 70, 400, 14, "solid")
-    svg.text(640, by0 + 82, "共用框架（鋁條或 3 mm 板）", "n")
-    svg.rect(330, by0 + 100, 200, 12, "solid")
-    for px in (340, 520):
-        svg.line(px, by0 + 112, px, by0 + 160, "shell0", 'style="stroke-width:2;stroke:#7c3aed"')
-    b = G["balance"]["drag_blades"]
-    svg.text(540, by0 + 140, f"厚薄規鋼片 ×{b['count']}（{b['t']} × {b['w']} × {b['free_len']}）", "n")
-    svg.rect(330, by0 + 160, 200, 12, "solid")
-    svg.rect(390, by0 + 128, 60, 18, "shell", 'style="fill:#fde68a"')
-    svg.text(380, by0 + 141, f"阻力荷重元 {int(G['balance']['drag_cell']['capacity_kg']*1000)} g（水平）", "n", "end")
-    svg.rect(360, by0 + 190, 140, 22, "shell", 'style="fill:#fde68a"')
-    svg.text(350, by0 + 205, f"垂直荷重元 {G['balance']['vertical_cell']['capacity_kg']:.0f} kg", "n", "end")
-    svg.line(430, by0 + 172, 430, by0 + 190, "shell0", 'style="stroke-width:4"')
-    svg.rect(405, by0 + 212, 50, by1 - by0 - 212 + 40, "solid")
-    svg.path(f"M380,{by1} q4,8 12,10 q8,4 13,12 M480,{by1} q-4,8 -12,10 q-8,4 -13,12", "shell0", 'style="stroke:#7c3aed;stroke-width:2"')
-    svg.text(490, by1 + 26, "薄橡膠裙邊（手套或氣球膜）", "n")
-    svg.rect(340, by1 + 40, 180, 30, "solid", 'style="fill:#9ca3af"')
-    svg.text(530, by1 + 60, f"底座 + 配重約 {pl['pedestal_added_mass_kg']} kg（磚塊或書）", "n")
-    svg.rect(60, by1 + 70, 1280, 12, "solid", 'style="fill:url(#hatch)"')
-    svg.text(70, by1 + 66, "桌面或地板（不要放在風洞框架上）", "n")
+    svg.text(568, by0 - 18, "支柱 ×4", "n")
+    svg.rect(250, by0 + 70, 380, 14, "solid", 'style="fill:#d6c3a1"')
+    svg.text(bx1 + 12, by0 + 82, "共用框架（2 × 3 mm 合板）", "n")
+    # vertical cell lying flat, free end (left) carries the frame through a spacer
+    svg.rect(300, by0 + 84, 40, 12, "shell", 'style="fill:#f59e0b"')
+    svg.rect(300, by0 + 96, 300, 20, "shell", 'style="fill:#fde68a"')
+    svg.text(450, by0 + 111, f"垂直荷重元 {bal['vertical_cell']['capacity_kg']:.0f} kg（平放）", "n", "middle")
+    # corner bracket at the fixed end, drag cell standing under it
+    svg.path(f"M540,{by0 + 116} L620,{by0 + 116} L620,{by0 + 150} L600,{by0 + 150} L600,{by0 + 128} L540,{by0 + 128} Z", "shell", 'style="fill:#f59e0b"')
+    svg.text(535, by0 + 146, "角架（3D 列印）", "n", "end")
+    svg.rect(580, by0 + 150, 20, 110, "shell", 'style="fill:#fde68a"')
+    svg.text(572, by0 + 200, f"阻力荷重元 {int(bal['drag_cell']['capacity_kg']*1000)} g（直立）", "n", "end")
+    svg.text(572, by0 + 218, "感測前後方向", "n", "end")
+    svg.rect(552, by0 + 246, 28, 18, "shell", 'style="fill:#f59e0b"')
+    svg.rect(220, by1 - 26, 440, 14, "solid", 'style="fill:#d6c3a1"')
+    svg.text(400, by1 - 30, "天平底板", "n")
+    # down-stop screw under the frame's free end
+    svg.rect(262, by0 + 100, 22, by1 - 26 - by0 - 100, "shell", 'style="fill:#f59e0b"')
+    svg.rect(259, by0 + 88, 28, 6, "dark")
+    svg.text(256, by0 + 140, f"下限位 M4 螺絲（間隙 {bal['stops']['gap_mm']} mm）", "n", "end")
+    svg.text(bx0 + 8, by1 + 80, "受力路徑：車 → 托座 → 支柱 → 框架 → 垂直荷重元 → 角架 → 阻力荷重元 → 底座 → 托盤", "n")
+    svg.rect(60, by1 + 22, 1280, 12, "solid", 'style="fill:url(#hatch)"')
+    svg.text(70, by1 + 18, "桌面", "n")
     ds = mc.drag_stage()
-    st = G["balance"]["stops"]
-    svg.lines(960, by0 + 210, [f"限位：阻力 {st['drag_N']} N、垂直 {st['vertical_kg']} kg", f"活動質量 ≤ {G['balance']['moving_mass_max_kg']} kg",
-                               f"阻力方向自然頻率約 {ds['f_Hz']:.0f} Hz", f"荷重元承受約 {ds['cell_share']*100:.0f}% 阻力（校正扣除）"], "n", 18)
+    st = bal["stops"]
+    svg.lines(960, by0 + 186, [f"限位：阻力 {st['drag_N']} N、垂直 {st['vertical_kg']} kg", f"活動質量 ≤ {bal['moving_mass_max_kg']} kg",
+                               f"阻力方向自然頻率約 {ds['f_Hz']:.0f} Hz", "阻力荷重元承受全部阻力（無滑軌）", "需 2 × 2 交叉校正",
+                               f"前後限位：叉座 + 2 支 M3 螺絲（間隙 {st['gap_mm']} mm）"], "n", 18)
     svg.save("M4-saddle-and-balance.svg")
 
 

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1180" viewBox="0 0 1400 1180" role="img" aria-labelledby="title desc">
 <title id="title">Wheel saddles and balance</title>
-<desc id="desc">Top: one wheel's V-saddle cross-section (to scale); bottom: sealed plenum and balance stack (schematic).</desc>
+<desc id="desc">Top: one wheel's V-saddle cross-section (to scale); bottom: balance box and two-load-cell series balance (schematic).</desc>
 <defs>
 <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" fill="#6b7280"/></marker>
 <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#187c91"/></marker>
@@ -77,38 +77,43 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <text x="860.0" y="328.0" class="w" text-anchor="start" >Record the actual ride height</text>
 <line x1="40.0" y1="686.0" x2="1360.0" y2="686.0" class="guide" />
 <text x="40.0" y="706.0" class="w" text-anchor="start" >Schematic, not to scale: below the test-section floor</text>
-<path d="M380,1040 L140,1040 L140,740 L720,740 L720,1040 L480,1040" class="shell0" style="stroke-width:4"/>
-<text x="148.0" y="762.0" class="l" text-anchor="start" >Sealed plenum 180×160×130 (3 mm PC or acrylic)</text>
-<rect x="716.0" y="830.0" width="8.0" height="100.0" class="solid" style="fill:#187c91"/>
-<text x="732.0" y="880.0" class="n" text-anchor="start" >Access cover (foam-tape seal)</text>
-<circle cx="720.0" cy="970.0" r="6.0" class="shell" />
-<text x="732.0" y="974.0" class="n" text-anchor="start" >Cable hole (hot-glue sealed) → HX711 ×2 outside</text>
-<line x1="720.0" y1="780.0" x2="800.0" y2="780.0" class="scr" />
-<text x="806.0" y="784.0" class="n" text-anchor="start" >Ø4 vent tube → side-wall vent tap (x = 178)</text>
-<line x1="260.0" y1="710.0" x2="260.0" y2="810.0" class="dark" style="stroke-width:5;stroke:#94a3b8"/>
-<line x1="600.0" y1="710.0" x2="600.0" y2="810.0" class="dark" style="stroke-width:5;stroke:#94a3b8"/>
-<text x="608.0" y="722.0" class="n" text-anchor="start" >Posts ×4</text>
-<rect x="230.0" y="810.0" width="400.0" height="14.0" class="solid" />
-<text x="640.0" y="822.0" class="n" text-anchor="start" >Common frame (aluminium strip or 3 mm plate)</text>
-<rect x="330.0" y="840.0" width="200.0" height="12.0" class="solid" />
-<line x1="340.0" y1="852.0" x2="340.0" y2="900.0" class="shell0" style="stroke-width:2;stroke:#7c3aed"/>
-<line x1="520.0" y1="852.0" x2="520.0" y2="900.0" class="shell0" style="stroke-width:2;stroke:#7c3aed"/>
-<text x="540.0" y="880.0" class="n" text-anchor="start" >Feeler-gauge blades ×4 (0.1 × 10 × 20)</text>
-<rect x="330.0" y="900.0" width="200.0" height="12.0" class="solid" />
-<rect x="390.0" y="868.0" width="60.0" height="18.0" class="shell" style="fill:#fde68a"/>
-<text x="380.0" y="881.0" class="n" text-anchor="end" >Drag load cell 100 g (horizontal)</text>
-<rect x="360.0" y="930.0" width="140.0" height="22.0" class="shell" style="fill:#fde68a"/>
-<text x="350.0" y="945.0" class="n" text-anchor="end" >Vertical load cell 1 kg</text>
-<line x1="430.0" y1="912.0" x2="430.0" y2="930.0" class="shell0" style="stroke-width:4"/>
-<rect x="405.0" y="952.0" width="50.0" height="128.0" class="solid" />
-<path d="M380,1040 q4,8 12,10 q8,4 13,12 M480,1040 q-4,8 -12,10 q-8,4 -13,12" class="shell0" style="stroke:#7c3aed;stroke-width:2"/>
-<text x="490.0" y="1066.0" class="n" text-anchor="start" >Thin rubber skirt (glove or balloon)</text>
-<rect x="340.0" y="1080.0" width="180.0" height="30.0" class="solid" style="fill:#9ca3af"/>
-<text x="530.0" y="1100.0" class="n" text-anchor="start" >Pedestal + about 5 kg ballast (bricks or books)</text>
-<rect x="60.0" y="1110.0" width="1280.0" height="12.0" class="solid" style="fill:url(#hatch)"/>
-<text x="70.0" y="1106.0" class="n" text-anchor="start" >Desk or floor (never on the tunnel frame)</text>
-<text x="960.0" y="950.0" class="n" text-anchor="start" >Stops: drag 0.6 N, vertical 0.9 kg</text>
-<text x="960.0" y="968.0" class="n" text-anchor="start" >Moving mass ≤ 0.6 kg</text>
-<text x="960.0" y="986.0" class="n" text-anchor="start" >Drag-direction natural frequency about 16 Hz</text>
-<text x="960.0" y="1004.0" class="n" text-anchor="start" >Cell carries about 83% of drag (calibrated out)</text>
+<path d="M140,740 L140,1040 L720,1040 L720,740" class="shell0" style="stroke-width:4"/>
+<rect x="136.0" y="734.0" width="588.0" height="6.0" class="solid" />
+<text x="732.0" y="758.0" class="l" text-anchor="start" >Balance box 180×168×86 (walls are the test-section side panels, 3 mm acrylic)</text>
+<text x="732.0" y="780.0" class="n" text-anchor="start" >Open to the test section only through the wheel wells; no vent tube</text>
+<rect x="140.0" y="1028.0" width="580.0" height="12.0" class="solid" style="fill:#d6c3a1"/>
+<text x="732.0" y="1038.0" class="n" text-anchor="start" >Floor = removable tray; the whole balance is bolted to it</text>
+<circle cx="720.0" cy="890.0" r="6.0" class="shell" />
+<text x="732.0" y="894.0" class="n" text-anchor="start" >Cable hole (hot-glue sealed) → HX711 ×2 outside</text>
+<rect x="164.0" y="1040.0" width="12.0" height="22.0" class="dark" />
+<rect x="684.0" y="1040.0" width="12.0" height="22.0" class="dark" />
+<text x="700.0" y="1092.0" class="n" text-anchor="start" >M6 levelling feet ×4 (in the tray)</text>
+<line x1="330.0" y1="710.0" x2="330.0" y2="810.0" class="dark" style="stroke-width:5;stroke:#94a3b8"/>
+<line x1="560.0" y1="710.0" x2="560.0" y2="810.0" class="dark" style="stroke-width:5;stroke:#94a3b8"/>
+<text x="568.0" y="722.0" class="n" text-anchor="start" >Posts ×4</text>
+<rect x="250.0" y="810.0" width="380.0" height="14.0" class="solid" style="fill:#d6c3a1"/>
+<text x="732.0" y="822.0" class="n" text-anchor="start" >Common frame (2 × 3 mm plywood)</text>
+<rect x="300.0" y="824.0" width="40.0" height="12.0" class="shell" style="fill:#f59e0b"/>
+<rect x="300.0" y="836.0" width="300.0" height="20.0" class="shell" style="fill:#fde68a"/>
+<text x="450.0" y="851.0" class="n" text-anchor="middle" >Vertical load cell 1 kg (lies flat)</text>
+<path d="M540,856 L620,856 L620,890 L600,890 L600,868 L540,868 Z" class="shell" style="fill:#f59e0b"/>
+<text x="535.0" y="886.0" class="n" text-anchor="end" >Corner bracket (3D-printed)</text>
+<rect x="580.0" y="890.0" width="20.0" height="110.0" class="shell" style="fill:#fde68a"/>
+<text x="572.0" y="940.0" class="n" text-anchor="end" >Drag load cell 100 g (stands up)</text>
+<text x="572.0" y="958.0" class="n" text-anchor="end" >senses fore-aft</text>
+<rect x="552.0" y="986.0" width="28.0" height="18.0" class="shell" style="fill:#f59e0b"/>
+<rect x="220.0" y="1014.0" width="440.0" height="14.0" class="solid" style="fill:#d6c3a1"/>
+<text x="400.0" y="1010.0" class="n" text-anchor="start" >Balance base plate</text>
+<rect x="262.0" y="840.0" width="22.0" height="174.0" class="shell" style="fill:#f59e0b"/>
+<rect x="259.0" y="828.0" width="28.0" height="6.0" class="dark" />
+<text x="256.0" y="880.0" class="n" text-anchor="end" >Down-stop M4 screw (0.3 mm gap)</text>
+<text x="148.0" y="1120.0" class="n" text-anchor="start" >Load path: car → saddles → posts → frame → vertical cell → corner bracket → drag cell → base → tray</text>
+<rect x="60.0" y="1062.0" width="1280.0" height="12.0" class="solid" style="fill:url(#hatch)"/>
+<text x="70.0" y="1058.0" class="n" text-anchor="start" >Desk</text>
+<text x="960.0" y="926.0" class="n" text-anchor="start" >Stops: drag 0.6 N, vertical 0.9 kg</text>
+<text x="960.0" y="944.0" class="n" text-anchor="start" >Moving mass ≤ 0.6 kg</text>
+<text x="960.0" y="962.0" class="n" text-anchor="start" >Drag-direction natural frequency about 14 Hz</text>
+<text x="960.0" y="980.0" class="n" text-anchor="start" >The drag cell carries all the drag (no slide)</text>
+<text x="960.0" y="998.0" class="n" text-anchor="start" >Needs a 2 × 2 crosstalk calibration</text>
+<text x="960.0" y="1016.0" class="n" text-anchor="start" >Fore-aft stops: fork + 2 M3 screws (0.3 mm gap)</text>
 </svg>

@@ -62,7 +62,7 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <rect x="219.6" y="234.2" width="24.8" height="191.6" class="hc" />
 <line x1="283.5" y1="234.2" x2="283.5" y2="425.8" class="scr" />
 <line x1="322.5" y1="234.2" x2="322.5" y2="425.8" class="scr" />
-<line x1="1212.8" y1="255.6" x2="1212.8" y2="404.4" class="scr" />
+<line x1="1214.7" y1="255.6" x2="1214.7" y2="404.4" class="scr" />
 <rect x="1212.8" y="255.6" width="62.0" height="148.8" class="solid" />
 <circle cx="1224.6" cy="367.2" r="33.5" class="thin" />
 <circle cx="1224.6" cy="292.8" r="33.5" class="thin" />
@@ -90,7 +90,7 @@ text{font-family:'PingFang TC','Heiti TC','Noto Sans TC','Microsoft JhengHei',sa
 <rect x="219.6" y="552.3" width="24.8" height="255.4" class="hc" />
 <line x1="283.5" y1="552.3" x2="283.5" y2="807.7" class="scr" />
 <line x1="322.5" y1="552.3" x2="322.5" y2="807.7" class="scr" />
-<line x1="1212.8" y1="605.6" x2="1212.8" y2="754.4" class="scr" />
+<line x1="1214.7" y1="605.6" x2="1214.7" y2="754.4" class="scr" />
 <rect x="1212.8" y="605.6" width="62.0" height="148.8" class="solid" />
 <circle cx="1224.6" cy="717.2" r="33.5" class="thin" />
 <circle cx="1224.6" cy="642.8" r="33.5" class="thin" />

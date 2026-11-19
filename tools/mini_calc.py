@@ -92,16 +92,12 @@ def saddle():
 
 
 def drag_stage():
-    b = G["balance"]["drag_blades"]
-    E = 200e9
-    k_blade = E * (b["w"] / 1000) * (b["t"] / 1000) ** 3 / (b["free_len"] / 1000) ** 3  # guided-guided
-    k_blades = b["count"] * k_blade
+    """Drag direction of the series balance: no slide or blades, so the drag cell carries all the drag."""
     c = G["balance"]["drag_cell"]
     k_cell = c["capacity_kg"] * G_ACC / (c["rated_defl_mm_assumed"] / 1000)
     m = G["balance"]["moving_mass_max_kg"]
-    k = k_blades + k_cell
-    return {"k_blades": k_blades, "k_cell": k_cell, "cell_share": k_cell / k, "f_Hz": math.sqrt(k / m) / (2 * math.pi),
-            "defl_um_at_max": forces_mN(G["speeds_m_s"]["max_target"])["drag"] / 1000 / k * 1e6}
+    return {"k_cell": k_cell, "cell_share": 1.0, "f_Hz": math.sqrt(k_cell / m) / (2 * math.pi),
+            "defl_um_at_max": forces_mN(G["speeds_m_s"]["max_target"])["drag"] / 1000 / k_cell * 1e6}
 
 
 def max_sensor_dp():
@@ -199,7 +195,7 @@ def report():
     Um = G["speeds_m_s"]["max_target"]
     dep = ac.depression_at_ts(Um)
     p(f"- depression at {Um} m/s: {dep:.0f} Pa, leak speed {ac.leak_speed(dep):.1f} m/s")
-    p(f"- 3 mm PC roof (span {ts['width']}): {ac.strip_deflection_mm(dep, ts['width'], ts['roof_t_min']):.2f} mm; side (span {ts['height']}): {ac.strip_deflection_mm(dep, ts['height'], ts['side_wall_t']):.2f} mm")
+    p(f"- 3 mm acrylic roof, PC stiffness as a safe bound (span {ts['width']}): {ac.strip_deflection_mm(dep, ts['width'], ts['roof_t_min']):.2f} mm; side (span {ts['height']}): {ac.strip_deflection_mm(dep, ts['height'], ts['side_wall_t']):.2f} mm")
     p(f"- roof shim for walls {ac.roof_shim_mm(ac.PLAN_K['ts_walls']):.1f} mm, walls+plate {ac.roof_shim_mm(ac.PLAN_K['ts_walls'] + ac.PLAN_K['ground_plate']):.1f} mm")
     usc = Um / ac.contraction_ratio()
     p(f"- settling speed {usc:.2f} m/s, screen wire Re {usc*G['conditioning']['screen_wire_d_max']/1000/ac.NU:.0f}")
@@ -207,7 +203,7 @@ def report():
     sd = saddle()
     p(f"- saddle lift-off H/W {sd['liftoff']:.2f}; tyre sits {sd['sink_mm']:.2f} mm below contact points")
     ds = drag_stage()
-    p(f"- blades {ds['k_blades']:.0f} N/m + cell {ds['k_cell']:.0f} N/m; cell share {ds['cell_share']*100:.0f} %; f {ds['f_Hz']:.1f} Hz; travel at max drag {ds['defl_um_at_max']:.1f} um")
+    p(f"- drag cell {ds['k_cell']:.0f} N/m carries all the drag (no slide); f {ds['f_Hz']:.1f} Hz; travel at max drag {ds['defl_um_at_max']:.1f} um")
     p("\n## Power and budget")
     pc = psu_current()
     p(f"- fan current: rated {pc['rated']:.1f} A, datasheet max {pc['max']:.1f} A; PSU >= {G['electronics']['psu']['current_a_min']} A, fuse {G['electronics']['fuse_a']} A")

@@ -105,11 +105,11 @@ def test_wells_and_posts_fit():
     assert post["bare_size_w_by_len"][1] == gp["z_underside"]
 
 
-def test_plenum_covers_axles():
-    pl, car = G["plenum"], G["car"]
-    assert all(pl["x"][0] < a < pl["x"][1] for a in car["axle_x"])
-    assert pl["y"][0] < -car["track"] / 2 and car["track"] / 2 < pl["y"][1]
-    assert pl["x"][0] < G["pressure_taps"]["plenum_vent_tap"]["x"] < pl["x"][1]
+def test_balance_box_covers_axles():
+    bb, car, ts = G["balance_box"], G["car"], G["test_section"]
+    assert all(bb["x"][0] < a < bb["x"][1] for a in car["axle_x"])
+    assert bb["y"][0] < -car["track"] / 2 and car["track"] / 2 < bb["y"][1]
+    assert -ts["width"] / 2 <= bb["y"][0] and bb["y"][1] <= ts["width"] / 2, "box walls are the test-section side panels"
 
 
 def test_panels_and_shim():
@@ -151,6 +151,7 @@ def test_drag_stage():
     ds = mc.drag_stage()
     assert ds["defl_um_at_max"] < 1000 * min(G["ground_plate"]["wheel_openings"]["clearance"])
     assert ds["cell_share"] >= 0.7
+    assert ds["defl_um_at_max"] < 0.2 * 1000 * G["balance"]["stops"]["gap_mm"], "drag travel must stay well inside the stop gap"
     rot_min_hz = G["fan"]["rpm"] / 60 * (mc.duty_for(G["speeds_m_s"]["min"]) or 0.3)
     watch(ds["f_Hz"] < 0.8 * rot_min_hz, f"WATCH balance {ds['f_Hz']:.0f} Hz close to fan rotation >= {rot_min_hz:.0f} Hz")
 

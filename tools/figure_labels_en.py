@@ -54,8 +54,8 @@ EN = {
 
     # ---- M3 test section ----
     "迷你測試段配置": "Mini test section layout",
-    "迷你測試段側視與俯視：地面板、車模、皮托管、靜壓孔、量測點、靜壓箱。":
-        "Mini test section, side and top views: ground plate, car, Pitot tube, static taps, survey points, plenum.",
+    "迷你測試段側視與俯視：地面板、車模、皮托管、靜壓孔、量測點、天平箱、車輛艙蓋。":
+        "Mini test section, side and top views: ground plate, car, Pitot tube, static taps, survey points, balance box, car hatch.",
     "圖 M{0}　測試段配置（依比例）": "Figure M{0}  Test section layout (to scale)",
     "上：側視（從 −y 側看）　下：俯視（+y 在上）　x 自收縮段出口起算；z 自測試段地板起算；單位 mm":
         "Top: side view (from −y)   Bottom: top view (+y up)   x from contraction exit; z from test-section floor; mm",
@@ -64,11 +64,11 @@ EN = {
     "入口靜壓環 ×{0}": "Entrance static ring ×{0}",
     "可調襟翼": "Adjustable flap",
     "{0}:{1} 橢圓前緣": "{0}:{1} elliptic leading edge",
-    "密封靜壓箱 {0}×{1}×{2}（見圖 M{3}）": "Sealed plenum {0}×{1}×{2} (see figure M{3})",
+    "天平箱 {0}×{1}×{2}（見圖 M{3}）": "Balance box {0}×{1}×{2} (see figure M{3})",
+    "車輛艙蓋 x {0}–{1}（磁鐵定位，掀開即停風扇）": "Car hatch x {0}–{1} (magnets locate it; lifting it stops the fans)",
     "{0}:{1} 車模 {2}（示意）": "{0}:{1} car {2} (schematic)",
     "皮托管 Ø{0}": "Pitot Ø{0}",
     "側壁靜壓孔 Ø{0}（−y 側）": "Side-wall taps Ø{0} (−y side)",
-    "平衡孔 → Ø{0} 管通靜壓箱": "Vent tap → Ø{0} tube to plenum",
     "板下 {0}": "Under plate {0}",
     "{0}（皮托管高於地面板）": "{0} (Pitot above plate)",
     "板厚 {0}": "Plate {0}",
@@ -80,14 +80,14 @@ EN = {
     "霧氣出口（選配）": "Smoke outlet (optional)",
     "量測頂板孔 ×{0}／站（間隔 {1}）": "Survey roof holes ×{0} per station (pitch {1})",
     "+y（順流向看的左側）": "+y (left, looking downstream)",
-    "面板：{0} mm 實心透明 PC（{1} m/s 時頂板撓度約 {2} mm）": "Panels: {0} mm solid clear PC (roof deflection about {2} mm at {1} m/s)",
+    "面板：{0} mm 透明壓克力，雷射切割（{1} m/s 時頂板撓度小於 {2} mm）": "Panels: {0} mm clear acrylic, laser-cut (roof deflection below {2} mm at {1} m/s)",
     "流場量測：移除車模，於 x = {0} 與 {1}、地面板上方 z = {2} {3} {4} {5} {6} 各點（共 {7} 點）":
         "Flow survey: car removed, at x = {0} and {1}, z above plate = {2} {3} {4} {5} {6} ({7} points)",
 
     # ---- M4 saddle and balance ----
     "車輪托座與天平": "Wheel saddles and balance",
-    "上：單一車輪 V 形托座剖面（依比例）；下：密封靜壓箱與天平堆疊（示意）。":
-        "Top: one wheel's V-saddle cross-section (to scale); bottom: sealed plenum and balance stack (schematic).",
+    "上：單一車輪 V 形托座剖面（依比例）；下：天平箱與串聯雙荷重元天平（示意）。":
+        "Top: one wheel's V-saddle cross-section (to scale); bottom: balance box and two-load-cell series balance (schematic).",
     "圖 M{0}　車輪 V 形托座與天平（剖面）": "Figure M{0}  Wheel V-saddle and balance (section)",
     "上半依比例（單一車輪，側視）；下半為示意、未依比例　單位 mm": "Top half to scale (one wheel, side view); bottom half schematic, not to scale   mm",
     "輪胎 Ø{0}": "Tyre Ø{0}",
@@ -108,22 +108,28 @@ EN = {
     "（{0}:{1} 車高約 {2} mm，約 {3}%）": "({0}:{1} ride height about {2} mm, about {3}%)",
     "量測時記錄實際車高即可": "Record the actual ride height",
     "以下為示意，未依比例：測試段地板下方": "Schematic, not to scale: below the test-section floor",
-    "密封靜壓箱 {0}×{1}×{2}（{3} mm PC 或壓克力）": "Sealed plenum {0}×{1}×{2} ({3} mm PC or acrylic)",
-    "檢修蓋（泡棉膠條密封）": "Access cover (foam-tape seal)",
     "線材孔（熱熔膠封）→ HX{0} ×{1} 在箱外": "Cable hole (hot-glue sealed) → HX{0} ×{1} outside",
-    "Ø{0} 平衡管 → 側壁平衡孔（x = {1}）": "Ø{0} vent tube → side-wall vent tap (x = {1})",
     "支柱 ×{0}": "Posts ×{0}",
-    "共用框架（鋁條或 {0} mm 板）": "Common frame (aluminium strip or {0} mm plate)",
-    "厚薄規鋼片 ×{0}（{1} × {2} × {3}）": "Feeler-gauge blades ×{0} ({1} × {2} × {3})",
-    "阻力荷重元 {0} g（水平）": "Drag load cell {0} g (horizontal)",
-    "垂直荷重元 {0} kg": "Vertical load cell {0} kg",
-    "薄橡膠裙邊（手套或氣球膜）": "Thin rubber skirt (glove or balloon)",
-    "底座 + 配重約 {0} kg（磚塊或書）": "Pedestal + about {0} kg ballast (bricks or books)",
-    "桌面或地板（不要放在風洞框架上）": "Desk or floor (never on the tunnel frame)",
     "限位：阻力 {0} N、垂直 {1} kg": "Stops: drag {0} N, vertical {1} kg",
     "活動質量 ≤ {0} kg": "Moving mass ≤ {0} kg",
     "阻力方向自然頻率約 {0} Hz": "Drag-direction natural frequency about {0} Hz",
-    "荷重元承受約 {0}% 阻力（校正扣除）": "Cell carries about {0}% of drag (calibrated out)",
+    "天平箱 {0}×{1}×{2}（側壁即測試段側板，{3} mm 壓克力）": "Balance box {0}×{1}×{2} (walls are the test-section side panels, {3} mm acrylic)",
+    "只經輪井與測試段相通，不需平衡管": "Open to the test section only through the wheel wells; no vent tube",
+    "底板 = 可抽出托盤，整組天平鎖在上面": "Floor = removable tray; the whole balance is bolted to it",
+    "M{0} 調整腳 ×{1}（裝在托盤）": "M{0} levelling feet ×{1} (in the tray)",
+    "共用框架（{0} × {1} mm 合板）": "Common frame ({0} × {1} mm plywood)",
+    "垂直荷重元 {0} kg（平放）": "Vertical load cell {0} kg (lies flat)",
+    "角架（{0}D 列印）": "Corner bracket ({0}D-printed)",
+    "阻力荷重元 {0} g（直立）": "Drag load cell {0} g (stands up)",
+    "感測前後方向": "senses fore-aft",
+    "天平底板": "Balance base plate",
+    "下限位 M{0} 螺絲（間隙 {1} mm）": "Down-stop M{0} screw ({1} mm gap)",
+    "前後限位：叉座 + {0} 支 M{1} 螺絲（間隙 {2} mm）": "Fore-aft stops: fork + {0} M{1} screws ({2} mm gap)",
+    "受力路徑：車 → 托座 → 支柱 → 框架 → 垂直荷重元 → 角架 → 阻力荷重元 → 底座 → 托盤":
+        "Load path: car → saddles → posts → frame → vertical cell → corner bracket → drag cell → base → tray",
+    "桌面": "Desk",
+    "阻力荷重元承受全部阻力（無滑軌）": "The drag cell carries all the drag (no slide)",
+    "需 {0} × {1} 交叉校正": "Needs a {0} × {1} crosstalk calibration",
 
     # ---- M5 wiring ----
     "Arduino Uno 接線": "Arduino Uno wiring",

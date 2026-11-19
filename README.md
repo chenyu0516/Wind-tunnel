@@ -11,16 +11,16 @@ A desk-sized, open-return suction wind tunnel for measuring the drag and downfor
 | | |
 | --- | --- |
 | Duct length | 1.78 m in three carry-sized modules joined by slip-on sleeves (needs about 3.1 m of straight floor space including inlet and exhaust clearance) |
-| Test section | 168 × 126 × 336 mm, 3 mm clear polycarbonate |
+| Test section | 168 × 126 × 336 mm, laser-cut 3 mm clear acrylic, car hatch in the roof |
 | Contraction | 6:1 |
 | Air speed | 5–14 m/s (class demo at 10 m/s; coefficient-grade data from 12 m/s up) |
 | Drive | 8 × 120 mm 12 V fans (2 × 2, two layers deep), closed-loop speed control on measured dynamic pressure |
-| Force balance | 100 g load cell for drag, 1 kg load cell for vertical force, about 1 mN (0.1 gf) resolution |
+| Force balance | 100 g drag and 1 kg vertical load cells bolted in series (no slide), in a sealed box under the test section; about 1 mN (0.1 gf) resolution |
 | Speed sensing | Home-made: (A) a bell manometer on a load cell, primary; (B) a pair of BMP280 barometers, backup |
 | Controller | Arduino Uno + 3 × HX711 |
-| Budget | ≤ NT$5,000 (current estimate NT$4,360–9,050; see the shopping list for the low-cost route) |
+| Budget | ≤ NT$5,000 (current estimate NT$4,510–9,450; see the shopping list for the low-cost route) |
 
-The geometry is the earlier 1:18 design scaled by 0.42, with three changes: computer fans in place of an industrial fan, fixed V-shaped wheel saddles in place of rollers, and 3 mm panels.
+The geometry is the earlier 1:18 design scaled by 0.42, with three changes: computer fans in place of an industrial fan, fixed V-shaped wheel saddles in place of rollers, and 3 mm panels. Every part is cut on a 3 mm laser cutter or 3D-printed; the CAD has a flat "laser sheets" view for DXF export.
 
 ## Documents
 

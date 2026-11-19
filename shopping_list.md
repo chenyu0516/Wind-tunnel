@@ -4,15 +4,15 @@ Goes with [build_plan_mini.md](build_plan_mini.md). The earlier Traditional Chin
 
 ## Why the upper estimate reaches NT$8,000–9,000
 
-Adding the most expensive case of every item gives **NT$9,050**; the cheapest case of every item gives **NT$4,360**. Most of the gap comes from three things:
+Adding the most expensive case of every item gives **NT$9,450**; the cheapest case of every item gives **NT$4,510**. Most of the gap comes from three things:
 
 | Item | Price | Share of the lowest total | Why it cannot be dropped |
 | --- | --- | --- | --- |
-| 8 × QFR1212GHE high-static-pressure fans (price to recheck) | 2,000–3,000 | 46% | Must push the whole tunnel's resistance at 14 m/s (about 85 Pa, 1,070 m³/h). Ordinary PC case fans reach only about 75 Pa; four of them give only about 7 m/s |
+| 8 × QFR1212GHE high-static-pressure fans (price to recheck) | 2,000–3,000 | 44% | Must push the whole tunnel's resistance at 14 m/s (about 85 Pa, 1,070 m³/h). Ordinary PC case fans reach only about 75 Pa; four of them give only about 7 m/s |
 | Home-made speed sensor A + backup B + calibration | 430–800 | 10% | The dynamic pressure is only 15–118 Pa; ready-made digital differential-pressure sensors cost NT$1,100–1,600 with shipping, so a home-made bell manometer (primary) + two BMP280s (backup) is used instead |
-| 12 V 25 A power supply | 0–900 | 0–21% | Eight QFR fans draw 14.4 A rated, 21.6 A max (datasheet); an old PC supply is free, a new one costs about 500–900 |
+| 12 V 25 A power supply | 0–900 | 0–20% | Eight QFR fans draw 14.4 A rated, 21.6 A max (datasheet); an old PC supply is free, a new one costs about 500–900 |
 
-**The other 11 small items cost only NT$80–600 each, but together add up to about NT$1,900–4,350.** So "8,000–9,000" is not one expensive item: the fans are half, plus many small things. A real order usually lands in between (about 5,000–6,000), so **staying at 5,000 means deliberately following the low-cost route below.**
+**The other 11 small items cost only NT$80–900 each, but together add up to about NT$2,100–4,750.** So "8,000–9,000" is not one expensive item: the fans are half, plus many small things. A real order usually lands in between (about 5,000–6,000), so **staying at 5,000 means deliberately following the low-cost route below.**
 
 ## Low-cost route (target ≤ NT$5,000)
 
@@ -86,10 +86,10 @@ The decision rule is in the plan, "D2. Home-made speed sensors". Normally **do n
 
 | Item | Spec and quantity | Shopee search | NT$ | Basis | Check before ordering |
 | --- | --- | --- | --- | --- | --- |
-| Clear PC sheet | **3 mm solid**, about 3.7 cai (4 test-section panels + plenum), CNC-cut by the seller | `PC耐力板 3mm 透明 裁切` | 300–500 | Checked (NT$60–75 per cai, plus cutting) | **Not twin-wall**; ask for the true thickness (some sold as 3 mm are 2.6 mm); do not laser-cut |
-| PET sheet | 0.5–1 mm clear rigid PET (contraction walls), about 4 sheets of A3 | `PET 硬片 0.5mm` | 300–600 (incl. next two rows) | Estimate | Must bend without creasing |
-| Plywood / MDF | 3–6 mm (contraction ribs and spines 6 mm; sleeves 3 mm; settling chamber; four diffuser panels; module cradles) | `椴木合板 3mm` | (as above) | Estimate | Ask the school for offcuts first |
-| Sealing | Hot-glue sticks, foam tape, screws and nuts | `泡棉膠條 單面` | (as above) | Estimate | |
+| Clear acrylic sheet | **3 mm cast acrylic**, about 0.4 m² (test section, balance box walls, car hatch, ground plate), laser-cut from the CAD laser view | `壓克力板 3mm 透明 雷射切割` | 300–600 | Estimate | Cast, not extruded, if the shop offers both (cleaner laser edges, less cracking with solvent glue); peel the film only after cutting |
+| PET sheet | 1 mm clear rigid PET (bell and contraction walls, 8 pieces cut from the flat patterns), about 4 sheets of A3 | `PET 硬片 1mm` | 450–900 (incl. next two rows) | Estimate | Must bend without creasing; the two contraction top/bottom sheets (393 × 412 mm) are bigger than A3, so buy A2 or a roll |
+| Plywood | **3 mm only** (the laser's limit), about 2.5 m², e.g. eleven 60 × 40 cm sheets: ribs and spines as glued pairs, settling chamber and fan box (finger joints), diffuser, sleeves, cradles, balance plates | `椴木合板 3mm 雷射` | (as above) | Estimate | Laser plywood (basswood/poplar) cuts cleanly; MDF also works but is heavier. Ask the school for offcuts first |
+| Sealing and glue | Hot-glue sticks, foam tape, screws and nuts, acrylic solvent cement (test section), wood glue (laminated plywood pairs) | `泡棉膠條 單面`, `壓克力 接著劑` | (as above) | Estimate | |
 | Honeycomb | About 4,000 × 6 mm straws (cut to 40 mm), or 3D-printed hexagonal cells | `吸管 6mm 1000入` | 100–200 (incl. screens) | Estimate | About 6 mm diameter, must be straight |
 | Screens | Polyester voile (window screen) or fine stainless mesh, about 50 × 40 cm ×2 | `窗紗 布`, `不鏽鋼網 細` | (as above) | Estimate | Hold it up to a light: more opening than wire (60–70% open area) |
 
@@ -97,21 +97,20 @@ The decision rule is in the plan, "D2. Home-made speed sensors". Normally **do n
 
 | Item | Spec and quantity | Shopee search | NT$ | Basis | Check before ordering |
 | --- | --- | --- | --- | --- | --- |
-| Feeler gauge | Must include a 0.10 mm blade (cut into 4 pieces 10 × 20 mm) | `厚薄規` | 100–200 (incl. next two rows) | Estimate | Spring steel, not plastic |
-| Rubber sheet | Latex glove or balloon (plenum skirt) | — | (as above) | Estimate | Already at home |
-| Aluminium strip / 3 mm sheet | Common frame, saddle base plate; M8 bolt + lock nut for the adjustable pedestal column | `鋁扁條` | (as above) | Estimate | Can also be 3D-printed |
+| Hatch hardware | 4 × 6 × 3 mm neodymium magnets + 4 steel washers, 2 mm single-sided foam tape, 1 × lever microswitch (hatch interlock) | `釹鐵硼 磁鐵 6x3`, `泡棉膠條 單面 2mm`, `微動開關 滾輪` | 100–200 (incl. next row) | Estimate | Magnets press-fit in the roof's 6 mm holes |
+| Stop and balance screws | M4 × 25 pan-head screw + M4 lock nut + M4 heat-set insert (down-stop); 2 × M3 × 16 screw + 2 M3 lock nuts (fore-aft stops); M3/M4 screws for the load cells, bracket and frame | `M4 熱熔螺母`, `M3 螺絲 不鏽鋼` | (as above) | Estimate | Check the load cells' thread size when they arrive |
 | 1:43 car | **Closed body**, ordinary saloon or hatchback, ×1 | `1:43 合金 模型車` | 80–450 | Checked (SHEIN Taiwan NT$77–445) | Wheels must turn freely, length about 100–110 mm; measure it after buying and update the spec |
 | V-saddles | 4, 3D-printed (PETG) | — | 0 | School printer | |
-| Portability parts | 12 × M6 levelling feet (with rubber pads) and T-nuts, 4 × M4 thumb screws with nuts or inserts (transport lock), 2 × Ø4 mm tube quick-connects; sleeves and spines from plywood offcuts | `M6 調整腳 橡膠`, `手轉螺絲 M4`, `4mm 快速接頭` | 150–300 | Estimate | The feet's thread must fit the T-nuts in the cradles or the nuts under the plenum floor |
+| Portability parts | 12 × M6 levelling feet (with rubber pads) and T-nuts, 2 × M4 thumb screws with nuts or inserts (transport lock), 2 × Ø4 mm tube quick-connects | `M6 調整腳 橡膠`, `手轉螺絲 M4`, `4mm 快速接頭` | 150–300 | Estimate | The feet's thread must fit the T-nuts in the cradles and the balance tray |
 
 ### E. Borrow (not budgeted)
 
 | Item | Use |
 | --- | --- |
 | 0.01 g pocket scale | Weigh coins as calibration weights |
-| 3D printer | Saddles, honeycomb (optional), sensor brackets, bell |
+| Laser cutter (3 mm max) | Every LC3 part; switch the CAD feature to the "Laser sheets" view and export each bed as DXF |
+| 3D printer | Saddles, wheel wells, balance spacer, corner bracket, drag-cell foot, stop pillar and fork, hatch knob, honeycomb (optional), bell |
 | Soldering iron, multimeter | Wiring and checks |
-| Bricks or thick books, about 5 kg | Balance pedestal ballast (stays in the classroom) |
 | Fine wool or sewing thread | Tufts for visualization |
 
 ## Totals
@@ -120,9 +119,9 @@ The decision rule is in the plan, "D2. Home-made speed sensors". Normally **do n
 | --- | --- | --- |
 | A. Fans and power (incl. wiring) | 2,500 | 5,300 |
 | B. Sensors | 830 | 1,500 |
-| C. Tunnel body | 700 | 1,300 |
+| C. Tunnel body | 850 | 1,700 |
 | D. Balance, car and portability | 330 | 950 |
-| **Total** | **4,360** | **9,050** |
+| **Total** | **4,510** | **9,450** |
 
 These numbers match `budget_ntd` in [spec/mini.json](spec/mini.json); `python3 tools/mini_calc.py` adds them up automatically.
 
@@ -133,5 +132,4 @@ These numbers match `budget_ntd` in [spec/mini.json](spec/mini.json); `python3 t
 - Option C ABP2: [DigiKey Taiwan ABP2MRRN001ND2A3XX](https://www.digikey.tw/en/products/detail/honeywell-sensing-and-productivity-solutions/ABP2MRRN001ND2A3XX/26264563), [Honeywell ABP2 datasheet 32350268 (RS copy)](https://docs.rs-online.com/578f/A700000015334102.pdf), [Adafruit BSS138 level shifter](https://www.adafruit.com/product/757)
 - Shipping: [DigiKey Taiwan (NT$600 under NT$1,400)](https://www.digikey.tw/en/maker/profiles/791dd58bcd43431aa002264bd14ce00c), [RS Taiwan delivery (individuals NT$500 under NT$1,300)](https://twcn.rs-online.com/web/content/support/all-articles/delivery)
 - 12 V supply (these listings are 20 A / 240 W; buy ≥ 25 A / 300 W): [Alibaba open-frame supply](https://www.alibaba.com/product-detail/240W-12V-open-frame-switching-power_60821400748.html), [RS Taiwan industrial](https://twcn.rs-online.com/web/p/switching-power-supplies/1618225) (industrial grade costs NT$2,500 and up; not needed here)
-- PC sheet: [Yahoo Auctions PC sheet price list](https://tw.bid.yahoo.com/item/100031739789/index.md), [Yahoo Auctions 3 mm quote](https://tw.bid.yahoo.com/item/100050060067/index.md)
 - Car: [SHEIN Taiwan Burago 1:43](https://m.shein.tw/Burago%201%2043%20F1%20AMR25%20Alloy%20Car%20Model%202025%20No%2014%20Alonso%20Regular%20Version-p-322987138.html), [SHEIN Taiwan 1:43 diecast](https://m.shein.tw/1%2043%20Scale%20Supercar%20Model%20Alloy%20Diecast%20Model%20Car%20Detailed%20Craftsmanship%20Openable%20Doors%20Toy%20Car%20Gift%20Suitable%20For%20Boys-p-93016086.html)

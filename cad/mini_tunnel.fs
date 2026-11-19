@@ -214,7 +214,6 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         const BRASS = color(0.80, 0.62, 0.25);
         const SILICONE = color(0.92, 0.92, 0.88, 0.7);
         const DESKC = color(0.72, 0.58, 0.40);
-        const BRICK = color(0.65, 0.25, 0.18);
         const SPINE = color(0.62, 0.45, 0.28);
         const HIGHP = color(0.90, 0.30, 0.30, 0.85);
         const LOWP = color(0.30, 0.50, 0.90, 0.85);
@@ -343,8 +342,48 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         {
             tagQ(context, spineQ[k], spineLabels[k], SPINE);
         }
-        // ---------- A3 test section 168 x 126 x 336, clear PC ----------
-        rectDuct(context, id + "ts", 0, 336, 168, 126);
+        // ---------- A3 test section 168 x 126 x 336: flat 3 mm clear acrylic panels (laser-cut) ----------
+        // The side panels run down past the floor at x 87..273 and form the side walls of the balance box (C),
+        // so the test section and the balance are one module with no separate plenum.
+        blk(context, id + "tsF", [0, -84, -3], [336, 84, 0]);
+        const sideProfile = [[0, -3], [87, -3], [87, -60], [273, -60], [273, -3], [336, -3], [336, 129], [0, 129]];
+        sideExtrude(context, id + "tsL", sideProfile, 84, 87);
+        sideExtrude(context, id + "tsR", sideProfile, -87, -84);
+        // roof with the car hatch opening (x 120..300, y -75..75) and four magnet holes
+        blk(context, id + "tsT", [0, -84, 126], [336, 84, 129]);
+        blk(context, id + "tsTo", [120, -75, 125], [300, 75, 130]);
+        const magPos = [[112, 80], [112, -80], [308, 80], [308, -80]];
+        var magHoles = [bodies(id + "tsTo")];
+        for (var i = 0; i < 4; i += 1)
+        {
+            cyl(context, id + ("tsTm" ~ i), [magPos[i][0], magPos[i][1], 125], [magPos[i][0], magPos[i][1], 130], 6);
+            magHoles = append(magHoles, bodies(id + ("tsTm" ~ i)));
+        }
+        cut(context, id + "tsTc", bodies(id + "tsT"), qUnion(magHoles), false);
+
+        // ---------- A3 car hatch: plug fills the opening (0.5 mm recess), cover rests on a foam gasket ----------
+        // Suction pulls the hatch inwards, so the magnets only locate it.
+        blk(context, id + "hPlug", [120.3, -74.7, 126.5], [299.7, 74.7, 129.5]);
+        blk(context, id + "hCov", [108, -86, 129.5], [312, 86, 132.5]);
+        blk(context, id + "hTab", [200, 86, 129.5], [214, 93, 132.5]);
+        const hatch = qUnion([bodies(id + "hPlug"), bodies(id + "hCov"), bodies(id + "hTab")]);
+        fuse(context, id + "hFu", hatch);
+        tagQ(context, hatch, "A3 Car hatch: plug + cover (LC 3 mm acrylic x2, glued)", PC);
+        shellBox(context, id + "hGsk", [116, -79, 129], [304, 79, 129.5], [120, -75, 128.9], [300, 75, 129.6]);
+        tag(context, id + "hGsk", "A3 Hatch gasket (2 mm foam tape, compressed)", DARK);
+        cyl(context, id + "hKnob", [210, 0, 132.5], [210, 0, 145], 20);
+        tag(context, id + "hKnob", "A3 Hatch knob (3DP PETG)", PRINT);
+        var mags = [];
+        for (var i = 0; i < 4; i += 1)
+        {
+            cyl(context, id + ("hMag" ~ i), [magPos[i][0], magPos[i][1], 126], [magPos[i][0], magPos[i][1], 129], 6);
+            mags = append(mags, bodies(id + ("hMag" ~ i)));
+        }
+        tagQ(context, qUnion(mags), "A3 Hatch magnets 6x3 in roof (steel washers under cover)", STEEL);
+        blk(context, id + "hSw", [200, 87, 112], [214, 93, 128]);
+        blk(context, id + "hSwL", [205, 89, 128], [209, 91, 129.5]);
+        fuse(context, id + "hSwF", qUnion([bodies(id + "hSw"), bodies(id + "hSwL")]));
+        tagQ(context, qUnion([bodies(id + "hSw"), bodies(id + "hSwL")]), "D Hatch microswitch (cover tab presses lever; fans off when lifted)", BLACK);
 
         // ---------- slip-joint sleeves (3 mm, 0.3 mm clearance; tape the seam after assembly) ----------
         shellBox(context, id + "sl1", [0, -90.3, ZC - 69.3], [20, 90.3, ZC + 69.3], [-1, -87.3, ZC - 66.3], [21, 87.3, ZC + 66.3]);
@@ -366,7 +405,7 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         const HW = 4.5;
         var openings = [];
         var holes = [];
-        var wells = [bodies(id + "ts")];
+        var wells = [bodies(id + "tsF")];
         for (var i = 0; i < 4; i += 1)
         {
             const x = WH[i][0];
@@ -385,7 +424,7 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
             cyl(context, id + ("tyre" ~ i), [x, y - 3, TZ], [x, y + 3, TZ], 16);
             tag(context, id + ("tyre" ~ i), "Car tyre " ~ n, BLACK);
 
-            blk(context, id + ("post" ~ i), [x - 1.5, y - 1.5, -35], [x + 1.5, y + 1.5, 13]);
+            blk(context, id + ("post" ~ i), [x - 1.5, y - 1.5, -8], [x + 1.5, y + 1.5, 13]);
             tag(context, id + ("post" ~ i), "C Saddle post " ~ n, STEEL);
 
             pipe(context, id + ("shr" ~ i), [x, y, 0], [x, y, 9], 5.5, 4.5);
@@ -416,11 +455,14 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         // ---------- probes and taps ----------
         cyl(context, id + "pit1", [55, 55, 87], [85, 55, 87], 4);
         cyl(context, id + "pit2", [85, 55, 85], [85, 55, 150], 4);
-        cut(context, id + "pitc", bodies(id + "ts"), bodies(id + "pit2"), true);
+        cut(context, id + "pitc", bodies(id + "tsT"), bodies(id + "pit2"), true);
         const pitot = qUnion([bodies(id + "pit1"), bodies(id + "pit2")]);
         fuse(context, id + "pitf", pitot);
         tagQ(context, pitot, "D Pitot tube D4", BRASS);
-        tag(context, id + "ts", "A3 Test section (3 mm clear PC)", PC);
+        tag(context, id + "tsF", "A3 Test-section floor (LC 3 mm acrylic; post holes)", PC);
+        tag(context, id + "tsL", "A3 Test-section side left + balance box wall (LC 3 mm acrylic, one piece)", PC);
+        tag(context, id + "tsR", "A3 Test-section side right + balance box wall (LC 3 mm acrylic, one piece)", PC);
+        tag(context, id + "tsT", "A3 Test-section roof with hatch opening (LC 3 mm acrylic)", PC);
 
         const taps = [
                 [[-420, 209, ZC], [-420, 215, ZC]], [[-420, -209, ZC], [-420, -215, ZC]],
@@ -438,91 +480,92 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
         }
         tagQ(context, qUnion(tapQ), "D Wall static tap fittings", BRASS);
 
-        // ---------- C plenum, balance, pedestal ----------
-        shellBox(context, id + "pl", [87, -83, -136], [273, 83, -3], [90, -80, -133], [270, 80, -2]);
-        blk(context, id + "plh", [150, -30, -137], [210, 30, -132]);
-        cut(context, id + "plc", bodies(id + "pl"), bodies(id + "plh"), false);
-        tag(context, id + "pl", "C Sealed plenum (PC)", PC);
-        shellBox(context, id + "skirt", [145, -35, -138], [215, 35, -136.2], [162, -18, -139], [198, 18, -135]);
-        tag(context, id + "skirt", "C Rubber skirt", DARK);
+        // ---------- C balance box: part of module 2, directly under the test-section floor ----------
+        // Walls: the two side panels (tsL/tsR) plus two end walls; floor = removable tray that carries the balance.
+        // The box is sealed except through the wheel wells, so its pressure matches the air at the car.
+        blk(context, id + "bxF", [87, -87, -66], [273, 87, -60]);
+        tag(context, id + "bxF", "C Balance tray / box floor (LC 3 mm ply x2; balance bolts on, comes out with it)", WOOD);
+        blk(context, id + "bxE1", [87, -84, -60], [90, 84, -3]);
+        blk(context, id + "bxE2", [270, -84, -60], [273, 84, -3]);
+        tagQ(context, qUnion([bodies(id + "bxE1"), bodies(id + "bxE2")]), "C Balance box end walls (LC 3 mm acrylic)", PC);
 
-        blk(context, id + "frm", [140, -26, -40], [217, 26, -35]);
-        blk(context, id + "tab", [217, 13, -50], [222, 23, -35]);
-        const frame = qUnion([bodies(id + "frm"), bodies(id + "tab")]);
-        fuse(context, id + "frmf", frame);
-        tagQ(context, frame, "C Common frame (with drag push tab - bolt to cell)", ALU);
+        // measured body below the floor: frame plate (posts screw into it), printed hangers and drag tab
+        blk(context, id + "frm", [140, -37, -14], [217, 37, -8]);
+        tag(context, id + "frm", "C Common frame plate (LC 3 mm ply x2; four posts screw in)", WOOD);
+        blk(context, id + "fh0", [163.5, 34, -29], [193.5, 37, -14]);
+        blk(context, id + "fh1", [163.5, -37, -29], [193.5, -34, -14]);
+        blk(context, id + "ftab", [217, 13, -28], [222, 23, -8]);
+        const hangers = qUnion([bodies(id + "fh0"), bodies(id + "fh1"), bodies(id + "ftab")]);
+        tagQ(context, hangers, "C Frame hangers (outer rails) + drag tab bolted to cell (3DP PETG)", PRINT);
 
-        const bl = [[152, -20], [152, 20], [205, -20], [205, 20]];
-        for (var i = 0; i < 4; i += 1)
+        // drag stage = slide base; carried by the vertical load cell
+        blk(context, id + "stg", [130, -40, -36], [232, 40, -30]);
+        tag(context, id + "stg", "C Drag stage (LC 3 mm ply x2)", WOOD);
+        const sides = [1, -1];
+        var risers = [];
+        var railsIn = [];
+        var railsOut = [];
+        var stops = [];
+        for (var i = 0; i < 2; i += 1)
         {
-            blk(context, id + ("blade" ~ i), [bl[i][0] - 0.05, bl[i][1] - 5, -60], [bl[i][0] + 0.05, bl[i][1] + 5, -40]);
-            tag(context, id + ("blade" ~ i), "C Feeler-gauge blade 0.1x10x20 " ~ (i + 1), STEEL);
+            const s = sides[i];
+            blk(context, id + ("rsr" ~ i), [163.5, min(16 * s, 22 * s), -30], [193.5, max(16 * s, 22 * s), -17]);
+            risers = append(risers, bodies(id + ("rsr" ~ i)));
+            blk(context, id + ("rIn" ~ i), [163.5, min(22 * s, 28 * s), -29], [193.5, max(22 * s, 28 * s), -17]);
+            railsIn = append(railsIn, bodies(id + ("rIn" ~ i)));
+            blk(context, id + ("rOut" ~ i), [163.5, min(28 * s, 34 * s), -29], [193.5, max(28 * s, 34 * s), -17]);
+            railsOut = append(railsOut, bodies(id + ("rOut" ~ i)));
+            blk(context, id + ("stA" ~ i), [158.5, min(33 * s, 38 * s), -30], [163.2, max(33 * s, 38 * s), -21]);
+            blk(context, id + ("stB" ~ i), [193.8, min(33 * s, 38 * s), -30], [198.5, max(33 * s, 38 * s), -21]);
+            stops = append(stops, bodies(id + ("stA" ~ i)));
+            stops = append(stops, bodies(id + ("stB" ~ i)));
         }
-        blk(context, id + "plat", [130, -30, -65], [230, 30, -60]);
-        tag(context, id + "plat", "C Drag stage", ALU);
-        blk(context, id + "dcp", [222, -23.5, -60], [228, -13.5, -55]);
-        tag(context, id + "dcp", "C Drag load cell mount", ALU);
-        blk(context, id + "dcell", [222, -23.5, -55], [228, 23.5, -43]);
-        tag(context, id + "dcell", "C 100 g drag load cell", CELLC);
+        tagQ(context, qUnion(risers), "C Rail risers on stage (3DP PETG)", PRINT);
+        tagQ(context, qUnion(railsIn), "C Slide: crossed-roller guide VR2-30, inner rails (to stage)", STEEL);
+        tagQ(context, qUnion(railsOut), "C Slide: crossed-roller guide VR2-30, outer rails (to frame)", ALU);
+        tagQ(context, qUnion(stops), "C Drag overload stops (0.3 mm from hanger ends)", BRASS);
 
-        blk(context, id + "vcell", [140, -6.35, -80], [220, 6.35, -67.3]);
+        blk(context, id + "dcp", [222, -23.5, -30], [228, -13.5, -28]);
+        tag(context, id + "dcp", "C Drag load cell mount on stage (3DP PETG)", PRINT);
+        blk(context, id + "dcell", [222, -23.5, -28], [228, 23.5, -16]);
+        tag(context, id + "dcell", "C 100 g drag load cell (fixed end on stage, free end bolted to drag tab)", CELLC);
+
+        blk(context, id + "vsp1", [140, -6.35, -38.3], [158, 6.35, -36]);
+        tag(context, id + "vsp1", "C Load cell upper spacer", PRINT);
+        blk(context, id + "vcell", [140, -6.35, -51], [220, 6.35, -38.3]);
         tag(context, id + "vcell", "C 1 kg vertical load cell", CELLC);
-        blk(context, id + "vsp1", [140, -6.35, -67.3], [158, 6.35, -65]);
-        tag(context, id + "vsp1", "C Load cell upper spacer", ALU);
-        blk(context, id + "vsp2", [202, -6.35, -83], [220, 6.35, -80]);
-        tag(context, id + "vsp2", "C Load cell lower spacer", ALU);
-        blk(context, id + "bbase", [120, -40, -93], [240, 40, -83]);
-        tag(context, id + "bbase", "C Balance base plate", ALU);
-        blk(context, id + "col", [162, -18, DESK + 10], [198, 18, -93]);
-        tag(context, id + "col", "C Pedestal column (through plenum floor; bolts to balance base; stays in classroom)", STEEL);
-        blk(context, id + "ped", [105, -165, DESK], [255, 165, DESK + 10]);
-        tag(context, id + "ped", "C Pedestal plate (on desk)", STEEL);
-        blk(context, id + "brk1", [105, 100, DESK + 10], [255, 160, -60]);
-        tag(context, id + "brk1", "C Ballast 1", BRICK);
-        blk(context, id + "brk2", [105, -160, DESK + 10], [255, -100, -60]);
-        tag(context, id + "brk2", "C Ballast 2", BRICK);
+        blk(context, id + "vsp2", [202, -6.35, -54], [220, 6.35, -51]);
+        tag(context, id + "vsp2", "C Load cell lower spacer", PRINT);
+        cyl(context, id + "vstop", [226, 0, -54], [226, 0, -36.3], 4);
+        tag(context, id + "vstop", "C Vertical overload stop (M4 screw, 0.3 mm under stage)", BRASS);
+        blk(context, id + "bbase", [120, -45, -60], [240, 45, -54]);
+        tag(context, id + "bbase", "C Balance base plate (LC 3 mm ply x2, bolted to tray)", WOOD);
 
-        cyl(context, id + "vent1", [178, -87, 75], [178, -99, 75], 4);
-        cyl(context, id + "vent2", [178, -97, 77], [178, -97, -42], 4);
-        cyl(context, id + "vent3", [178, -99, -40], [178, -83, -40], 4);
-        const vent = qUnion([bodies(id + "vent1"), bodies(id + "vent2"), bodies(id + "vent3")]);
-        fuse(context, id + "ventf", vent);
-        tagQ(context, vent, "C Plenum vent tube (to mid-car side-wall tap)", SILICONE);
-
-        // transport lock: thumb screws through both plenum walls clamp the common frame and the balance base
+        // transport lock: one thumb screw per side through the box wall, clamping the frame plate
         var lockQ = [];
         var shaftQ = [];
-        const sides = [1, -1];
-        const lockRows = [[-37.5, 26], [-88, 40]];
         for (var i = 0; i < 2; i += 1)
         {
-            for (var j = 0; j < 2; j += 1)
-            {
-                const s = sides[i];
-                const z = lockRows[j][0];
-                const lockId = id + ("lock" ~ i ~ j);
-                cyl(context, lockId + "k", [200, s * 83, z], [200, s * 91, z], 14);
-                cyl(context, lockId + "s", [200, s * 87, z], [200, s * lockRows[j][1], z], 4);
-                shaftQ = append(shaftQ, bodies(lockId + "s"));
-                lockQ = append(lockQ, bodies(lockId));
-            }
+            const s = sides[i];
+            const lockId = id + ("lock" ~ i);
+            cyl(context, lockId + "k", [200, s * 87, -11], [200, s * 95, -11], 14);
+            cyl(context, lockId + "s", [200, s * 91, -11], [200, s * 37, -11], 4);
+            shaftQ = append(shaftQ, bodies(lockId + "s"));
+            lockQ = append(lockQ, bodies(lockId));
         }
-        cut(context, id + "lockc", bodies(id + "pl"), qUnion(shaftQ), true);
+        cut(context, id + "lockc", qUnion([bodies(id + "tsL"), bodies(id + "tsR")]), qUnion(shaftQ), true);
         for (var i = 0; i < 2; i += 1)
         {
-            for (var j = 0; j < 2; j += 1)
-            {
-                fuse(context, id + ("locku" ~ i ~ j), bodies(id + ("lock" ~ i ~ j)));
-            }
+            fuse(context, id + ("locku" ~ i), bodies(id + ("lock" ~ i)));
         }
-        tagQ(context, qUnion(lockQ), "H3 Transport lock screws (shown locked; back out before measuring)", BRASS);
+        tagQ(context, qUnion(lockQ), "H3 Transport lock thumb screws M4 (shown locked; back out before measuring)", BRASS);
 
-        // module 2 feet under the plenum corners (pedestal stays separate)
+        // module 2 feet under the tray corners (no pedestal, no ballast)
         var feet2 = [];
-        const pf = [[93, -75], [93, 75], [267, -75], [267, 75]];
+        const pf = [[95, -79], [95, 79], [265, -79], [265, 79]];
         for (var i = 0; i < 4; i += 1)
         {
-            levelFoot(context, id + ("pft" ~ i), pf[i][0], pf[i][1], -133);
+            levelFoot(context, id + ("pft" ~ i), pf[i][0], pf[i][1], -66);
             feet2 = append(feet2, bodies(id + ("pft" ~ i)));
         }
         tagQ(context, qUnion(feet2), "H2 Module 2 levelling feet M6 x4", DARK);
@@ -683,7 +726,7 @@ export const miniWindTunnel = defineFeature(function(context is Context, id is I
 
         // ---------- E smoke: removable wand through a roof grommet, jar source sucked by the tunnel ----------
         tubePath(context, id + "wand", [[100, 0, 215], [100, 0, 47], [114, 0, 47]], 4);
-        cut(context, id + "wandc", bodies(id + "ts"), bodies(id + "wand"), true);
+        cut(context, id + "wandc", bodies(id + "tsT"), bodies(id + "wand"), true);
         tag(context, id + "wand", "E Smoke wand D4 (tip downstream ahead of car; remove for force runs)", BRASS);
         pipe(context, id + "grom", [100, 0, 129], [100, 0, 133], 12, 4);
         tag(context, id + "grom", "E Wand grommet (roof x = 100)", DARK);

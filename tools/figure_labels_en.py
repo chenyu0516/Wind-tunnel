@@ -26,7 +26,6 @@ EN = {
     "出口 {0}×{1}": "Exit {0}×{1}",
     "寬 {0}": "W {0}",
     "吸管蜂巢 + {0} 片網": "Straw honeycomb + {0} screens",
-    "{0} × {1} mm 風扇": "{0} × {1} mm fans",
     "安全網": "Safety mesh",
     "地面板 + {0}:{1} 車模": "Ground plate + {0}:{1} car",
     "← 進氣端淨空 ≥ {0}": "← Inlet clearance ≥ {0}",
@@ -133,8 +132,6 @@ EN = {
 
     # ---- M5 wiring ----
     "Arduino Uno 接線": "Arduino Uno wiring",
-    "Uno 接 {0} 個 PWM 風扇、{1} 組 HX{2}（阻力、垂直、鐘罩壓力計）、兩顆 BMP{3}、安全開關與選配輸出。":
-        "Uno with {0} PWM fans, {1} × HX{2} (drag, vertical, bell manometer), two BMP{3}s, safety switches and optional outputs.",
     "圖 M{0}　Arduino Uno 接線圖": "Figure M{0}  Arduino Uno wiring",
     "紅：{0} V　黑：GND　藍：訊號　綠：I²C　所有 GND 必須共地；風扇電源不可取自 Uno":
         "Red: {0} V   Black: GND   Blue: signal   Green: I²C   All grounds common; never power the fans from the Uno",
@@ -144,10 +141,6 @@ EN = {
     "≥ {0} A（可用舊 ATX）": "≥ {0} A (old ATX is fine)",
     "保險絲 {0} A": "Fuse {0} A",
     "緊急停止": "Emergency stop",
-    "風扇 {0}（{1} 線 PWM）": "Fan {0} ({1}-wire PWM)",
-    "{0}V · GND · 轉速 · PWM": "{0}V · GND · tach · PWM",
-    "PWM {0} kHz（{1} 條並聯）": "PWM {0} kHz ({1} wires in parallel)",
-    "轉速 {0} → D{1}": "Tach {0} → D{1}",
     "艙蓋安全開關": "Hatch safety switch",
     "GND：{0} V 電源 GND、風扇 GND、Uno GND 接在一起（共地）": "GND: {0} V supply GND, fan GND and Uno GND joined (common ground)",
     "急停切斷的是 {0} V（硬體），不依賴 Uno 程式": "E-stop cuts the {0} V in hardware, independent of the Uno code",
@@ -155,11 +148,8 @@ EN = {
     "→ {0} g 荷重元": "→ {0} g load cell",
     "HX{0}（垂直）": "HX{0} (vertical)",
     "→ {0} kg 荷重元": "→ {0} kg load cell",
-    "HX{0} #{1}（風速 A）": "HX{0} #{1} (speed A)",
-    "→ 鐘罩壓力計 {0} g": "→ bell manometer {0} g",
     "MOSFET → 霧化器（選配）": "MOSFET → mister (optional)",
     "MOSFET → {0} V LED 燈條（選配）": "MOSFET → {0} V LED strip (optional)",
-    "BMP{0} × {1}（風速 B）": "BMP{0} × {1} (speed B)",
     "I²C {0}x{1} 低壓、{2}x{3} 高壓": "I²C {0}x{1} low side, {2}x{3} high side",
     "LCD {0}（選配）": "LCD {0} (optional)",
     "I²C {0}x{1} · 顯示風速與力": "I²C {0}x{1} · shows speed and force",
@@ -167,18 +157,12 @@ EN = {
     "（板上有穩壓與電平轉換）": "(regulator + level shifter)",
     "管路見圖 M{0}": "Tubing: see figure M{0}",
     "每次開風扇前先歸零": "Zero before every fan start",
-    "D{0}、D{1} 同屬 Timer{2}：頻率相同、占空比相同，每個腳位只帶一層；D{3} 板上狀態燈":
-        "D{0} and D{1} share Timer{2}: same frequency and duty, one fan layer per pin; D{3} on-board status LED",
     "程式：讀 q → PID 調 PWM 定速；自動跑「歸零 → 升速 → 穩定 {0} s → 擷取 {1} s → 停機 → 再歸零」；每筆 CSV 經 USB 傳到筆電":
         "Code: read q → PID sets PWM for constant speed; auto run \"zero → ramp → settle {0} s → record {1} s → stop → re-zero\"; CSV over USB to laptop",
 
     # ---- M6 fan curve ----
     "風扇曲線與系統曲線": "Fan and system curves",
-    "{0} 個 {1} mm 風扇在不同 PWM 下的估計曲線，與迷你風洞系統曲線的交點。":
-        "Estimated curves of {0} × {1} mm fans at different PWM and where they meet the mini tunnel's system curve.",
     "圖 M{0}　風扇陣列 vs 風洞系統曲線（估計）": "Figure M{0}  Fan array vs tunnel system curve (estimate)",
-    "直線：{0} 個風扇並聯，依官方最大風量與最大靜壓連線（實際曲線待量測）　藍色拋物線：風洞需要的壓力":
-        "Lines: {0} fans in parallel, linear between published max flow and pressure (to be measured)   Blue: pressure the tunnel needs",
     "流量 Q（m³/h）": "Flow Q (m³/h)",
     "Δp（Pa）": "Δp (Pa)",
     "怎麼讀": "How to read it",
@@ -189,98 +173,29 @@ EN = {
     "{0} m/s 約需 PWM {1}%（課堂展示）": "{0} m/s needs about {1}% PWM (class demo)",
     "PWM 只是起點：Arduino 會讀壓差、": "PWM is only a starting point: the Arduino reads",
     "用 PID 自動調到目標風速": "the pressure and its PID trims to the target",
-    "直線只是粗估，真實曲線可能較低；": "Straight lines are rough; real curves may be lower;",
     "裝好後用 PWM 掃描實測一次": "sweep PWM once after building to measure them",
 
-    "Uno 經 {0} 塊 {1} 路 MOS 板控制 {2} 個 {3} 線風扇，另接 {4} 組 HX{5}（阻力、垂直、鐘罩壓力計）、兩顆 BMP{6}、安全開關與選配輸出。":
-        "Uno driving {2} {3}-wire fans through {0} {1}-channel MOSFET boards, plus {4} × HX{5} (drag, vertical, bell manometer), two BMP{6}s, safety switches and optional outputs.",
-    "第 {0} 層：{1} × QFR{2}GHE": "Layer {0}: {1} × QFR{2}GHE",
     "紅 → {0} A 保險絲 · 黑 → MOS 板": "red → {0} A fuse · black → board",
-    "MOS 板 {0}": "MOSFET board {0}",
     "{0} 路，每扇一路": "{0} ch, 1 per fan",
-    "PWM → 第 {0} 層": "PWM → layer {0}",
     "選配：光學轉速計 → D{0}": "Optional: optical rpm → D{0}",
     "每個風扇並一顆 SS{0}（條紋朝紅線）": "SS{0} across each fan (stripe to red)",
     "{0} µF / {1} V 接在 {2} V 電源側": "{0} µF / {1} V on the {2} V supply",
     "（板子之前，不可接在風扇兩端）": "(before the boards, never across a fan)",
     "光耦輸入：Uno 重開機時風扇不轉": "Opto inputs: off during Uno reset",
-    "{0} × {1} mm 風扇（兩層）": "{0} × {1} mm fans (two layers)",
-    "{0} 個 {1} mm 風扇（{2} 組兩兩串聯）在不同 PWM 下的估計曲線，與迷你風洞系統曲線的交點。":
-        "Estimated curves of {0} × {1} mm fans ({2} stacks of two in series) at different PWM and where they meet the mini tunnel's system curve.",
-    "紫線：{0} 個 QFR{1}GHE，原廠 P-Q 曲線，兩層串聯係數 {2}（待量測）　藍線：風洞需要的壓力":
-        "Purple: {0} × QFR{1}GHE, datasheet P-Q curve, two-layer series factor {2} (to be measured)   Blue: pressure the tunnel needs",
-    "兩層串聯的增益是假設，真實曲線可能較低；": "The two-layer gain is assumed; real curves may be lower;",
 
     # ---- M7 speed sensors ----
-    "自製風速感測器": "Home-made speed sensors",
-    "主感測器 A：鐘罩壓力計吊在 {0} g 荷重元下；備援 B：兩顆 BMP{1} 氣壓計；兩者用三通接同一組量測孔。":
-        "Primary A: bell manometer hanging from a {0} g load cell; backup B: two BMP{1} barometers; both teed onto the same taps.",
-    "圖 M{0}　自製風速感測器：A 鐘罩壓力計（主）＋ B 兩顆氣壓計（備援）":
-        "Figure M{0}  Home-made speed sensors: A bell manometer (primary) + B barometer pair (backup)",
-    "剖面依比例（mm）；低壓接鐘罩內部，高壓接盒內空氣 → 壓差把鐘罩往下拉，荷重元讀數隨 q 增加":
-        "Section to scale (mm); low side inside the bell, high side to the box air → the difference pulls the bell down, reading rises with q",
-    "密封保鮮盒（≥ {0} L）": "Airtight food box (≥ {0} L)",
-    "電線出口用熱熔膠封死": "Cable exit sealed with hot glue",
-    "最大時液面": "Level at max",
-    "通氣管口": "Vent tip",
-    "{0} g 荷重元 → HX{1} #{2}（A{3}/A{4}）": "{0} g load cell → HX{1} #{2} (A{3}/A{4})",
-    "細線吊掛": "Thread",
-    "硬支架": "Rigid bracket",
-    "黏盒底": "glued to floor",
-    "不黏盒蓋": "not the lid",
-    "低壓": "Low",
-    "皮托管靜壓／入口環": "Pitot static / entrance ring",
-    "→ 鐘罩內": "→ inside bell",
-    "高壓": "High",
-    "皮托管總壓／穩定段環": "Pitot total / settling ring",
-    "→ 盒內空氣": "→ box air",
-    "內徑 {0}": "ID {0}",
-    "浸入 {0}": "Dip {0}",
-    "油深 {0}": "Oil {0}",
-    "碗內徑 ≥ {0}": "Dish ID ≥ {0}",
-    "鐘罩：{0}D 列印 PETG 直筒（不要用錐形杯），壁厚 {1} mm，約 {2} g；液體：嬰兒油（不易蒸發、不導電）；通氣管：{3} mm 黃銅管彎 U 形，從鐘罩口下方繞進去":
-        "Bell: {0}D-printed PETG straight cylinder (not a tapered cup), {1} mm wall, about {2} g; liquid: baby oil (slow to evaporate, non-conductive); vent: {3} mm brass U-tube entering from under the rim",
-    "有效面積約 {0} mm²（校正後以實測為準）：{1} Pa ≈ {2} g，最大 {3} Pa ≈ {4} g；荷重元最大負載約 {5} g / {6} g；最大時鐘罩內液面升高約 {7} mm":
-        "Effective area about {0} mm² (use the calibrated value): {1} Pa ≈ {2} g, max {3} Pa ≈ {4} g; load cell max about {5} g / {6} g; oil inside bell rises about {7} mm at max",
-    "解析度：天平 {0} mN ÷ 面積 ≈ {1} Pa → {2} m/s 風速誤差約 ±{3}%": "Resolution: {0} mN ÷ area ≈ {1} Pa → speed error about ±{3}% at {2} m/s",
-    "B　備援：兩顆 BMP{0}（I²C {1}x{2}、{3}x{4}）": "B  Backup: two BMP{0}s (I²C {1}x{2}, {3}x{4})",
-    "B 高壓（{0}x{1}）": "B high ({0}x{1})",
     "接管嘴": "Barb",
-    "B 低壓（{0}x{1}）": "B low ({0}x{1})",
-    "底片盒或小密封盒": "Film canister or small airtight box",
-    "各裝一顆、只留一個管嘴": "One sensor each, one barb only",
-    "兩盒膠帶綁在一起、包泡棉": "Tape both together, wrap in foam",
-    "→ 溫度相同，漂移較小": "→ same temperature, less drift",
     "電線孔用熱熔膠封": "Seal the cable hole with hot glue",
     "歸零後誤差約 ±{0} Pa（雜訊平均 {1} s ＋ 兩顆溫差 {2} K）": "After zeroing about ±{0} Pa (noise averaged {1} s + {2} K temperature difference)",
     "→ {0} m/s 風速誤差 ±{1}%，{2} m/s 約 ±{3}%": "→ speed error ±{1}% at {0} m/s, about ±{3}% at {2} m/s",
     "兩顆出廠差約 ±{0} Pa：每次開風扇前一定要歸零": "Factory offset between the two about ±{0} Pa: always zero before starting the fans",
     "另外提供室內氣壓與溫度（算空氣密度）": "Also gives room pressure and temperature (for air density)",
-    "管路：A、B 用三通接在同一組量測孔": "Tubing: A and B teed onto the same taps",
-    "皮托管": "Pitot tube",
-    "或壁面靜壓環": "or wall static rings",
-    "高壓（總壓）": "High (total)",
-    "低壓（靜壓）": "Low (static)",
-    "A 鐘罩壓力計": "A bell manometer",
-    "B 氣壓計對": "B barometer pair",
-    "高壓 → A 的盒內空氣、B 高壓盒；低壓 → A 的鐘罩內、B 低壓盒": "High → A's box air and B's high canister; low → inside A's bell and B's low canister",
-    "平時接壁面靜壓環（穩定段 − 測試段入口）控制風速；": "Normally on the wall rings (settling − test-section entrance) for speed control;",
-    "校正 k 時：A 接壁面環、B 接皮托管，同時量 → 不用換管": "to calibrate k: A on the wall rings, B on the Pitot, read together → no re-plumbing",
-    "A、B 讀數差 > {0} Pa 或 {1}% → 先查漏氣，再決定用哪一個（見計畫書）": "A and B differ by > {0} Pa or {1}% → leak-check first, then choose one (see the plan)",
 
     # ---- M8 calibration ----
     "風速感測器校正": "Speed sensor calibration",
-    "用針筒產生壓差，以 {0}:{1} 傾斜水柱計為標準，校正鐘罩壓力計與氣壓計對。":
-        "A syringe makes the pressure difference; a {0}:{1} inclined water manometer is the reference for the bell manometer and the barometer pair.",
     "圖 M{0}　風速感測器桌上校正（不用開風扇）": "Figure M{0}  Bench calibration of the speed sensors (fans off)",
-    "針筒慢慢抽氣 → 傾斜水柱計讀數 L → Δp = ρ g L / {0} ≈ {1} Pa/mm；同時記錄 A、B 讀數":
-        "Pull the syringe slowly → manometer reading L → Δp = ρ g L / {0} ≈ {1} Pa/mm; record A and B at the same time",
     "{0} mL 針筒（慢慢拉）": "{0} mL syringe (pull slowly)",
     "三通": "Tee",
-    "A 鐘罩內（低壓口）": "Inside A's bell (low port)",
-    "B 低壓盒": "B low canister",
-    "A 的盒內空氣、B 高壓盒：": "A's box air and B's high canister:",
-    "開著通室內（高壓口不接）": "open to room (high ports free)",
     "水槽": "Reservoir",
     "斜率 {0}:{1}": "Slope {0}:{1}",
     "{0}:{1} 傾斜水柱計（透明管＋尺，加食用色素）": "{0}:{1} inclined manometer (clear tube + ruler, coloured water)",
@@ -288,10 +203,7 @@ EN = {
     "步驟": "Steps",
     "{0}. 全部接好，捏住針筒管 {1} s：讀數變化須 < {2} Pa（漏氣測試）": "{0}. Pinch the syringe tube {1} s: change < {2} Pa (leak test)",
     "{0}. 垂直水柱 {1} → {2} → {3} → {4} → {5} → {6} mm（沿管 {7}–{8} mm）": "{0}. Vertical water {1} → {2} → {3} → {4} → {5} → {6} mm ({7}–{8} mm along the tube)",
-    "   每點停 {0} s，記錄 L、A、B；再反向回到 {1}": "   hold {0} s per point, record L, A, B; then step back to {1}",
-    "{0}. 重複 {1} 次；A 的斜率 = 有效面積（寫回 spec）": "{0}. Repeat {1} times; A's slope = effective area (write to the spec)",
     "{0}. 合格：直線誤差 ≤ {1} Pa 或 {2}%": "{0}. Pass: linearity ≤ {1} Pa or {2}%",
-    "   遲滯 ≤ {0} Pa；A、B 相差 ≤ {1} Pa 或 {2}%": "   hysteresis ≤ {0} Pa; A vs B ≤ {1} Pa or {2}%",
 
     # ---- V2: one fan layer, barometer-only speed sensor ----
     "{0} × {1} mm 風扇（一層）": "{0} × {1} mm fans (one layer)",

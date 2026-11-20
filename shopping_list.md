@@ -1,6 +1,6 @@
 # Mini Wind Tunnel Shopping List (1:43, Arduino Uno, cap NT$5,000)
 
-Goes with [build_plan_mini.md](build_plan_mini.md). The earlier Traditional Chinese version is kept at [shopping_list.zh-TW.md](shopping_list.zh-TW.md). Prices marked "checked" are based on real listings (sources at the end); prices marked "estimate" have no Taiwanese listing checked yet, so confirm on Shopee before ordering. The Shopee search terms are left in Chinese because that is what you type on Shopee. The Arduino Uno is already owned and not counted.
+Goes with [build_plan_mini.md](build_plan_mini.md). Prices marked "checked" are based on real listings (sources at the end); prices marked "estimate" have no Taiwanese listing checked yet, so confirm on Shopee before ordering. The Shopee search terms are left in Chinese because that is what you type on Shopee. The Arduino Uno is already owned and not counted.
 
 ## Why the upper estimate reaches about NT$7,000
 

@@ -11,7 +11,6 @@ Related files:
 - Parts list and prices: [shopping_list.md](shopping_list.md)
 - Exact numbers: [spec/mini.json](spec/mini.json); recompute with `python3 tools/mini_calc.py`, check with `python3 tools/test_mini.py` (22 checks)
 - 3D model: [cad/mini_tunnel.fs](cad/mini_tunnel.fs) (Onshape FeatureScript)
-- Earlier Traditional Chinese plan (frozen): [build_plan_mini.zh-TW.md](build_plan_mini.zh-TW.md)
 
 ## How big are the forces?
 

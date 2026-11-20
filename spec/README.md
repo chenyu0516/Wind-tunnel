@@ -1,6 +1,6 @@
 # Agent spec: mini class-project tunnel
 
-Audience: coding/CAD agents (Arduino sketch, Onshape FeatureScript, calculation and drawing scripts). People should read [build_plan_mini.md](../build_plan_mini.md), [model.md](../model.md) and [shopping_list.md](../shopping_list.md) instead (Traditional Chinese versions are kept as `*.zh-TW.md`).
+Audience: coding/CAD agents (Arduino sketch, Onshape FeatureScript, calculation and drawing scripts). People should read [build_plan_mini.md](../build_plan_mini.md), [model.md](../model.md) and [shopping_list.md](../shopping_list.md) instead.
 
 Design: 1:43 car, the 1:18 reference design scaled by 0.42, Arduino Uno controls everything, budget at most NT$5,000. The 1:18 reference design is archived in [archive/full_1to18/](../archive/full_1to18/) and is not built.
 

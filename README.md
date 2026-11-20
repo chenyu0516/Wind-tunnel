@@ -24,13 +24,12 @@ The geometry is the earlier 1:18 design scaled by 0.42, with three changes: comp
 
 ## Documents
 
-The documents are in English. The earlier Traditional Chinese (Taiwan) versions of the plan and shopping list are kept alongside them.
+The documents are in English.
 
 | File | What it is |
 | --- | --- |
 | [build_plan_mini.md](build_plan_mini.md) | **Start here.** Build plan: components, balance, Arduino control, speed sensors, calibration, safety, carrying and setup, budget, acceptance tests, build order, open questions |
 | [shopping_list.md](shopping_list.md) | Parts list with Shopee search terms, prices, and how to stay under NT$5,000 |
-| [build_plan_mini.zh-TW.md](build_plan_mini.zh-TW.md), [shopping_list.zh-TW.md](shopping_list.zh-TW.md) | Earlier Traditional Chinese versions, kept for reference |
 | [model.md](model.md) | Research methodology written as a paper (English): theory, facility, calibration, test program, uncertainty, limitations, references |
 | [spec/mini.json](spec/mini.json) | Single source of every dimension, pin assignment, and budget line |
 | [spec/README.md](spec/README.md) | Spec conventions and design rules, written for coding and CAD agents |
@@ -75,7 +74,6 @@ The main control sketch (speed PID, automatic zero/ramp/settle/capture/re-zero s
 .
 ├── build_plan_mini.md          build plan (start here)
 ├── shopping_list.md            parts and budget
-├── *.zh-TW.md                  earlier Traditional Chinese versions
 ├── cad/mini_tunnel.fs          3D model (Onshape FeatureScript)
 ├── model.md                    research methodology (paper format)
 ├── spec/                       mini.json + agent-facing spec notes
